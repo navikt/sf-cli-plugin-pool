@@ -172,5 +172,52 @@ Commands should register health checks that validate:
 - Look at `src/lib/poolManager.ts` for business logic separation
 - Check `.messages.json` files for message patterns
 
+## Commit & PR Conventions
+
+The following conventions help maintain clarity and consistency in the project's version history.
+
+Should be written in Norwegian.
+
+### Commit Message Format
+Follow conventional commits:
+```
+<type>: <subject> (<scope>)
+<body>
+```
+
+**Types**: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`
+**Scope**: Command name or component (e.g., `pool:prepare`, `poolManager`)
+**Subject**: Lowercase, imperative, no period
+**Body**: Optional detailed description if needed
+
+**Examples**:
+- `feat: add org creation with retry logic (pool:prepare)`
+- `fix: handle expired org credentials (pool:fetch)`
+- `test: add pool status aggregation tests (pool:list)`
+- `chore: bumped @salesforce/core to latest`
+- `docs: update README with usage examples`
+- refactor: extract pool management logic to separate class  
+Moved org creation and tagging logic from command to PoolManager class for better testability.
+- `chore: optimize org prepare and clean logic to reduce API calls (pool:clean pool:prepare)`
+
+### Pull Request Template
+```
+## Description
+Brief summary of changes
+
+## Type of Change
+- [ ] New command
+- [ ] Bug fix
+- [ ] Feature enhancement
+- [ ] Test coverage
+- [ ] Documentation
+
+## Testing
+How to test locally
+
+## Doctor Integration
+Any new doctor health checks added?
+```
+
 ---
 *Last updated: 2026-01-29. Update as project structure emerges.*
