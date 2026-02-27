@@ -18,3 +18,15 @@ updates:
       gha:
         patterns:
           - "*"
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    cooldown:
+      default-days: 7
+    groups:
+      dependencies:
+        dependency-type: "production"
+      dev-dependencies:
+        dependency-type: "development"
