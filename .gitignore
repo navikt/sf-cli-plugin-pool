@@ -1,0 +1,58 @@
+# -- CLEAN
+tmp/
+# use pnpm by default, so ignore other lock files
+package-lock.json
+yarn.lock
+
+# never checkin npm config
+.npmrc
+
+# debug logs
+npm-error.log
+yarn-error.log
+pnpm-debug.log
+*.log
+
+
+# compile source
+lib
+
+# test artifacts
+*xunit.xml
+*checkstyle.xml
+*unitcoverage
+.nyc_output
+coverage
+test_session*
+
+# generated docs
+docs
+
+# ignore sfdx-trust files
+*.tgz
+*.sig
+package.json.bak.
+
+
+npm-shrinkwrap.json
+oclif.manifest.json
+oclif.lock
+
+# -- CLEAN ALL
+*.tsbuildinfo
+.eslintcache
+.wireit
+node_modules
+
+# --
+# put files here you don't want cleaned with sf-clean
+
+# os specific files
+.DS_Store
+.idea
+
+# local environment
+.env
+.env.local
+
+pool/
