@@ -10,6 +10,15 @@ on:
       - 'package.json'
       - 'pnpm-lock.yaml'
       - '.github/workflows/test.yml'
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'test/**'
+      - 'tsconfig.json'
+      - 'test/tsconfig.json'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/test.yml'
   workflow_dispatch:
 
 permissions: {}
