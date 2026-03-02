@@ -3,6 +3,13 @@ name: build
 on:
   push:
     branches: [main]
+    paths:
+      - 'src/**'
+      - 'bin/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'tsconfig.json'
+      - '.github/workflows/build.yml'
   workflow_dispatch:
 
 permissions: {}

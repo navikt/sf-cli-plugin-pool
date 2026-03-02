@@ -5,11 +5,11 @@ on:
   push:
     branches: ["main"]
     paths:
-      - ".github/workflows/**"
+      - ".github/**/*.yml"
   pull_request:
     branches: ["**"]
     paths:
-      - ".github/workflows/**"
+      - ".github/**/*.yml"
 
 permissions: {}
 concurrency:
