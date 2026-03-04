@@ -36,6 +36,9 @@ importers:
       '@salesforce/dev-scripts':
         specifier: ^11.0.4
         version: 11.0.4
+      '@salesforce/prettier-config':
+        specifier: ^0.0.4
+        version: 0.0.4
       '@types/chai':
         specifier: ^5.2.3
         version: 5.2.3
@@ -893,6 +896,9 @@ packages:
 
   '@salesforce/prettier-config@0.0.3':
     resolution: {integrity: sha512-hYOhoPTCSYMDYn+U1rlEk16PoBeAJPkrdg4/UtAzupM1mRRJOwEPMG1d7U8DxJFKuXW3DMEYWr2MwAIBDaHmFg==}
+
+  '@salesforce/prettier-config@0.0.4':
+    resolution: {integrity: sha512-GBjR7f/jv7rcSrTvNgbkWvOykXg/PZqL7TztylKwaogWdrCbypJE8qEfBy9nILkICrwmDbQApOC8TqoO3bQKSw==}
 
   '@salesforce/sf-plugins-core@12.2.6':
     resolution: {integrity: sha512-EDKE72f/gGk9vL7KI9wsFO5wl/jFVvA2l5XBGR+6sJ1+FTMUbTGRMLObkkYJACk7bKvUFx00xdur2R6K8SWNvg==}
@@ -6088,6 +6094,8 @@ snapshots:
       '@salesforce/ts-types': 2.0.12
 
   '@salesforce/prettier-config@0.0.3': {}
+
+  '@salesforce/prettier-config@0.0.4': {}
 
   '@salesforce/sf-plugins-core@12.2.6(tslib@2.8.1)':
     dependencies:

@@ -2,7 +2,7 @@
   "name": "pool",
   "description": "A plugin for scratch org pooling.",
   "version": "1.0.0",
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@10.30.3+sha512.c961d1e0a2d8e354ecaa5166b822516668b7f44cb5bd95122d590dd81922f606f5473b6d23ec4a5be05e7fcd18e8488d47d978bbe981872f1145d06e9a740017",
   "dependencies": {
     "@oclif/core": "^4.8.1",
     "@salesforce/core": "^8.26.3",
@@ -15,6 +15,7 @@
     "@salesforce/cli-plugins-testkit": "^5.3.41",
     "@salesforce/dev-config": "^4.3.2",
     "@salesforce/dev-scripts": "^11.0.4",
+    "@salesforce/prettier-config": "^0.0.4",
     "@types/chai": "^5.2.3",
     "@types/mocha": "^10.0.10",
     "chai": "^6.2.2",
