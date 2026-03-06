@@ -56,8 +56,8 @@
       "@oclif/plugin-help"
     ],
     "topics": {
-      "hello": {
-        "description": "Commands to say hello."
+      "pool": {
+        "description": "Commands for managing scratch org pools."
       }
     },
     "flexibleTaxonomy": true

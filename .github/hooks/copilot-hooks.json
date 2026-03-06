@@ -1,0 +1,12 @@
+{
+  "copilot-pre-commit": [
+    {
+      "command": "pnpm run lint",
+      "description": "Lint source and test files"
+    },
+    {
+      "command": "pnpm run test:only",
+      "description": "Run unit tests"
+    }
+  ]
+}
