@@ -41,7 +41,7 @@ describe('pool list', () => {
 
     expect(result.pools).to.deep.equal([]);
     expect(result.totals.totalOrgs).to.equal(0);
-    expect(result.totals.available).to.equal(undefined);
+    expect(result.totals.available).to.equal(0);
   });
 
   it('aggregates orgs into a single pool', async () => {
@@ -115,7 +115,7 @@ describe('pool list', () => {
 
     const result = await PoolList.run(['--target-dev-hub', devHub.username]);
 
-    expect(result.totals.available).to.equal(undefined);
+    expect(result.totals.available).to.equal(0);
   });
 
   it('outputs human-readable totals', async () => {
