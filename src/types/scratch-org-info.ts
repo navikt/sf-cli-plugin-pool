@@ -1,5 +1,5 @@
 export type ScratchOrgInfoRow = {
   Id: string;
-  Allocation_status__c: string;
-  Pooltag__c: string | null;
+  Pool_allocation_status__c: string;
+  Pool_tag__c: string | null;
 };

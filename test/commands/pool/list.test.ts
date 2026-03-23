@@ -30,7 +30,9 @@ describe('pool list', () => {
     $$.restore();
   });
 
-  function fakeQueryResponse(records: Array<{ Id: string; Allocation_status__c: string; Pooltag__c: string | null }>) {
+  function fakeQueryResponse(
+    records: Array<{ Id: string; Pool_allocation_status__c: string; Pool_tag__c: string | null }>
+  ) {
     $$.fakeConnectionRequest = () => Promise.resolve({ totalSize: records.length, done: true, records });
   }
 
@@ -46,9 +48,9 @@ describe('pool list', () => {
 
   it('aggregates orgs into a single pool', async () => {
     fakeQueryResponse([
-      { Id: '001', Allocation_status__c: 'Available', Pooltag__c: 'myPool' },
-      { Id: '002', Allocation_status__c: 'Available', Pooltag__c: 'myPool' },
-      { Id: '003', Allocation_status__c: 'In Use', Pooltag__c: 'myPool' },
+      { Id: '001', Pool_allocation_status__c: 'Available', Pool_tag__c: 'myPool' },
+      { Id: '002', Pool_allocation_status__c: 'Available', Pool_tag__c: 'myPool' },
+      { Id: '003', Pool_allocation_status__c: 'In Use', Pool_tag__c: 'myPool' },
     ]);
 
     const result = await PoolList.run(['--target-dev-hub', devHub.username]);
@@ -64,9 +66,9 @@ describe('pool list', () => {
 
   it('aggregates orgs across multiple pools', async () => {
     fakeQueryResponse([
-      { Id: '001', Allocation_status__c: 'Available', Pooltag__c: 'poolA' },
-      { Id: '002', Allocation_status__c: 'Available', Pooltag__c: 'poolB' },
-      { Id: '003', Allocation_status__c: 'In Use', Pooltag__c: 'poolB' },
+      { Id: '001', Pool_allocation_status__c: 'Available', Pool_tag__c: 'poolA' },
+      { Id: '002', Pool_allocation_status__c: 'Available', Pool_tag__c: 'poolB' },
+      { Id: '003', Pool_allocation_status__c: 'In Use', Pool_tag__c: 'poolB' },
     ]);
 
     const result = await PoolList.run(['--target-dev-hub', devHub.username]);
@@ -80,8 +82,8 @@ describe('pool list', () => {
     expect(result.totals.available).to.equal(2);
   });
 
-  it('maps null Pooltag__c to "undefined" tag', async () => {
-    fakeQueryResponse([{ Id: '001', Allocation_status__c: 'Available', Pooltag__c: null }]);
+  it('maps null Pool_tag__c to "undefined" tag', async () => {
+    fakeQueryResponse([{ Id: '001', Pool_allocation_status__c: 'Available', Pool_tag__c: null }]);
 
     const result = await PoolList.run(['--target-dev-hub', devHub.username]);
 
@@ -90,7 +92,7 @@ describe('pool list', () => {
   });
 
   it('passes --pool-tag filter into the SOQL query', async () => {
-    fakeQueryResponse([{ Id: '001', Allocation_status__c: 'Available', Pooltag__c: 'target' }]);
+    fakeQueryResponse([{ Id: '001', Pool_allocation_status__c: 'Available', Pool_tag__c: 'target' }]);
 
     const result = await PoolList.run(['--target-dev-hub', devHub.username, '--pool-tag', 'target']);
 
@@ -100,8 +102,8 @@ describe('pool list', () => {
 
   it('supports multiple --pool-tag values', async () => {
     fakeQueryResponse([
-      { Id: '001', Allocation_status__c: 'Available', Pooltag__c: 'a' },
-      { Id: '002', Allocation_status__c: 'Available', Pooltag__c: 'b' },
+      { Id: '001', Pool_allocation_status__c: 'Available', Pool_tag__c: 'a' },
+      { Id: '002', Pool_allocation_status__c: 'Available', Pool_tag__c: 'b' },
     ]);
 
     const result = await PoolList.run(['--target-dev-hub', devHub.username, '--pool-tag', 'a', '--pool-tag', 'b']);
@@ -111,7 +113,7 @@ describe('pool list', () => {
   });
 
   it('sets available to undefined when no orgs have "Available" status', async () => {
-    fakeQueryResponse([{ Id: '001', Allocation_status__c: 'In Use', Pooltag__c: 'myPool' }]);
+    fakeQueryResponse([{ Id: '001', Pool_allocation_status__c: 'In Use', Pool_tag__c: 'myPool' }]);
 
     const result = await PoolList.run(['--target-dev-hub', devHub.username]);
 
@@ -120,8 +122,8 @@ describe('pool list', () => {
 
   it('outputs human-readable totals', async () => {
     fakeQueryResponse([
-      { Id: '001', Allocation_status__c: 'Available', Pooltag__c: 'pool1' },
-      { Id: '002', Allocation_status__c: 'In Use', Pooltag__c: 'pool1' },
+      { Id: '001', Pool_allocation_status__c: 'Available', Pool_tag__c: 'pool1' },
+      { Id: '002', Pool_allocation_status__c: 'In Use', Pool_tag__c: 'pool1' },
     ]);
 
     await PoolList.run(['--target-dev-hub', devHub.username]);
