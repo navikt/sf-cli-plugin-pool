@@ -15,7 +15,7 @@ pnpm-debug.log
 
 
 # compile source
-lib
+/lib
 
 # test artifacts
 *xunit.xml
