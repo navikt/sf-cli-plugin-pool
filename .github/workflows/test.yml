@@ -65,6 +65,9 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
+      - uses: navikt/sf-gha-install-sf-cli@86acd7148c91ca98a741259ec2ae6e8879b3e045
+        with:
+          version: '2.127.2'
       - name: Run NUTs
         run: pnpm run test:nuts
         env:
