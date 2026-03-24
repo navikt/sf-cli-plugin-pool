@@ -57,6 +57,8 @@ then querying `ScratchOrgInfo` via SOQL through the DevHub connection.
 
 ## Commit & PR Conventions
 
-Follow [Conventional Commits](https://www.conventionalcommits.org/). Enforced by `commitlint` (see `commitlint.config.cjs`).
+Enforced by `commitlint` (see `commitlint.config.cjs`).
+
+Use the `conventional-commit` skill (`.github/skills/conventional-commit/SKILL.md`) when generating commit messages.
 
 **Scope**: Command name or component (e.g., `pool:prepare`, `poolManager`)
