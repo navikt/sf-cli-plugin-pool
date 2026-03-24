@@ -69,5 +69,6 @@ jobs:
         run: pnpm run test:nuts
         env:
           TESTKIT_HUB_USERNAME: ${{ secrets.TESTKIT_HUB_USERNAME }} # From @salesforce/cli-plugins-testkit
+          TESTKIT_JWT_CLIENT_ID: ${{ secrets.TESTKIT_JWT_CLIENT_ID }} # From @salesforce/cli-plugins-testkit
           TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }} # From @salesforce/cli-plugins-testkit
           TESTKIT_HUB_INSTANCE: ${{ secrets.TESTKIT_HUB_INSTANCE }} # From @salesforce/cli-plugins-testkit
