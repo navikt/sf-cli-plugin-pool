@@ -87,6 +87,58 @@ sf plugins  # verify
 sf pool list
 ```
 
+## CI Setup
+
+NUTs (`pnpm run test:nuts`) run against a live Salesforce DevHub. This section documents how to set up the required infrastructure for CI.
+
+### 1. Generate a certificate and private key
+
+The JWT authentication flow requires an RSA key pair. Use PKCS1 format (`-traditional`) so that the testkit library handles it correctly on all platforms:
+
+```bash
+openssl genrsa -traditional -out server.key 2048
+openssl req -new -x509 -key server.key -out server.crt -days 365 -subj "/CN=sf-cli-plugin-pool-nut"
+```
+
+Keep `server.key` — it becomes the `TESTKIT_JWT_KEY` secret. `server.crt` is uploaded to the External Client App.
+
+### 2. Create or reuse a Permission Set
+
+The CI user needs access to scratch org infrastructure. You can reuse an existing Permission Set in your DevHub org if it already grants these permissions, or create a new one.
+
+Requires Dev Hub to be enabled first: Setup → Dev Hub → **Enable Dev Hub**.
+
+The Permission Set needs the following object permissions:
+
+- **Object Settings → Scratch Org Infos** → Read, Create, Edit, Delete
+- **Object Settings → Active Scratch Orgs** → Read, Edit, Delete
+
+### 3. Create an External Client App in Salesforce
+
+In the DevHub org:
+
+1. Setup → **External Client App Manager** → **New External Client App**
+2. Fill in basic details, then enable **Enable OAuth Settings**
+3. Enable **Use digital signatures** → upload `server.crt`
+4. Add OAuth scopes: **Manage user data via APIs (api)** and **Perform requests at any time (refresh_token, offline_access)**
+5. Save, then open the app → **Edit Policies** → set Permitted Users to **Admin approved users are pre-authorized**
+6. Under **Permission Sets**, add the Permission Set created in step 2
+7. Note the **Consumer Key** — this becomes `TESTKIT_JWT_CLIENT_ID`
+
+### 4. Create a CI user with the correct permissions
+
+1. Create a user (or use an existing integration user) in the DevHub org
+2. Assign the Permission Set from step 2 to the CI user
+
+### 5. Set GitHub Actions secrets
+
+| Secret                  | Value                                                                                                |
+| ----------------------- | ---------------------------------------------------------------------------------------------------- |
+| `TESTKIT_HUB_USERNAME`  | Login username of the CI user                                                                        |
+| `TESTKIT_JWT_CLIENT_ID` | Consumer Key from the External Client App                                                            |
+| `TESTKIT_JWT_KEY`       | Full contents of `server.key` (including header/footer lines)                                        |
+| `TESTKIT_HUB_INSTANCE`  | Instance URL of the DevHub, e.g. `https://myorg.my.salesforce.com` or `https://login.salesforce.com` |
+
 ## Dependencies
 
 - **@salesforce/core** — Auth, Config, Logger, SfError, Org
