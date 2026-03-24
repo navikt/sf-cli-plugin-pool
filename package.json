@@ -35,9 +35,9 @@
     "node": ">=18.0.0"
   },
   "files": [
-    "/lib",
-    "/messages",
-    "/oclif.manifest.json"
+    "lib",
+    "messages",
+    "oclif.manifest.json"
   ],
   "keywords": [
     "force",
