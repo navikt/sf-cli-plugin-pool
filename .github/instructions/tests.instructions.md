@@ -59,3 +59,28 @@ const result = await MyCommand.run(['--target-dev-hub', 'test@hub.org']);
 ## Reference implementation
 
 See `test/commands/hello/world.test.ts` for a working example.
+
+## Boundaries
+
+### ✅ Always
+
+- Write tests for new code before committing
+- Test both success and error cases
+- Use descriptive test names
+- Clean up test data after each test
+- Run full test suite before pushing
+
+### ⚠️ Ask First
+
+- Changing test framework or structure
+- Adding complex test fixtures
+- Modifying shared test utilities
+- Disabling or skipping tests
+
+### 🚫 Never
+
+- Commit failing tests
+- Skip tests without good reason
+- Test implementation details
+- Share mutable state between tests
+- Commit without running tests
