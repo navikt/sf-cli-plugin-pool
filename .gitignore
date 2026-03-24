@@ -15,7 +15,7 @@ pnpm-debug.log
 
 
 # compile source
-/lib
+lib
 
 # test artifacts
 *xunit.xml
@@ -46,6 +46,9 @@ node_modules
 
 # --
 # put files here you don't want cleaned with sf-clean
+
+# source lib is not a build artifact
+!src/lib/
 
 # os specific files
 .DS_Store
