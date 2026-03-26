@@ -45,4 +45,4 @@ Description of the flag.
 
 ## Reference implementation
 
-See `messages/hello.world.md` for a working example.
+See `messages/pool.list.md` for a working example.

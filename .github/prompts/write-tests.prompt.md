@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+agent: 'agent'
 description: 'Write unit tests for a pool command'
 ---
 
@@ -18,4 +18,4 @@ Write unit tests for the `pool:{{command}}` command.
 ## Context
 
 Follow the patterns in `.github/instructions/tests.instructions.md` and `.github/skills/pool-test.md`.
-Use `test/commands/hello/world.test.ts` as a reference implementation.
+Use `test/commands/pool/list.test.ts` as a reference implementation.

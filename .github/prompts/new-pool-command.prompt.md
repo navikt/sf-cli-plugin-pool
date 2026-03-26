@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+agent: 'agent'
 description: 'Scaffold a new pool subcommand with command, messages, and tests'
 ---
 
@@ -17,4 +17,4 @@ Create a new `sf pool` subcommand called `pool:{{name}}`.
 ## Context
 
 Follow the patterns in `.github/instructions/commands.instructions.md` and `.github/skills/pool-command.md`.
-Use `src/commands/hello/world.ts` as a reference implementation.
+Use `src/commands/pool/list.ts` as a reference implementation.

@@ -58,4 +58,4 @@ export default class Name extends SfCommand<PoolResultType> {
 
 ## Reference implementation
 
-See `src/commands/hello/world.ts` for a working example of the command pattern.
+See `src/commands/pool/list.ts` for a working example of the command pattern.

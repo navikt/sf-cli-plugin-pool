@@ -29,4 +29,4 @@ Keep command files thin — they parse flags, call lib functions, and format out
 
 ## Reference implementation
 
-See `src/commands/hello/world.ts` for the command side of the pattern. Library code should contain the logic that commands delegate to.
+See `src/commands/pool/list.ts` for the command side of the pattern. Library code should contain the logic that commands delegate to.

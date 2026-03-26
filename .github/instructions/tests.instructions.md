@@ -58,7 +58,7 @@ const result = await MyCommand.run(['--target-dev-hub', 'test@hub.org']);
 
 ## Reference implementation
 
-See `test/commands/hello/world.test.ts` for a working example.
+See `test/commands/pool/list.test.ts` for a working example.
 
 ## Boundaries
 

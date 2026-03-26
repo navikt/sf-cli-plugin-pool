@@ -48,4 +48,4 @@ describe('pool mycommand NUTs', () => {
 
 ## Reference implementation
 
-See `test/commands/hello/world.nut.ts` for a working example.
+See `test/commands/pool/list.nut.ts` for a working example.

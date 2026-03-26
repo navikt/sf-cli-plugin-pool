@@ -33,7 +33,7 @@ You are a highly skilled test engineer with broad experience in writing automate
 - Unit tests should invoke commands directly via `CommandClass.run([...args])` and assert both returned JSON results and user-facing output when relevant.
 - For NUTs, use `TestSession` from `@salesforce/cli-plugins-testkit` in `before`/`after` hooks and run commands with `execCmd(...)`.
 - NUT assertions should validate parsed `jsonOutput.result` and expected exit behavior.
-- Keep these patterns even as old hello-world test files are removed; apply the same structure to new `pool:*` command tests.
+- Apply the same structure to new `pool:*` command tests.
 
 ## Detailed conventions
 
@@ -42,7 +42,7 @@ Follow the patterns in:
 - `.github/instructions/tests.instructions.md` — unit test sandbox setup, assertions, coverage requirements
 - `.github/skills/pool-test.md` — step-by-step guide and test template for pool commands
 
-Use `test/commands/hello/world.test.ts` and `test/commands/hello/world.nut.ts` as reference implementations.
+Use `test/commands/pool/list.test.ts` and `test/commands/pool/list.nut.ts` as reference implementations.
 
 ## Limits
 
