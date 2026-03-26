@@ -24,6 +24,7 @@ export default class PoolList extends SfCommand<PoolListResult> {
 
   public static readonly flags = {
     'target-dev-hub': Flags.requiredHub(),
+    'api-version': Flags.orgApiVersion(),
     'pool-tag': Flags.string({
       summary: messages.getMessage('flags.pool-tag.summary'),
       char: 't',
@@ -37,7 +38,7 @@ export default class PoolList extends SfCommand<PoolListResult> {
 
     const tags = flags['pool-tag'] ?? [];
     const devhub = flags['target-dev-hub'];
-    const connection = devhub.getConnection();
+    const connection = devhub.getConnection(flags['api-version']);
 
     const records = await queryPoolOrgs(connection, tags);
 
