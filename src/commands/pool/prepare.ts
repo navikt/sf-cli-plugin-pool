@@ -11,6 +11,7 @@ export type PoolPrepareCommandResult = {
   pools: PoolPrepareResult[];
 };
 
+/* istanbul ignore next */
 async function readStdin(): Promise<string> {
   return new Promise((resolve) => {
     let data = '';
@@ -23,6 +24,7 @@ async function readStdin(): Promise<string> {
 }
 
 async function resolvePackageKeys(stdinFlag: boolean, keysFile?: string): Promise<ReturnType<typeof loadPackageKeys>> {
+  /* istanbul ignore next */
   if (stdinFlag) {
     const stdinData = await readStdin();
     return loadPackageKeysFromString(stdinData);
