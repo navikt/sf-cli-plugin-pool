@@ -47,6 +47,11 @@ node_modules
 # --
 # put files here you don't want cleaned with sf-clean
 
+# sf-cli files and folders
+.sf/
+.sfdx/
+sfdx-project.json
+
 # source and test lib is not a build artifact
 !src/lib/
 !test/lib/
