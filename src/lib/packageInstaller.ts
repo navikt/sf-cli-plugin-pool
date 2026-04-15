@@ -66,8 +66,9 @@ export async function readSfdxProjectDependencies(
   }
 
   const project = await resolveSfProject(sfdxProjectPath);
-  logger.debug(`Found ${extractDependencies(project, packageKeys).length} packages to install`);
-  return extractDependencies(project, packageKeys);
+  const dependencies = extractDependencies(project, packageKeys);
+  logger.debug(`Found ${dependencies.length} packages to install`);
+  return dependencies;
 }
 
 export async function installPackage(

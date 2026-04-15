@@ -98,9 +98,10 @@ export async function preparePool(
   poolDef: PoolDefinition,
   packageKeys: PackageKeys,
   sfdxProjectPath: string,
-  keepFailed: boolean
+  keepFailed: boolean,
+  apiVersion?: string
 ): Promise<PoolPrepareResult> {
-  const connection = hubOrg.getConnection();
+  const connection = hubOrg.getConnection(apiVersion);
   const existing = await queryPoolOrgs(connection, [poolDef.tag]);
   const gap = Math.max(0, poolDef.count - existing.length);
 
@@ -135,8 +136,8 @@ export async function preparePool(
 
         await tagScratchOrg(connection, orgId, poolDef.tag, STATUS_PROVISIONING);
 
+        const targetConnection = await getTargetOrgConnection(created.username);
         for (const dep of dependencies) {
-          const targetConnection = await getTargetOrgConnection(created.username);
           await installPackage(targetConnection, dep.packageId, dep.alias, dep.installationKey);
         }
 
@@ -153,29 +154,31 @@ export async function preparePool(
           attempt: attempt + 1,
           error: lastError.message,
         });
+
+        if (orgId) {
+          if (!keepFailed) {
+            try {
+              await deleteOrg(connection, orgId);
+            } catch (deleteError) {
+              logger.debug('Failed to delete failed org', {
+                orgId,
+                error: deleteError instanceof Error ? deleteError.message : String(deleteError),
+              });
+            }
+          } else {
+            try {
+              await tagScratchOrg(connection, orgId, poolDef.tag, STATUS_FAILED);
+            } catch (tagError) {
+              logger.debug('Failed to mark org as failed', { orgId });
+            }
+          }
+          orgId = undefined;
+        }
       }
     }
 
     if (lastError) {
       result.failed++;
-      if (orgId) {
-        if (!keepFailed) {
-          try {
-            await deleteOrg(connection, orgId);
-          } catch (deleteError) {
-            logger.debug('Failed to delete failed org', {
-              orgId,
-              error: deleteError instanceof Error ? deleteError.message : String(deleteError),
-            });
-          }
-        } else {
-          try {
-            await tagScratchOrg(connection, orgId, poolDef.tag, STATUS_FAILED);
-          } catch (tagError) {
-            logger.debug('Failed to mark org as failed', { orgId });
-          }
-        }
-      }
     }
   }
   /* eslint-enable no-await-in-loop */
