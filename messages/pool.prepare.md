@@ -16,9 +16,9 @@ Reads a pool configuration file and creates scratch orgs to fill each defined po
 
   <%= config.bin %> <%= command.id %> --config-file config/pool.json --keep-failed
 
-- Prepare pools using a specific sfdx-project.json path.
+- Prepare pools using a specific sfdx-project.json file.
 
-  <%= config.bin %> <%= command.id %> --config-file config/pool.json --sfdx-project-path /path/to/project
+  <%= config.bin %> <%= command.id %> --config-file config/pool.json --sfdx-project-file /path/to/sfdx-project.json
 
 - Pipe package installation keys from a secret store into the command.
 
@@ -28,9 +28,9 @@ Reads a pool configuration file and creates scratch orgs to fill each defined po
 
 Path to the pool configuration JSON file.
 
-# flags.sfdx-project-path.summary
+# flags.sfdx-project-file.summary
 
-Path to the directory containing sfdx-project.json. Falls back to the path set in the pool config, then the current directory.
+Path to sfdx-project.json. Falls back to the path set in the pool config, then sfdx-project.json in the current directory.
 
 # flags.package-keys-stdin.summary
 

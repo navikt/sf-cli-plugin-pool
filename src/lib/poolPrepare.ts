@@ -93,13 +93,36 @@ export async function resolveOrgsToCreate(connection: Connection, poolDef: PoolD
   return Math.max(0, gap);
 }
 
+export type PreparePoolDeps = {
+  createScratchOrg: typeof createScratchOrg;
+  tagScratchOrg: typeof tagScratchOrg;
+  deleteOrg: typeof deleteOrg;
+  readSfdxProjectDependencies: typeof readSfdxProjectDependencies;
+  installPackage: typeof installPackage;
+  getTargetOrgConnection: (username: string) => Promise<Connection>;
+};
+
+const defaultDeps: PreparePoolDeps = {
+  createScratchOrg,
+  tagScratchOrg,
+  deleteOrg,
+  readSfdxProjectDependencies,
+  installPackage,
+  getTargetOrgConnection: async (username: string): Promise<Connection> => {
+    const { AuthInfo, Connection: SfConnection } = await import('@salesforce/core');
+    const authInfo = await AuthInfo.create({ username });
+    return SfConnection.create({ authInfo });
+  },
+};
+
 export async function preparePool(
   hubOrg: Org,
   poolDef: PoolDefinition,
   packageKeys: PackageKeys,
-  sfdxProjectPath: string,
+  sfdxProjectFile: string,
   keepFailed: boolean,
-  apiVersion?: string
+  apiVersion?: string,
+  deps: PreparePoolDeps = defaultDeps
 ): Promise<PoolPrepareResult> {
   const connection = hubOrg.getConnection(apiVersion);
   const existing = await queryPoolOrgs(connection, [poolDef.tag]);
@@ -119,7 +142,7 @@ export async function preparePool(
     return result;
   }
 
-  const dependencies = await readSfdxProjectDependencies(sfdxProjectPath, packageKeys);
+  const dependencies = await deps.readSfdxProjectDependencies(sfdxProjectFile, packageKeys);
   const maxRetries = poolDef.retryCount ?? 0;
 
   /* eslint-disable no-await-in-loop */
@@ -131,17 +154,17 @@ export async function preparePool(
       try {
         logger.debug('Creating org', { tag: poolDef.tag, slot: i + 1, attempt: attempt + 1 });
 
-        const created = await createScratchOrg(hubOrg, poolDef.definitionFilePath, poolDef.expirationDays);
+        const created = await deps.createScratchOrg(hubOrg, poolDef.definitionFilePath, poolDef.expirationDays);
         orgId = created.orgId;
 
-        await tagScratchOrg(connection, orgId, poolDef.tag, STATUS_PROVISIONING);
+        await deps.tagScratchOrg(connection, orgId, poolDef.tag, STATUS_PROVISIONING);
 
-        const targetConnection = await getTargetOrgConnection(created.username);
+        const targetConnection = await deps.getTargetOrgConnection(created.username);
         for (const dep of dependencies) {
-          await installPackage(targetConnection, dep.packageId, dep.alias, dep.installationKey);
+          await deps.installPackage(targetConnection, dep.packageId, dep.alias, dep.installationKey);
         }
 
-        await tagScratchOrg(connection, orgId, poolDef.tag, STATUS_AVAILABLE);
+        await deps.tagScratchOrg(connection, orgId, poolDef.tag, STATUS_AVAILABLE);
 
         result.created++;
         lastError = undefined;
@@ -158,7 +181,7 @@ export async function preparePool(
         if (orgId) {
           if (!keepFailed) {
             try {
-              await deleteOrg(connection, orgId);
+              await deps.deleteOrg(connection, orgId);
             } catch (deleteError) {
               logger.debug('Failed to delete failed org', {
                 orgId,
@@ -167,7 +190,7 @@ export async function preparePool(
             }
           } else {
             try {
-              await tagScratchOrg(connection, orgId, poolDef.tag, STATUS_FAILED);
+              await deps.tagScratchOrg(connection, orgId, poolDef.tag, STATUS_FAILED);
             } catch (tagError) {
               logger.debug('Failed to mark org as failed', { orgId });
             }
@@ -184,10 +207,4 @@ export async function preparePool(
   /* eslint-enable no-await-in-loop */
 
   return result;
-}
-
-async function getTargetOrgConnection(username: string): Promise<Connection> {
-  const { AuthInfo, Connection: SfConnection } = await import('@salesforce/core');
-  const authInfo = await AuthInfo.create({ username });
-  return SfConnection.create({ authInfo });
 }

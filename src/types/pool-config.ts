@@ -4,7 +4,7 @@ export type PoolDefinition = {
   definitionFilePath: string;
   retryCount?: number;
   expirationDays?: number;
-  sfdxProjectFilePath?: string;
+  sfdxProjectFile?: string;
 };
 
 export type PoolConfig = {

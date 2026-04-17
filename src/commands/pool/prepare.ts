@@ -49,8 +49,8 @@ export default class PoolPrepare extends SfCommand<PoolPrepareCommandResult> {
       default: './config/pool-config.json',
       exists: true,
     }),
-    'sfdx-project-path': Flags.directory({
-      summary: messages.getMessage('flags.sfdx-project-path.summary'),
+    'sfdx-project-file': Flags.file({
+      summary: messages.getMessage('flags.sfdx-project-file.summary'),
       char: 'p',
       exists: true,
     }),
@@ -81,14 +81,16 @@ export default class PoolPrepare extends SfCommand<PoolPrepareCommandResult> {
 
     /* eslint-disable no-await-in-loop */
     for (const poolDef of poolConfig.pools) {
-      const sfdxProjectPath = flags['sfdx-project-path'] ?? poolDef.sfdxProjectFilePath ?? process.cwd();
+      const sfdxProjectFile =
+        flags['sfdx-project-file'] ?? poolDef.sfdxProjectFile ?? path.resolve('sfdx-project.json');
 
       const result = await preparePool(
         hubOrg,
         poolDef,
         packageKeys,
-        path.resolve(sfdxProjectPath),
-        flags['keep-failed']
+        path.resolve(sfdxProjectFile),
+        flags['keep-failed'],
+        flags['api-version']
       );
       results.push(result);
     }

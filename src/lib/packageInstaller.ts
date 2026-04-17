@@ -1,4 +1,5 @@
 import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { Connection, Logger, SfError, SfProject, isPackagingDirectory } from '@salesforce/core';
 import { PackageDependency, PackageKeys } from '../types/pool-prepare.js';
 
@@ -55,17 +56,17 @@ export function extractDependencies(project: SfProjectLike, packageKeys: Package
 }
 
 export async function readSfdxProjectDependencies(
-  sfdxProjectPath: string,
+  sfdxProjectFile: string,
   packageKeys: PackageKeys = {}
 ): Promise<PackageDependency[]> {
-  logger.debug('Reading sfdx-project.json dependencies', { sfdxProjectPath });
+  logger.debug('Reading sfdx-project.json dependencies', { sfdxProjectFile });
 
-  const projectFile = `${sfdxProjectPath}/sfdx-project.json`;
-  if (!fs.existsSync(projectFile)) {
-    throw new SfError(`sfdx-project.json not found at ${projectFile}`, 'SfdxProjectNotFoundError');
+  if (!fs.existsSync(sfdxProjectFile)) {
+    throw new SfError(`sfdx-project.json not found at ${sfdxProjectFile}`, 'SfdxProjectNotFoundError');
   }
 
-  const project = await resolveSfProject(sfdxProjectPath);
+  const projectDir = path.dirname(sfdxProjectFile);
+  const project = await resolveSfProject(projectDir);
   const dependencies = extractDependencies(project, packageKeys);
   logger.debug(`Found ${dependencies.length} packages to install`);
   return dependencies;
