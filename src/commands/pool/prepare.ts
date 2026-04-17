@@ -46,7 +46,7 @@ export default class PoolPrepare extends SfCommand<PoolPrepareCommandResult> {
     'config-file': Flags.file({
       summary: messages.getMessage('flags.config-file.summary'),
       char: 'f',
-      default: './config/pool-config.json',
+      default: './config/pool-example.json',
       exists: true,
     }),
     'sfdx-project-file': Flags.file({
