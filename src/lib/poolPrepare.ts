@@ -9,9 +9,9 @@ import { deleteOrg } from './orgCleanup.js';
 
 const logger = Logger.childFromRoot('poolPrepare');
 
-const STATUS_PROVISIONING = 'Provisioning';
-const STATUS_AVAILABLE = 'Available';
-const STATUS_FAILED = 'Failed';
+const STATUS_PROVISIONING = 'in_progress';
+const STATUS_AVAILABLE = 'available';
+const STATUS_FAILED = 'failed';
 
 export function loadPoolConfig(filePath: string): PoolConfig {
   logger.debug('Loading pool config', { filePath });
