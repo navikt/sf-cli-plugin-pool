@@ -75,3 +75,7 @@ No pools defined in config file: %s
 # error.package-keys-parse
 
 Failed to parse package keys JSON: %s
+
+# info.pool-error
+
+- %s

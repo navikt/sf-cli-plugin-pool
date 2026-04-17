@@ -5,6 +5,7 @@ export type PoolPrepareResult = {
   created: number;
   failed: number;
   skipped: boolean;
+  errors: string[];
 };
 
 export type PackageKeys = Record<string, string>;

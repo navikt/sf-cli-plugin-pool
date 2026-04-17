@@ -135,6 +135,7 @@ export async function preparePool(
     created: 0,
     failed: 0,
     skipped: gap === 0,
+    errors: [],
   };
 
   if (gap === 0) {
@@ -202,6 +203,7 @@ export async function preparePool(
 
     if (lastError) {
       result.failed++;
+      result.errors.push(lastError.message);
     }
   }
   /* eslint-enable no-await-in-loop */

@@ -217,6 +217,7 @@ describe('poolPrepare', () => {
       expect(result.skipped).to.be.true;
       expect(result.created).to.equal(0);
       expect(result.failed).to.equal(0);
+      expect(result.errors).to.deep.equal([]);
       expect(createScratchOrgStub.called).to.be.false;
     });
 
@@ -231,6 +232,7 @@ describe('poolPrepare', () => {
       expect(result.skipped).to.be.false;
       expect(result.created).to.equal(1);
       expect(result.failed).to.equal(0);
+      expect(result.errors).to.deep.equal([]);
       expect(createScratchOrgStub.calledOnce).to.be.true;
       expect(tagScratchOrgStub.calledWith($$.SANDBOX.match.any, 'org-1', 'test-pool', 'Provisioning')).to.be.true;
       expect(tagScratchOrgStub.calledWith($$.SANDBOX.match.any, 'org-1', 'test-pool', 'Available')).to.be.true;
@@ -296,6 +298,8 @@ describe('poolPrepare', () => {
 
       expect(result.created).to.equal(0);
       expect(result.failed).to.equal(1);
+      expect(result.errors).to.have.length(1);
+      expect(result.errors[0]).to.include('Persistent failure');
       expect(createScratchOrgStub.callCount).to.equal(3);
     });
 
