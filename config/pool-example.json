@@ -2,14 +2,14 @@
   "pools": [
     {
       "tag": "dev-pool",
-      "count": 5,
+      "count": 1,
       "definitionFilePath": "config/project-scratch-def.json",
       "retryCount": 2,
       "expirationDays": 7
     },
     {
       "tag": "ci-pool",
-      "count": 10,
+      "count": 1,
       "definitionFilePath": "config/project-scratch-def.json",
       "retryCount": 3,
       "expirationDays": 3
