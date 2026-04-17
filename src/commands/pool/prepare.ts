@@ -115,6 +115,9 @@ export default class PoolPrepare extends SfCommand<PoolPrepareCommandResult> {
             ])
           );
         }
+        for (const err of r.errors) {
+          this.log(messages.getMessage('info.pool-error', [err]));
+        }
       }
 
       this.log();

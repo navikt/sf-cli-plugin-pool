@@ -77,5 +77,6 @@ describe('pool prepare', () => {
     expect(result.pools[0]).to.have.property('created');
     expect(result.pools[0]).to.have.property('failed');
     expect(result.pools[0]).to.have.property('skipped');
+    expect(result.pools[0]).to.have.property('errors').that.is.an('array');
   });
 });
