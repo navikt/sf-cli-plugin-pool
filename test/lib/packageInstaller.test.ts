@@ -142,7 +142,7 @@ describe('packageInstaller', () => {
   describe('readSfdxProjectDependencies', () => {
     it('throws SfdxProjectNotFoundError when sfdx-project.json does not exist', async () => {
       try {
-        await readSfdxProjectDependencies('/nonexistent/path/that/does/not/exist');
+        await readSfdxProjectDependencies('/nonexistent/path/that/does/not/exist/sfdx-project.json');
         expect.fail('Expected SfdxProjectNotFoundError');
       } catch (err) {
         expect(err).to.be.instanceOf(SfError);
