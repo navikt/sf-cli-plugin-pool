@@ -234,8 +234,8 @@ describe('poolPrepare', () => {
       expect(result.failed).to.equal(0);
       expect(result.errors).to.deep.equal([]);
       expect(createScratchOrgStub.calledOnce).to.be.true;
-      expect(tagScratchOrgStub.calledWith($$.SANDBOX.match.any, 'org-1', 'test-pool', 'Provisioning')).to.be.true;
-      expect(tagScratchOrgStub.calledWith($$.SANDBOX.match.any, 'org-1', 'test-pool', 'Available')).to.be.true;
+      expect(tagScratchOrgStub.calledWith($$.SANDBOX.match.any, 'org-1', 'test-pool', 'in_progress')).to.be.true;
+      expect(tagScratchOrgStub.calledWith($$.SANDBOX.match.any, 'org-1', 'test-pool', 'available')).to.be.true;
     });
 
     it('installs packages on created orgs', async () => {
@@ -331,7 +331,7 @@ describe('poolPrepare', () => {
 
       expect(result.failed).to.equal(1);
       expect(deleteOrgStub.called).to.be.false;
-      expect(tagScratchOrgStub.calledWith($$.SANDBOX.match.any, 'org-keep', 'test-pool', 'Failed')).to.be.true;
+      expect(tagScratchOrgStub.calledWith($$.SANDBOX.match.any, 'org-keep', 'test-pool', 'failed')).to.be.true;
     });
 
     it('passes apiVersion to getConnection', async () => {
