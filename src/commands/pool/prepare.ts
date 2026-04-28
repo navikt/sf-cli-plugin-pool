@@ -73,9 +73,15 @@ export default class PoolPrepare extends SfCommand<PoolPrepareCommandResult> {
 
     const packageKeys = await resolvePackageKeys(flags['package-keys-stdin'] ?? false, flags['package-keys-file']);
 
-    this.spinner.start(messages.getMessage('info.spinner-start'));
     const poolConfig = loadPoolConfig(flags['config-file']);
     const hubOrg = flags['target-dev-hub'];
+
+    const logProgress = this.jsonEnabled() ? undefined : (msg: string): void => this.log(msg);
+
+    if (!this.jsonEnabled()) {
+      const poolNames = poolConfig.pools.map((p) => p.tag).join(', ');
+      this.log(messages.getMessage('info.preparing-pools', [poolNames]));
+    }
 
     const results: PoolPrepareResult[] = [];
 
@@ -90,13 +96,13 @@ export default class PoolPrepare extends SfCommand<PoolPrepareCommandResult> {
         packageKeys,
         path.resolve(sfdxProjectFile),
         flags['keep-failed'],
-        flags['api-version']
+        flags['api-version'],
+        undefined,
+        logProgress
       );
       results.push(result);
     }
     /* eslint-enable no-await-in-loop */
-
-    this.spinner.stop('Done');
 
     if (!this.jsonEnabled()) {
       this.styledHeader(messages.getMessage('info.header'));

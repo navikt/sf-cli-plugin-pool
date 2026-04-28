@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import { Connection, Logger, Org, SfError } from '@salesforce/core';
 import { PoolConfig, PoolDefinition } from '../types/pool-config.js';
-import { PackageKeys, PoolPrepareResult } from '../types/pool-prepare.js';
+import { PackageDependency, PackageKeys, PoolPrepareResult } from '../types/pool-prepare.js';
 import { queryPoolOrgs } from './poolQuery.js';
 import { createScratchOrg, tagScratchOrg } from './orgCreator.js';
 import { readSfdxProjectDependencies, installPackage } from './packageInstaller.js';
@@ -97,7 +97,11 @@ export type PreparePoolDeps = {
   createScratchOrg: typeof createScratchOrg;
   tagScratchOrg: typeof tagScratchOrg;
   deleteOrg: typeof deleteOrg;
-  readSfdxProjectDependencies: typeof readSfdxProjectDependencies;
+  readSfdxProjectDependencies: (
+    sfdxProjectFile: string,
+    devHubConnection: Connection,
+    packageKeys?: PackageKeys
+  ) => Promise<PackageDependency[]>;
   installPackage: typeof installPackage;
   getTargetOrgConnection: (username: string) => Promise<Connection>;
 };
@@ -122,7 +126,8 @@ export async function preparePool(
   sfdxProjectFile: string,
   keepFailed: boolean,
   apiVersion?: string,
-  deps: PreparePoolDeps = defaultDeps
+  deps: PreparePoolDeps = defaultDeps,
+  onProgress?: (message: string) => void
 ): Promise<PoolPrepareResult> {
   const connection = hubOrg.getConnection(apiVersion);
   const existing = await queryPoolOrgs(connection, [poolDef.tag]);
@@ -143,7 +148,7 @@ export async function preparePool(
     return result;
   }
 
-  const dependencies = await deps.readSfdxProjectDependencies(sfdxProjectFile, packageKeys);
+  const dependencies = await deps.readSfdxProjectDependencies(sfdxProjectFile, connection, packageKeys);
   const maxRetries = poolDef.retryCount ?? 0;
 
   /* eslint-disable no-await-in-loop */
@@ -157,12 +162,17 @@ export async function preparePool(
 
         const created = await deps.createScratchOrg(hubOrg, poolDef.definitionFilePath, poolDef.expirationDays);
         orgId = created.orgId;
+        logger.info('Scratch org created', { orgId, username: created.username, tag: poolDef.tag });
+        onProgress?.(`[${poolDef.tag}] Scratch org created: ${created.username}`);
 
         await deps.tagScratchOrg(connection, orgId, poolDef.tag, STATUS_PROVISIONING);
 
         const targetConnection = await deps.getTargetOrgConnection(created.username);
         for (const dep of dependencies) {
+          logger.info('Installing package on scratch org', { alias: dep.alias, packageId: dep.packageId, orgId });
+          onProgress?.(`[${poolDef.tag}] Installing package '${dep.alias}' (${dep.packageId})...`);
           await deps.installPackage(targetConnection, dep.packageId, dep.alias, dep.installationKey);
+          onProgress?.(`[${poolDef.tag}] Package '${dep.alias}' installed.`);
         }
 
         await deps.tagScratchOrg(connection, orgId, poolDef.tag, STATUS_AVAILABLE);
@@ -172,12 +182,13 @@ export async function preparePool(
         break;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
-        logger.debug('Org creation attempt failed', {
+        logger.warn('Org creation/provisioning attempt failed', {
           tag: poolDef.tag,
           slot: i + 1,
           attempt: attempt + 1,
           error: lastError.message,
         });
+        onProgress?.(`[${poolDef.tag}] Attempt ${attempt + 1} failed: ${lastError.message}`);
 
         if (orgId) {
           if (!keepFailed) {

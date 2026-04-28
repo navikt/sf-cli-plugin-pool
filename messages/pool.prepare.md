@@ -48,6 +48,10 @@ Keep failed orgs instead of deleting them. Failed orgs are tagged with status 'F
 
 Preparing Scratch Org Pool...
 
+# info.preparing-pools
+
+Preparing scratch org pools: %s
+
 # info.header
 
 Pool Prepare Results
