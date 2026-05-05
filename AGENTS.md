@@ -30,6 +30,8 @@ Run these before pushing any changes:
 
 NUTs (`pnpm run test:nuts`) require DevHub authentication and run in CI only.
 
+**Local NUT prerequisites**: NUTs depend on three test packages (`pool-test-a/b/c`) being available in the target DevHub and a generated root `sfdx-project.json`. Run `pnpm run setup:test-packages -- --target-dev-hub <alias>` once before running NUTs locally. See "Local Test Environment Setup" in [README.md](README.md).
+
 ## Project structure
 
 - Source: `src/`

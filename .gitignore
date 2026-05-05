@@ -1,5 +1,5 @@
 # -- CLEAN
-tmp/
+
 # use pnpm by default, so ignore other lock files
 package-lock.json
 yarn.lock

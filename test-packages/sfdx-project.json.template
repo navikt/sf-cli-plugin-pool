@@ -1,0 +1,34 @@
+{
+  "packageDirectories": [
+    {
+      "path": "test-packages/tmp",
+      "default": true
+    },
+    {
+      "path": "force-app",
+      "default": false,
+      "dependencies": [
+        {
+          "package": "pool-test-a",
+          "versionNumber": "0.1.0.LATEST"
+        },
+        {
+          "package": "pool-test-b",
+          "versionNumber": "0.1.0.LATEST"
+        },
+        {
+          "package": "pool-test-c"
+        }
+      ]
+    }
+  ],
+  "packageAliases": {
+    "pool-test-a": "{{POOL_TEST_A_ID}}",
+    "pool-test-b": "{{POOL_TEST_B_ID}}",
+    "pool-test-c": "{{POOL_TEST_C_ID}}"
+  },
+  "name": "sf-pool",
+  "namespace": "",
+  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sourceApiVersion": "65.0"
+}

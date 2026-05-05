@@ -29,7 +29,7 @@ Pools are defined via JSON config files:
 
 ## Project Structure
 
-```
+```txt
 src/
 ├── commands/pool/     # CLI command implementations (to be created)
 ├── lib/               # Shared business logic (to be created)
@@ -76,7 +76,7 @@ pnpm run format
 Run commands using the local dev file:
 
 ```bash
-./bin/dev pool list
+./bin/dev.js pool list
 ```
 
 Or link the plugin to the Salesforce CLI:
@@ -86,6 +86,58 @@ sf plugins link .
 sf plugins  # verify
 sf pool list
 ```
+
+## Local Test Environment Setup
+
+NUTs and most manual `pool prepare` runs require three test packages to exist in your DevHub. The repository ships with a small Salesforce package workspace under `test-packages/` and a script that creates the packages on demand and generates a `sfdx-project.json` (gitignored) at the repo root with the resolved package IDs.
+
+### Test Environment Prerequisites
+
+- A Salesforce org with **Dev Hub enabled** (Setup → Dev Hub → Enable Dev Hub)
+- `sf` CLI in PATH
+- Authenticated DevHub: `sf org login web --set-default-dev-hub --alias my-devhub`
+
+### One-time setup
+
+```bash
+pnpm install
+pnpm run setup:test-packages -- --target-dev-hub my-devhub
+```
+
+The script will:
+
+1. Verify access to the DevHub
+2. Create the three packages (`pool-test-a`, `pool-test-b`, `pool-test-c`) if missing
+3. Create a released package version per package if one is not already available
+4. Promote `pool-test-c` so it is usable as a direct `04t` SubscriberPackageVersionId
+5. Copy `test-packages/sfdx-project.json.template` to root and render the resolved IDs into `sfdx-project.json`
+
+The script is idempotent — running it again reuses existing packages and versions.
+
+### Manual validation
+
+```bash
+./bin/dev.js pool list --target-dev-hub my-devhub
+./bin/dev.js pool prepare --config-file config/pool-example.json --target-dev-hub my-devhub
+```
+
+### Run NUTs
+
+```bash
+pnpm run test:nuts
+```
+
+### Teardown
+
+```bash
+pnpm run delete:test-packages -- --target-dev-hub my-devhub --yes
+```
+
+Without `--yes` the delete script runs in dry-run mode and only reports what it would remove. On success it also removes the generated root `sfdx-project.json`.
+
+### CI behavior
+
+The GitHub Actions NUT job authenticates via JWT using the `TESTKIT_*` secrets and runs `setup-test-packages.js` automatically before NUTs. There is no CI teardown — package definitions persist in the DevHub between runs (the setup is idempotent). See [.github/workflows/test.yml](.github/workflows/test.yml).
 
 ## CI Setup
 

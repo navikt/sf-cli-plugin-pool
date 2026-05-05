@@ -5,6 +5,9 @@ on:
     paths:
       - 'src/**'
       - 'test/**'
+      - 'scripts/**'
+      - 'test-packages/**'
+      - 'test-packages/sfdx-project.json.template'
       - 'tsconfig.json'
       - 'test/tsconfig.json'
       - 'package.json'
@@ -14,6 +17,9 @@ on:
     paths:
       - 'src/**'
       - 'test/**'
+      - 'scripts/**'
+      - 'test-packages/**'
+      - 'test-packages/sfdx-project.json.template'
       - 'tsconfig.json'
       - 'test/tsconfig.json'
       - 'package.json'
@@ -68,6 +74,25 @@ jobs:
       - uses: navikt/sf-gha-install-sf-cli@86acd7148c91ca98a741259ec2ae6e8879b3e045
         with:
           version: '2.127.2'
+      - name: Authenticate DevHub (JWT)
+        shell: bash
+        env:
+          TESTKIT_HUB_USERNAME: ${{ secrets.TESTKIT_HUB_USERNAME }}
+          TESTKIT_JWT_CLIENT_ID: ${{ secrets.TESTKIT_JWT_CLIENT_ID }}
+          TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }}
+          TESTKIT_HUB_INSTANCE: ${{ secrets.TESTKIT_HUB_INSTANCE }}
+        run: |
+          printf '%s' "$TESTKIT_JWT_KEY" > server.key
+          sf org login jwt \
+            --client-id "$TESTKIT_JWT_CLIENT_ID" \
+            --jwt-key-file server.key \
+            --username "$TESTKIT_HUB_USERNAME" \
+            --instance-url "$TESTKIT_HUB_INSTANCE" \
+            --set-default-dev-hub \
+            --alias devhub
+          rm -f server.key
+      - name: Set up test packages
+        run: node scripts/setup-test-packages.js --target-dev-hub devhub --yes
       - name: Run NUTs
         run: pnpm run test:nuts
         env:
