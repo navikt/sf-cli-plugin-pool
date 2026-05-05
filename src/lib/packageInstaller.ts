@@ -8,10 +8,15 @@ const logger = Logger.childFromRoot('packageInstaller');
 const INSTALL_POLL_INTERVAL_MS = 5000;
 const INSTALL_TIMEOUT_MS = 600_000;
 
-type PackageInstallRecord = {
+type PackageInstallCreateResult = {
+  id: string;
+  success: boolean;
+  errors: unknown[];
+};
+
+type PackageInstallStatusRecord = {
   Id: string;
   Status: string;
-  SubscriberPackageVersionId: string;
 };
 
 type SfProjectLike = Pick<SfProject, 'getPackageAliases' | 'getUniquePackageDirectories'>;
@@ -175,25 +180,26 @@ export async function installPackage(
 
   const requestBody: Record<string, unknown> = {
     EnableRss: true,
-    SubscriberPackageVersionId: packageId,
+    SubscriberPackageVersionKey: packageId,
     SecurityType: installationKey ? 'Full' : 'None',
+    NameConflictResolution: 'Block',
   };
   if (installationKey) {
     requestBody.Password = installationKey;
   }
 
-  let installRecord: PackageInstallRecord;
+  let createResult: PackageInstallCreateResult;
   try {
-    installRecord = (await targetOrgConnection.tooling.create(
+    createResult = (await targetOrgConnection.tooling.create(
       'PackageInstallRequest',
       requestBody
-    )) as unknown as PackageInstallRecord;
+    )) as unknown as PackageInstallCreateResult;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new SfError(`Failed to submit install request for package '${alias}'. ${message}`, 'PackageInstallError');
   }
 
-  const recordId = installRecord.Id;
+  const recordId = createResult.id;
   logger.debug('PackageInstallRequest created, polling for completion', { recordId });
 
   await pollInstallStatus(targetOrgConnection, recordId, alias);
@@ -206,10 +212,10 @@ async function pollInstallStatus(connection: Connection, recordId: string, alias
     // eslint-disable-next-line no-await-in-loop
     await sleep(INSTALL_POLL_INTERVAL_MS);
 
-    let record: PackageInstallRecord;
+    let record: PackageInstallStatusRecord;
     try {
       // eslint-disable-next-line no-await-in-loop
-      record = (await connection.tooling.retrieve('PackageInstallRequest', recordId)) as PackageInstallRecord;
+      record = (await connection.tooling.retrieve('PackageInstallRequest', recordId)) as PackageInstallStatusRecord;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       throw new SfError(
