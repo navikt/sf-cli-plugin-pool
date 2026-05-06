@@ -51,9 +51,52 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
 
+  setup-packages:
+    name: Set up Test Packages
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: 'lts/*'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - uses: navikt/sf-gha-install-sf-cli@86acd7148c91ca98a741259ec2ae6e8879b3e045
+        with:
+          version: '2.127.2'
+      - name: Authenticate DevHub (JWT)
+        shell: bash
+        env:
+          TESTKIT_HUB_USERNAME: ${{ secrets.TESTKIT_HUB_USERNAME }}
+          TESTKIT_JWT_CLIENT_ID: ${{ secrets.TESTKIT_JWT_CLIENT_ID }}
+          TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }}
+          TESTKIT_HUB_INSTANCE: ${{ secrets.TESTKIT_HUB_INSTANCE }}
+        run: |
+          sf org login jwt \
+            --client-id "$TESTKIT_JWT_CLIENT_ID" \
+            --jwt-key-file <(printf '%s' "$TESTKIT_JWT_KEY") \
+            --username "$TESTKIT_HUB_USERNAME" \
+            --instance-url "$TESTKIT_HUB_INSTANCE" \
+            --set-default-dev-hub \
+            --alias devhub
+      - name: Set up test packages
+        run: node scripts/setup-test-packages.js --target-dev-hub devhub --yes
+
+      - name: Logout from Dev Hub
+        if: always()
+        shell: bash
+        run: sf org logout --target-org devhub --no-prompt || true
+
   nuts:
     name: NUTs
     if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    needs: setup-packages
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
@@ -83,7 +126,9 @@ jobs:
           TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }}
           TESTKIT_HUB_INSTANCE: ${{ secrets.TESTKIT_HUB_INSTANCE }}
         run: |
+          trap 'rm -f server.key' EXIT
           printf '%s' "$TESTKIT_JWT_KEY" > server.key
+          chmod 600 server.key
           sf org login jwt \
             --client-id "$TESTKIT_JWT_CLIENT_ID" \
             --jwt-key-file server.key \
@@ -91,9 +136,6 @@ jobs:
             --instance-url "$TESTKIT_HUB_INSTANCE" \
             --set-default-dev-hub \
             --alias devhub
-          rm -f server.key
-      - name: Set up test packages
-        run: node scripts/setup-test-packages.js --target-dev-hub devhub --yes
       - name: Run NUTs
         run: pnpm run test:nuts
         env:
@@ -101,3 +143,7 @@ jobs:
           TESTKIT_JWT_CLIENT_ID: ${{ secrets.TESTKIT_JWT_CLIENT_ID }} # From @salesforce/cli-plugins-testkit
           TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }} # From @salesforce/cli-plugins-testkit
           TESTKIT_HUB_INSTANCE: ${{ secrets.TESTKIT_HUB_INSTANCE }} # From @salesforce/cli-plugins-testkit
+      - name: Logout from Dev Hub
+        if: always()
+        shell: bash
+        run: sf org logout --target-org devhub --no-prompt || true
