@@ -260,7 +260,7 @@ function renderTemplate(idMap, { dryRun = false } = {}) {
   console.log(`\nWrote ${OUTPUT_PATH}`);
 }
 
-function ensureProjectFile(packageIds = {}, { dryRun = false } = {}) {
+function ensureProjectFile(packageIds = {}, { dryRun = false, packageNames = PACKAGE_NAMES } = {}) {
   let template;
   try {
     template = JSON.parse(readFileSync(TEMPLATE_PATH, 'utf8'));
@@ -275,7 +275,7 @@ function ensureProjectFile(packageIds = {}, { dryRun = false } = {}) {
       ...packageIds,
     },
     packageDirectories: [
-      ...PACKAGE_NAMES.map((name, index) => ({
+      ...packageNames.map((name, index) => ({
         path: join('test-packages', name).replaceAll('\\', '/'),
         package: packageIds[name] ?? name,
         versionName: '0.1.0',
@@ -334,11 +334,10 @@ async function main() {
     packageIds[name] = pkgId;
   }
 
-  ensureProjectFile(packageIds, { dryRun });
-
   console.log('\nEnsuring package versions...');
   for (const name of PACKAGE_NAMES) {
     const pkgId = packageIds[name];
+    ensureProjectFile(packageIds, { dryRun, packageNames: [name] });
     const subId = ensurePackageVersion(devhub, name, pkgId, versions, { dryRun });
     subscriberIds[name] = subId;
   }
