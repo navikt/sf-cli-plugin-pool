@@ -200,7 +200,6 @@ function ensurePackageVersion(devhub, name, packageId, versions, { dryRun = fals
       '--installation-key-bypass',
       '--wait',
       '20',
-      '--code-coverage',
       '--target-dev-hub',
       devhub,
     ],
@@ -276,12 +275,12 @@ function ensureProjectFile(packageIds = {}, { dryRun = false } = {}) {
       ...packageIds,
     },
     packageDirectories: [
-      ...PACKAGE_NAMES.map((name) => ({
+      ...PACKAGE_NAMES.map((name, index) => ({
         path: join('test-packages', name).replaceAll('\\', '/'),
         package: name,
         versionName: '0.1.0',
         versionNumber: '0.1.0.NEXT',
-        default: false,
+        default: index === 0,
       })),
     ],
   };
