@@ -71,7 +71,7 @@ function fail(msg) {
 }
 
 function runSf(args, { cwd = REPO_ROOT, allowFail = false } = {}) {
-  const result = spawnSync('sf', args, { cwd, encoding: 'utf8' });
+  const result = spawnSync('sf', args, { cwd, encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 });
   if (result.error) {
     fail(`Failed to invoke sf CLI: ${result.error.message}`);
   }
@@ -277,7 +277,7 @@ function ensureProjectFile(packageIds = {}, { dryRun = false } = {}) {
     packageDirectories: [
       ...PACKAGE_NAMES.map((name, index) => ({
         path: join('test-packages', name).replaceAll('\\', '/'),
-        package: name,
+        package: packageIds[name] ?? name,
         versionName: '0.1.0',
         versionNumber: '0.1.0.NEXT',
         default: index === 0,
@@ -320,7 +320,6 @@ async function main() {
   }
 
   ensureDevHubReachable(devhub);
-  ensureProjectFile({}, { dryRun });
 
   console.log('\nListing existing packages and versions in DevHub...');
   const packages = listPackages(devhub);
