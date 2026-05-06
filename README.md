@@ -104,6 +104,12 @@ pnpm install
 pnpm run setup:test-packages -- --target-dev-hub my-devhub
 ```
 
+Preview the setup without creating packages, versions, or a root `sfdx-project.json`:
+
+```bash
+pnpm run setup:test-packages -- --target-dev-hub my-devhub --dry-run
+```
+
 The script will:
 
 1. Verify access to the DevHub
@@ -113,6 +119,7 @@ The script will:
 5. Copy `test-packages/sfdx-project.json.template` to root and render the resolved IDs into `sfdx-project.json`
 
 The script is idempotent — running it again reuses existing packages and versions.
+Use `--dry-run` to verify what would be created before making changes in the DevHub.
 
 ### Manual validation
 

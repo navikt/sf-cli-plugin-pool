@@ -7,11 +7,14 @@
  *
  * Usage:
  *   node scripts/setup-test-packages.js --target-dev-hub <alias-or-username>
+ *   node scripts/setup-test-packages.js --target-dev-hub <alias-or-username> --dry-run
  *
  * The script is idempotent:
  *   - Existing package definitions are reused (matched by Name).
  *   - A new released package version is created for each package only if one is
  *     not already available.
+ *   - With --dry-run, the script reports what it would create without changing
+ *     the DevHub or writing sfdx-project.json.
  *
  * Cross-platform (Node.js, no shell-specific syntax). Required by the
  * windows-latest runner in CI.
@@ -38,13 +41,15 @@ const PLACEHOLDER = {
 };
 
 function parseArgs(argv) {
-  const args = { devhub: null, yes: false };
+  const args = { devhub: null, yes: false, dryRun: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--target-dev-hub' || a === '-v') {
       args.devhub = argv[++i];
     } else if (a === '--yes' || a === '-y') {
       args.yes = true;
+    } else if (a === '--dry-run') {
+      args.dryRun = true;
     }
   }
   return args;
@@ -101,17 +106,52 @@ function listPackages(devhub) {
   return res?.result ?? [];
 }
 
+function findPackageInList(packages, name) {
+  const wanted = name.toLowerCase();
+  return packages.find((pkg) => {
+    const pkgName = (pkg.Name ?? pkg.Package2Name ?? '').toLowerCase();
+    return pkgName === wanted;
+  });
+}
+
+function findPackageInDevHub(devhub, name) {
+  const escapedName = name.replaceAll("'", "\\'");
+  const res = runSfJson([
+    'data',
+    'query',
+    '--use-tooling-api',
+    '--query',
+    `SELECT Id, Name FROM Package2 WHERE Name = '${escapedName}' LIMIT 1`,
+    '--target-org',
+    devhub,
+  ]);
+  const records = res?.result?.records ?? [];
+  return records[0] ?? null;
+}
+
 function listPackageVersions(devhub) {
   const res = runSfJson(['package', 'version', 'list', '--target-dev-hub', devhub, '--released']);
   return res?.result ?? [];
 }
 
-function ensurePackageDefinition(devhub, name, packages) {
-  const existing = packages.find((p) => p.Name === name);
-  if (existing) {
-    console.log(`  - Package definition already exists: ${name} (${existing.Id})`);
-    return existing.Id;
+function ensurePackageDefinition(devhub, name, packages, { dryRun = false } = {}) {
+  const fromList = findPackageInList(packages, name);
+  if (fromList?.Id) {
+    console.log(`  - Package definition already exists: ${name} (${fromList.Id})`);
+    return fromList.Id;
   }
+
+  const fromQuery = findPackageInDevHub(devhub, name);
+  if (fromQuery?.Id) {
+    console.log(`  - Package definition already exists: ${name} (${fromQuery.Id})`);
+    return fromQuery.Id;
+  }
+
+  if (dryRun) {
+    console.log(`  - Package definition missing: ${name} (dry-run: would create)`);
+    return null;
+  }
+
   console.log(`  - Creating package definition: ${name}`);
   const res = runSfJson(
     [
@@ -135,7 +175,7 @@ function ensurePackageDefinition(devhub, name, packages) {
   return id;
 }
 
-function ensurePackageVersion(devhub, name, packageId, versions) {
+function ensurePackageVersion(devhub, name, packageId, versions, { dryRun = false } = {}) {
   const existing = versions.find((v) => v.Package2Name === name || v.Package2Id === packageId);
   if (existing && existing.SubscriberPackageVersionId) {
     console.log(
@@ -143,6 +183,12 @@ function ensurePackageVersion(devhub, name, packageId, versions) {
     );
     return existing.SubscriberPackageVersionId;
   }
+
+  if (dryRun) {
+    console.log(`  - Released version missing for ${name} (dry-run: would create)`);
+    return null;
+  }
+
   console.log(`  - Creating package version for: ${name}`);
   const res = runSfJson(
     [
@@ -166,7 +212,16 @@ function ensurePackageVersion(devhub, name, packageId, versions) {
   return subId;
 }
 
-function promotePackageVersion(devhub, subscriberPackageVersionId) {
+function promotePackageVersion(devhub, subscriberPackageVersionId, { dryRun = false } = {}) {
+  if (!subscriberPackageVersionId) {
+    return;
+  }
+
+  if (dryRun) {
+    console.log(`  - Dry-run: would promote version ${subscriberPackageVersionId} to released`);
+    return;
+  }
+
   console.log(`  - Promoting version ${subscriberPackageVersionId} to released`);
   runSf(
     [
@@ -183,7 +238,7 @@ function promotePackageVersion(devhub, subscriberPackageVersionId) {
   );
 }
 
-function renderTemplate(idMap) {
+function renderTemplate(idMap, { dryRun = false } = {}) {
   let template;
   try {
     template = readFileSync(TEMPLATE_PATH, 'utf8');
@@ -191,13 +246,22 @@ function renderTemplate(idMap) {
     fail(`Could not read template at ${TEMPLATE_PATH}: ${e.message}`);
   }
   for (const [name, id] of Object.entries(idMap)) {
+    if (!id) {
+      continue;
+    }
     template = template.split(PLACEHOLDER[name]).join(id);
   }
+
+  if (dryRun) {
+    console.log(`\nDry-run: would write ${OUTPUT_PATH}`);
+    return;
+  }
+
   writeFileSync(OUTPUT_PATH, template, 'utf8');
   console.log(`\nWrote ${OUTPUT_PATH}`);
 }
 
-function ensureProjectFile(packageIds = {}) {
+function ensureProjectFile(packageIds = {}, { dryRun = false } = {}) {
   let template;
   try {
     template = JSON.parse(readFileSync(TEMPLATE_PATH, 'utf8'));
@@ -223,6 +287,11 @@ function ensureProjectFile(packageIds = {}) {
     ],
   };
 
+  if (dryRun) {
+    console.log(`\nDry-run: would prepare ${OUTPUT_PATH} for package version creation.`);
+    return;
+  }
+
   try {
     writeFileSync(OUTPUT_PATH, `${JSON.stringify(bootstrap, null, 2)}\n`, 'utf8');
   } catch (e) {
@@ -233,15 +302,18 @@ function ensureProjectFile(packageIds = {}) {
 }
 
 async function main() {
-  const { devhub, yes } = parseArgs(process.argv.slice(2));
+  const { devhub, yes, dryRun } = parseArgs(process.argv.slice(2));
   if (!devhub) {
     fail('Missing required argument: --target-dev-hub <alias-or-username>');
   }
 
   console.log(`Target DevHub : ${devhub}`);
   console.log(`Packages      : ${PACKAGE_NAMES.join(', ')}`);
+  if (dryRun) {
+    console.log('Mode          : dry-run');
+  }
 
-  if (!yes) {
+  if (!yes && !dryRun) {
     const confirmed = await promptConfirm('\nProceed with creating/updating these packages in this DevHub? [y/N] ');
     if (!confirmed) {
       console.log('Aborted.');
@@ -250,7 +322,7 @@ async function main() {
   }
 
   ensureDevHubReachable(devhub);
-  ensureProjectFile();
+  ensureProjectFile({}, { dryRun });
 
   console.log('\nListing existing packages and versions in DevHub...');
   const packages = listPackages(devhub);
@@ -261,22 +333,22 @@ async function main() {
 
   console.log('\nEnsuring package definitions...');
   for (const name of PACKAGE_NAMES) {
-    const pkgId = ensurePackageDefinition(devhub, name, packages);
+    const pkgId = ensurePackageDefinition(devhub, name, packages, { dryRun });
     packageIds[name] = pkgId;
   }
 
-  ensureProjectFile(packageIds);
+  ensureProjectFile(packageIds, { dryRun });
 
   console.log('\nEnsuring package versions...');
   for (const name of PACKAGE_NAMES) {
     const pkgId = packageIds[name];
-    const subId = ensurePackageVersion(devhub, name, pkgId, versions);
+    const subId = ensurePackageVersion(devhub, name, pkgId, versions, { dryRun });
     subscriberIds[name] = subId;
   }
 
   // Promote pool-test-c so its 04t becomes a released version usable as a
   // direct identifier (exercises the non-SOQL resolution path in packageInstaller).
-  promotePackageVersion(devhub, subscriberIds[EXTERNAL_PACKAGE_NAME]);
+  promotePackageVersion(devhub, subscriberIds[EXTERNAL_PACKAGE_NAME], { dryRun });
 
   // Internal packages use their 0Ho Package2Id (resolved via DevHub SOQL at install time).
   // External package uses the 04t SubscriberPackageVersionId directly.
@@ -288,10 +360,16 @@ async function main() {
 
   console.log('\nResolved IDs:');
   for (const name of PACKAGE_NAMES) {
-    console.log(`  ${name}: ${idMap[name]}`);
+    const resolvedId = idMap[name] ?? 'pending package version creation';
+    console.log(`  ${name}: ${resolvedId}`);
   }
 
-  renderTemplate(idMap);
+  renderTemplate(idMap, { dryRun });
+  if (dryRun) {
+    console.log('\nDone. Dry-run completed with no changes.');
+    return;
+  }
+
   console.log('\nDone. Test packages are ready and sfdx-project.json is generated.');
 }
 
