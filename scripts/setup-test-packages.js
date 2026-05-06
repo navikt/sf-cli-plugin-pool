@@ -329,6 +329,7 @@ async function main() {
   }
 
   ensureDevHubReachable(devhub);
+  ensureProjectFile({}, { dryRun });
 
   console.log('\nListing existing packages and versions in DevHub...');
   const packages = listPackages(devhub);
