@@ -283,7 +283,6 @@ function ensureProjectFile(packageIds = {}, { dryRun = false } = {}) {
         versionNumber: '0.1.0.NEXT',
         default: false,
       })),
-      ...(template.packageDirectories ?? []),
     ],
   };
 
