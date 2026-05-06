@@ -35,6 +35,7 @@ concurrency:
 jobs:
   unit-tests:
     name: Unit Tests and Linting
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -52,7 +53,7 @@ jobs:
 
   nuts:
     name: NUTs
-    needs: unit-tests
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
