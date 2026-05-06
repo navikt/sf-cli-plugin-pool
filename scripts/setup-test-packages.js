@@ -121,7 +121,7 @@ function findPackageInDevHub(devhub, name) {
     'query',
     '--use-tooling-api',
     '--query',
-    `SELECT Id, Name FROM Package2 WHERE Name = '${escapedName}' LIMIT 1`,
+    `SELECT Id, Name, CreatedDate FROM Package2 WHERE Name = '${escapedName}' AND IsDeprecated = false ORDER BY CreatedDate DESC LIMIT 1`,
     '--target-org',
     devhub,
   ]);
@@ -304,6 +304,7 @@ async function main() {
   if (!devhub) {
     fail('Missing required argument: --target-dev-hub <alias-or-username>');
   }
+  const isCiRun = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
 
   console.log(`Target DevHub : ${devhub}`);
   console.log(`Packages      : ${PACKAGE_NAMES.join(', ')}`);
@@ -311,11 +312,19 @@ async function main() {
     console.log('Mode          : dry-run');
   }
 
-  if (!yes && !dryRun) {
-    const confirmed = await promptConfirm('\nProceed with creating/updating these packages in this DevHub? [y/N] ');
-    if (!confirmed) {
-      console.log('Aborted.');
-      process.exit(0);
+  if (!dryRun) {
+    if (isCiRun) {
+      if (!yes) {
+        fail('Missing required argument for CI runs: --yes');
+      }
+    } else {
+      const confirmed = await promptConfirm(
+        `\nProceed with creating/updating these packages in DevHub "${devhub}"? [y/N] `
+      );
+      if (!confirmed) {
+        console.log('Aborted.');
+        process.exit(0);
+      }
     }
   }
 
