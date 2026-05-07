@@ -58,10 +58,20 @@ export async function resolvePackageVersionId(
     const { major, minor, patch, build } = parseVersionNumber(versionNumber);
     query += ` AND MajorVersion = ${major} AND MinorVersion = ${minor} AND PatchVersion = ${patch}`;
 
-    if (build === 'RELEASED') {
+    const normalizedBuild = build.toUpperCase();
+    if (normalizedBuild === 'RELEASED') {
       query += ' AND IsReleased = true';
-    } else if (build !== 'LATEST') {
-      query += ` AND BuildNumber = ${parseInt(build, 10)}`;
+    } else if (normalizedBuild === 'LATEST') {
+      // Intentionally no build/release filter; ORDER BY picks highest build.
+    } else {
+      const buildNumber = Number.parseInt(build, 10);
+      if (Number.isNaN(buildNumber)) {
+        throw new SfError(
+          `Invalid version number format: '${versionNumber}'. Build must be RELEASED, LATEST, or a number`,
+          'InvalidVersionNumberError'
+        );
+      }
+      query += ` AND BuildNumber = ${buildNumber}`;
     }
   } else {
     query += ' AND IsReleased = true';

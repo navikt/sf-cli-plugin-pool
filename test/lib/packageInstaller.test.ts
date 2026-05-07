@@ -24,11 +24,17 @@ function makeProject(aliases: Record<string, string>, dirs: FakePackageDir[]) {
   };
 }
 
-function makeMockConnection(queryResult?: { totalSize: number; done: boolean; records: unknown[] }): Connection {
+function makeMockConnection(
+  queryResult?: { totalSize: number; done: boolean; records: unknown[] },
+  onQuery?: (query: string) => void
+): Connection {
   const defaultResult = { totalSize: 0, done: true, records: [] };
   return {
     tooling: {
-      query: async () => queryResult ?? defaultResult,
+      query: async (query: string) => {
+        onQuery?.(query);
+        return queryResult ?? defaultResult;
+      },
     },
   } as unknown as Connection;
 }
@@ -42,36 +48,61 @@ describe('packageInstaller', () => {
 
   describe('resolvePackageVersionId', () => {
     it('resolves 0Ho Package2Id with LATEST build', async () => {
-      const conn = makeMockConnection({
-        totalSize: 1,
-        done: true,
-        records: [{ SubscriberPackageVersionId: '04tRESOLVED001' }],
-      });
+      let capturedQuery = '';
+      const conn = makeMockConnection(
+        {
+          totalSize: 1,
+          done: true,
+          records: [{ SubscriberPackageVersionId: '04tRESOLVED001' }],
+        },
+        (query) => {
+          capturedQuery = query;
+        }
+      );
 
       const result = await resolvePackageVersionId(conn, '0Ho000000000001AAA', '0.1.48.LATEST');
       expect(result).to.equal('04tRESOLVED001');
+      expect(capturedQuery).to.include('AND MajorVersion = 0 AND MinorVersion = 1 AND PatchVersion = 48');
+      expect(capturedQuery).to.not.include('AND IsReleased = true');
+      expect(capturedQuery).to.not.include('AND BuildNumber =');
     });
 
     it('resolves 0Ho Package2Id with RELEASED build', async () => {
-      const conn = makeMockConnection({
-        totalSize: 1,
-        done: true,
-        records: [{ SubscriberPackageVersionId: '04tRESOLVED002' }],
-      });
+      let capturedQuery = '';
+      const conn = makeMockConnection(
+        {
+          totalSize: 1,
+          done: true,
+          records: [{ SubscriberPackageVersionId: '04tRESOLVED002' }],
+        },
+        (query) => {
+          capturedQuery = query;
+        }
+      );
 
       const result = await resolvePackageVersionId(conn, '0Ho000000000001AAA', '0.1.48.RELEASED');
       expect(result).to.equal('04tRESOLVED002');
+      expect(capturedQuery).to.include('AND IsReleased = true');
+      expect(capturedQuery).to.not.include('AND BuildNumber =');
     });
 
     it('resolves 0Ho Package2Id with numeric build number', async () => {
-      const conn = makeMockConnection({
-        totalSize: 1,
-        done: true,
-        records: [{ SubscriberPackageVersionId: '04tRESOLVED003' }],
-      });
+      let capturedQuery = '';
+      const conn = makeMockConnection(
+        {
+          totalSize: 1,
+          done: true,
+          records: [{ SubscriberPackageVersionId: '04tRESOLVED003' }],
+        },
+        (query) => {
+          capturedQuery = query;
+        }
+      );
 
       const result = await resolvePackageVersionId(conn, '0Ho000000000001AAA', '0.1.48.7');
       expect(result).to.equal('04tRESOLVED003');
+      expect(capturedQuery).to.include('AND BuildNumber = 7');
+      expect(capturedQuery).to.not.include('AND IsReleased = true');
     });
 
     it('resolves package by name', async () => {

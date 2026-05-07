@@ -11,8 +11,8 @@
  *
  * The script is idempotent:
  *   - Existing package definitions are reused (matched by Name).
- *   - A new released package version is created for each package only if one is
- *     not already available.
+ *   - A new package version is created for each package only if one is not
+ *     already available.
  *   - With --dry-run, the script reports what it would create without changing
  *     the DevHub or writing sfdx-project.json.
  *
@@ -33,7 +33,6 @@ const TEMPLATE_PATH = join(TEST_PACKAGES_DIR, 'sfdx-project.json.template');
 const OUTPUT_PATH = join(REPO_ROOT, 'sfdx-project.json');
 
 const PACKAGE_NAMES = ['pool-test-a', 'pool-test-b', 'pool-test-c'];
-const EXTERNAL_PACKAGE_NAME = 'pool-test-c';
 const PLACEHOLDER = {
   'pool-test-a': '{{POOL_TEST_A_ID}}',
   'pool-test-b': '{{POOL_TEST_B_ID}}',
@@ -114,14 +113,15 @@ function findPackageInList(packages, name) {
   });
 }
 
-function findPackageInDevHub(devhub, name) {
+function findPackageInDevHub(devhub, name, { includeDeprecated = false } = {}) {
   const escapedName = name.replaceAll("'", "\\'");
+  const deprecatedFilter = includeDeprecated ? '' : ' AND IsDeprecated = false';
   const res = runSfJson([
     'data',
     'query',
     '--use-tooling-api',
     '--query',
-    `SELECT Id, Name, CreatedDate FROM Package2 WHERE Name = '${escapedName}' AND IsDeprecated = false ORDER BY CreatedDate DESC LIMIT 1`,
+    `SELECT Id, Name, CreatedDate FROM Package2 WHERE Name = '${escapedName}'${deprecatedFilter} ORDER BY CreatedDate DESC LIMIT 1`,
     '--target-org',
     devhub,
   ]);
@@ -129,22 +129,32 @@ function findPackageInDevHub(devhub, name) {
   return records[0] ?? null;
 }
 
+function undeprecatePackage(devhub, packageId, { dryRun = false } = {}) {
+  if (dryRun) {
+    console.log(`  - Deprecated package found: ${packageId} (dry-run: would un-deprecate)`);
+    return;
+  }
+  console.log(`  - Un-deprecating package: ${packageId}`);
+  runSf(['package', 'update', '--package', packageId, '--target-dev-hub', devhub], { allowFail: true });
+}
+
 function listPackageVersions(devhub) {
-  const res = runSfJson(['package', 'version', 'list', '--target-dev-hub', devhub, '--released']);
+  const res = runSfJson(['package', 'version', 'list', '--target-dev-hub', devhub]);
   return res?.result ?? [];
 }
 
-function ensurePackageDefinition(devhub, name, packages, { dryRun = false } = {}) {
-  const fromList = findPackageInList(packages, name);
-  if (fromList?.Id) {
-    console.log(`  - Package definition already exists: ${name} (${fromList.Id})`);
-    return fromList.Id;
-  }
-
+function ensurePackageDefinition(devhub, name, { dryRun = false } = {}) {
   const fromQuery = findPackageInDevHub(devhub, name);
   if (fromQuery?.Id) {
     console.log(`  - Package definition already exists: ${name} (${fromQuery.Id})`);
     return fromQuery.Id;
+  }
+
+  const deprecated = findPackageInDevHub(devhub, name, { includeDeprecated: true });
+  if (deprecated?.Id) {
+    undeprecatePackage(devhub, deprecated.Id, { dryRun });
+    console.log(`  - Reusing un-deprecated package: ${name} (${deprecated.Id})`);
+    return deprecated.Id;
   }
 
   if (dryRun) {
@@ -178,14 +188,12 @@ function ensurePackageDefinition(devhub, name, packages, { dryRun = false } = {}
 function ensurePackageVersion(devhub, name, packageId, versions, { dryRun = false } = {}) {
   const existing = versions.find((v) => v.Package2Name === name || v.Package2Id === packageId);
   if (existing && existing.SubscriberPackageVersionId) {
-    console.log(
-      `  - Released version exists for ${name}: ${existing.SubscriberPackageVersionId} (${existing.Version})`
-    );
+    console.log(`  - Version exists for ${name}: ${existing.SubscriberPackageVersionId} (${existing.Version})`);
     return existing.SubscriberPackageVersionId;
   }
 
   if (dryRun) {
-    console.log(`  - Released version missing for ${name} (dry-run: would create)`);
+    console.log(`  - Version missing for ${name} (dry-run: would create)`);
     return null;
   }
 
@@ -209,32 +217,6 @@ function ensurePackageVersion(devhub, name, packageId, versions, { dryRun = fals
   if (!subId) fail(`Could not determine SubscriberPackageVersionId for ${name}`);
   console.log(`    created SubscriberPackageVersionId: ${subId}`);
   return subId;
-}
-
-function promotePackageVersion(devhub, subscriberPackageVersionId, { dryRun = false } = {}) {
-  if (!subscriberPackageVersionId) {
-    return;
-  }
-
-  if (dryRun) {
-    console.log(`  - Dry-run: would promote version ${subscriberPackageVersionId} to released`);
-    return;
-  }
-
-  console.log(`  - Promoting version ${subscriberPackageVersionId} to released`);
-  runSf(
-    [
-      'package',
-      'version',
-      'promote',
-      '--package',
-      subscriberPackageVersionId,
-      '--no-prompt',
-      '--target-dev-hub',
-      devhub,
-    ],
-    { allowFail: true }
-  );
 }
 
 function renderTemplate(idMap, { dryRun = false } = {}) {
@@ -331,8 +313,7 @@ async function main() {
   ensureDevHubReachable(devhub);
   ensureProjectFile({}, { dryRun });
 
-  console.log('\nListing existing packages and versions in DevHub...');
-  const packages = listPackages(devhub);
+  console.log('\nListing existing package versions in DevHub...');
   const versions = listPackageVersions(devhub);
 
   const packageIds = {};
@@ -340,7 +321,7 @@ async function main() {
 
   console.log('\nEnsuring package definitions...');
   for (const name of PACKAGE_NAMES) {
-    const pkgId = ensurePackageDefinition(devhub, name, packages, { dryRun });
+    const pkgId = ensurePackageDefinition(devhub, name, { dryRun });
     packageIds[name] = pkgId;
   }
 
@@ -352,16 +333,11 @@ async function main() {
     subscriberIds[name] = subId;
   }
 
-  // Promote pool-test-c so its 04t becomes a released version usable as a
-  // direct identifier (exercises the non-SOQL resolution path in packageInstaller).
-  promotePackageVersion(devhub, subscriberIds[EXTERNAL_PACKAGE_NAME], { dryRun });
-
-  // Internal packages use their 0Ho Package2Id (resolved via DevHub SOQL at install time).
-  // External package uses the 04t SubscriberPackageVersionId directly.
+  // Use Package2Id values in aliases to stay compatible with the template.
   const idMap = {
     'pool-test-a': packageIds['pool-test-a'],
     'pool-test-b': packageIds['pool-test-b'],
-    'pool-test-c': subscriberIds['pool-test-c'],
+    'pool-test-c': packageIds['pool-test-c'],
   };
 
   console.log('\nResolved IDs:');
