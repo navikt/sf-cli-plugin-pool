@@ -89,7 +89,7 @@ sf pool list
 
 ## Local Test Environment Setup
 
-NUTs and most manual `pool prepare` runs require three test packages to exist in your DevHub. The repository ships with a small Salesforce package workspace under `test-packages/` and a script that creates the packages on demand and generates a `sfdx-project.json` (gitignored) at the repo root with the resolved package IDs.
+NUTs and most manual `pool prepare` runs require three test packages to exist in your DevHub. The repository ships with a small Salesforce package workspace under `test-packages/` and a script that creates the packages on demand and generates a `sfdx-project.json` (gitignored) at the repo root with resolved package aliases.
 
 ### Test Environment Prerequisites
 
@@ -116,7 +116,7 @@ The script will:
 2. Create the three packages (`pool-test-a`, `pool-test-b`, `pool-test-c`) if missing
 3. Create a released package version per package if one is not already available
 4. Promote `pool-test-c` so it is usable as a direct `04t` SubscriberPackageVersionId
-5. Copy `test-packages/sfdx-project.json.template` to root and render the resolved IDs into `sfdx-project.json`
+5. Copy `test-packages/sfdx-project.json.template` to root and render aliases into `sfdx-project.json` (`0Ho...` for `pool-test-a`/`pool-test-b`, `04t...` for `pool-test-c`)
 
 The script is idempotent — running it again reuses existing packages and versions.
 Use `--dry-run` to verify what would be created before making changes in the DevHub.

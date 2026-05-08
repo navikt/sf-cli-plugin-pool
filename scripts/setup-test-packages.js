@@ -333,11 +333,12 @@ async function main() {
     subscriberIds[name] = subId;
   }
 
-  // Use Package2Id values in aliases to stay compatible with the template.
+  // Keep 0Ho Package2Id for dependencies that specify versionNumber, and use
+  // 04t SubscriberPackageVersionId for dependencies that omit versionNumber.
   const idMap = {
     'pool-test-a': packageIds['pool-test-a'],
     'pool-test-b': packageIds['pool-test-b'],
-    'pool-test-c': packageIds['pool-test-c'],
+    'pool-test-c': subscriberIds['pool-test-c'],
   };
 
   console.log('\nResolved IDs:');
