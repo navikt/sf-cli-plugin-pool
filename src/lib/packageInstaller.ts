@@ -33,12 +33,28 @@ function parseVersionNumber(versionNumber: string): { major: number; minor: numb
       'InvalidVersionNumberError'
     );
   }
+
+  const major = parseInt(parts[0], 10);
+  const minor = parseInt(parts[1], 10);
+  const patch = parseInt(parts[2], 10);
+
+  if (Number.isNaN(major) || Number.isNaN(minor) || Number.isNaN(patch)) {
+    throw new SfError(
+      `Invalid version number format: '${versionNumber}'. Major, Minor, and Patch must be numbers`,
+      'InvalidVersionNumberError'
+    );
+  }
+
   return {
-    major: parseInt(parts[0], 10),
-    minor: parseInt(parts[1], 10),
-    patch: parseInt(parts[2], 10),
+    major,
+    minor,
+    patch,
     build: parts[3],
   };
+}
+
+function escapeSoqlString(value: string): string {
+  return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 }
 
 export async function resolvePackageVersionId(
@@ -47,11 +63,12 @@ export async function resolvePackageVersionId(
   versionNumber?: string
 ): Promise<string> {
   let query = 'SELECT SubscriberPackageVersionId FROM Package2Version WHERE IsDeprecated = false';
+  const escapedIdentifier = escapeSoqlString(identifier);
 
   if (identifier.startsWith('0Ho')) {
-    query += ` AND Package2Id = '${identifier}'`;
+    query += ` AND Package2Id = '${escapedIdentifier}'`;
   } else {
-    query += ` AND Package2.Name = '${identifier}'`;
+    query += ` AND Package2.Name = '${escapedIdentifier}'`;
   }
 
   if (versionNumber) {

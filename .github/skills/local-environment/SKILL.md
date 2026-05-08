@@ -49,8 +49,8 @@ The script is idempotent and safe to re-run.
 ## Validate the setup
 
 ```bash
-./bin/dev pool list --target-dev-hub my-devhub
-./bin/dev pool prepare --config-file config/pool-example.json --target-dev-hub my-devhub
+./bin/dev.js pool list --target-dev-hub my-devhub
+./bin/dev.js pool prepare --config-file config/pool-example.json --target-dev-hub my-devhub
 pnpm run test:nuts
 ```
 
