@@ -24,9 +24,17 @@ Tag of the pool to list. Repeat to view for more pools.
 
 Listing Scratch Org Pools...
 
+# info.spinner-done
+
+Done
+
 # info.header
 
 Scratch Pool Details
+
+# info.separator
+
+===================================
 
 # info.totals-header
 

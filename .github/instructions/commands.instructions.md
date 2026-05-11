@@ -47,7 +47,7 @@ export default class Name extends SfCommand<PoolResultType> {
 - All user-facing strings must come from the message file — never hardcode
 - Errors: throw `new SfError(messages.getMessage('error.key'))` with descriptive messages
 - Return typed result objects compatible with `--json` output
-- Use `@salesforce/core` Config class for persisting pool definitions and state
+- Pool state lives on the DevHub — orgs are tagged via the `Pool_tag__c` and `Pool_allocation_status__c` custom fields on `ScratchOrgInfo` and queried through the DevHub `Connection`. See `src/lib/poolQuery.ts` and `tagScratchOrg` in `src/lib/orgCreator.ts`.
 
 ## Logging
 

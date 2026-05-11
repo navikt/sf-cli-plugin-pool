@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { Connection, Logger, SfError, SfProject } from '@salesforce/core';
-import { PackageDependency, PackageKeys } from '../types/pool-prepare.js';
+import { PackageDependency, PackageKeys } from '../types/package.js';
 
 const logger = Logger.childFromRoot('packageInstaller');
 

@@ -6,7 +6,7 @@ import {
   readSfdxProjectDependencies,
   resolvePackageVersionId,
 } from '../../src/lib/packageInstaller.js';
-import { PackageKeys } from '../../src/types/pool-prepare.js';
+import { PackageKeys } from '../../src/types/package.js';
 
 type FakePackageDir = {
   path: string;

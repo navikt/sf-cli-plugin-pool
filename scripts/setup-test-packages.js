@@ -100,19 +100,6 @@ function ensureDevHubReachable(devhub) {
   console.log('DevHub reachable.');
 }
 
-function listPackages(devhub) {
-  const res = runSfJson(['package', 'list', '--target-dev-hub', devhub]);
-  return res?.result ?? [];
-}
-
-function findPackageInList(packages, name) {
-  const wanted = name.toLowerCase();
-  return packages.find((pkg) => {
-    const pkgName = (pkg.Name ?? pkg.Package2Name ?? '').toLowerCase();
-    return pkgName === wanted;
-  });
-}
-
 function findPackageInDevHub(devhub, name, { includeDeprecated = false } = {}) {
   const escapedName = name.replaceAll("'", "\\'");
   const deprecatedFilter = includeDeprecated ? '' : ' AND IsDeprecated = false';
@@ -186,9 +173,16 @@ function ensurePackageDefinition(devhub, name, { dryRun = false } = {}) {
 }
 
 function ensurePackageVersion(devhub, name, packageId, versions, { dryRun = false } = {}) {
-  const existing = versions.find((v) => v.Package2Name === name || v.Package2Id === packageId);
+  const matches = versions.filter(
+    (v) => (v.Package2Name === name || v.Package2Id === packageId) && Boolean(v.SubscriberPackageVersionId)
+  );
+  const existing = matches.find((v) => v.IsReleased === true) ?? matches[0];
+
   if (existing && existing.SubscriberPackageVersionId) {
-    console.log(`  - Version exists for ${name}: ${existing.SubscriberPackageVersionId} (${existing.Version})`);
+    const releaseLabel = existing.IsReleased ? 'released' : 'unreleased';
+    console.log(
+      `  - Reusing ${releaseLabel} version for ${name}: ${existing.SubscriberPackageVersionId} (${existing.Version})`
+    );
     return existing.SubscriberPackageVersionId;
   }
 
@@ -311,7 +305,6 @@ async function main() {
   }
 
   ensureDevHubReachable(devhub);
-  ensureProjectFile({}, { dryRun });
 
   console.log('\nListing existing package versions in DevHub...');
   const versions = listPackageVersions(devhub);
@@ -326,9 +319,9 @@ async function main() {
   }
 
   console.log('\nEnsuring package versions...');
+  ensureProjectFile(packageIds, { dryRun, packageNames: PACKAGE_NAMES });
   for (const name of PACKAGE_NAMES) {
     const pkgId = packageIds[name];
-    ensureProjectFile(packageIds, { dryRun, packageNames: [name] });
     const subId = ensurePackageVersion(devhub, name, pkgId, versions, { dryRun });
     subscriberIds[name] = subId;
   }

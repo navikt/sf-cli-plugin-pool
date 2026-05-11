@@ -78,7 +78,7 @@
     "test:nuts": "c8 mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel",
     "test:only": "wireit",
     "setup:test-packages": "node scripts/setup-test-packages.js",
-    "delete:test-packages": "node scripts/delete-test-packages.js",
+    "resolve:package-ids": "node scripts/resolve-package-ids.js",
     "version": "oclif readme"
   },
   "publishConfig": {

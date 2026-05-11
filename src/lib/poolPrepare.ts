@@ -1,7 +1,8 @@
 import * as fs from 'node:fs';
-import { Connection, Logger, Org, SfError } from '@salesforce/core';
+import { AuthInfo, Connection, Logger, Org, SfError } from '@salesforce/core';
 import { PoolConfig, PoolDefinition } from '../types/pool-config.js';
-import { PackageDependency, PackageKeys, PoolPrepareResult } from '../types/pool-prepare.js';
+import { PackageDependency, PackageKeys } from '../types/package.js';
+import { PoolPrepareResult } from '../types/pool-prepare.js';
 import { queryPoolOrgs } from './poolQuery.js';
 import { createScratchOrg, tagScratchOrg } from './orgCreator.js';
 import { readSfdxProjectDependencies, installPackage } from './packageInstaller.js';
@@ -35,7 +36,12 @@ export function loadPoolConfig(filePath: string): PoolConfig {
     );
   }
 
-  return raw as PoolConfig;
+  const config = raw as PoolConfig;
+  if (config.pools.length === 0) {
+    throw new SfError(`Invalid pool config: "pools" array is empty at ${filePath}`, 'PoolConfigInvalidError');
+  }
+
+  return config;
 }
 
 export function loadPackageKeys(keysFilePath?: string): PackageKeys {
@@ -55,9 +61,13 @@ export function loadPackageKeys(keysFilePath?: string): PackageKeys {
     }
     if (typeof fileKeys === 'object' && fileKeys !== null) {
       for (const [alias, key] of Object.entries(fileKeys as Record<string, unknown>)) {
-        if (typeof key === 'string') {
-          keys[alias] = key;
+        if (typeof key !== 'string') {
+          throw new SfError(
+            `Invalid package keys file ${keysFilePath}: value for '${alias}' must be a string`,
+            'PackageKeysInvalidError'
+          );
         }
+        keys[alias] = key;
       }
     }
   }
@@ -77,9 +87,10 @@ export function loadPackageKeysFromString(jsonString: string): PackageKeys {
   }
   if (typeof parsed === 'object' && parsed !== null) {
     for (const [alias, key] of Object.entries(parsed as Record<string, unknown>)) {
-      if (typeof key === 'string') {
-        keys[alias] = key;
+      if (typeof key !== 'string') {
+        throw new SfError(`Invalid package keys: value for '${alias}' must be a string`, 'PackageKeysInvalidError');
       }
+      keys[alias] = key;
     }
   }
 
@@ -113,9 +124,8 @@ const defaultDeps: PreparePoolDeps = {
   readSfdxProjectDependencies,
   installPackage,
   getTargetOrgConnection: async (username: string): Promise<Connection> => {
-    const { AuthInfo, Connection: SfConnection } = await import('@salesforce/core');
     const authInfo = await AuthInfo.create({ username });
-    return SfConnection.create({ authInfo });
+    return Connection.create({ authInfo });
   },
 };
 
@@ -204,7 +214,10 @@ export async function preparePool(
             try {
               await deps.tagScratchOrg(connection, orgId, poolDef.tag, STATUS_FAILED);
             } catch (tagError) {
-              logger.debug('Failed to mark org as failed', { orgId });
+              logger.debug('Failed to mark org as failed', {
+                orgId,
+                error: tagError instanceof Error ? tagError.message : String(tagError),
+              });
             }
           }
           orgId = undefined;

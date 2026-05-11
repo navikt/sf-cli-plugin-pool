@@ -1,6 +1,6 @@
 import { Connection, Logger, Org, SfError, scratchOrgCreate as defaultScratchOrgCreate } from '@salesforce/core';
 import { ScratchOrgCreateOptions, ScratchOrgCreateResult } from '@salesforce/core';
-import { OrgCreateOutcome } from '../types/pool-prepare.js';
+import { OrgCreateOutcome } from '../types/org.js';
 
 const logger = Logger.childFromRoot('orgCreator');
 

@@ -68,18 +68,6 @@ Pool '%s': created %s, failed %s (requested %s, existed %s)
 
 Pool preparation complete.
 
-# error.config-not-found
-
-Pool config file not found: %s
-
-# error.no-pools
-
-No pools defined in config file: %s
-
-# error.package-keys-parse
-
-Failed to parse package keys JSON: %s
-
 # info.pool-error
 
 - %s

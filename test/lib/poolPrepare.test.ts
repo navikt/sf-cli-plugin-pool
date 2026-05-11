@@ -64,6 +64,13 @@ describe('poolPrepare', () => {
         .with.property('name', 'PoolConfigInvalidError');
     });
 
+    it('throws when pools array is empty', () => {
+      const filePath = writeTempFile(JSON.stringify({ pools: [] }));
+      expect(() => loadPoolConfig(filePath))
+        .to.throw(SfError)
+        .with.property('name', 'PoolConfigInvalidError');
+    });
+
     it('returns parsed config for a valid file', () => {
       const fixture = path.resolve('config/pool-example.json');
       const config = loadPoolConfig(fixture);
@@ -97,6 +104,13 @@ describe('poolPrepare', () => {
         .to.throw(SfError)
         .with.property('name', 'PackageKeysParseError');
     });
+
+    it('throws when a key value is not a string', () => {
+      const filePath = writeTempFile(JSON.stringify({ MyPkg: 12345 }));
+      expect(() => loadPackageKeys(filePath))
+        .to.throw(SfError)
+        .with.property('name', 'PackageKeysInvalidError');
+    });
   });
 
   describe('loadPackageKeysFromString', () => {
@@ -115,6 +129,12 @@ describe('poolPrepare', () => {
       expect(() => loadPackageKeysFromString('not json'))
         .to.throw(SfError)
         .with.property('name', 'PackageKeysParseError');
+    });
+
+    it('throws PackageKeysInvalidError when a value is not a string', () => {
+      expect(() => loadPackageKeysFromString('{"MyPkg":42}'))
+        .to.throw(SfError)
+        .with.property('name', 'PackageKeysInvalidError');
     });
   });
 
