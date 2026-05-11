@@ -58,6 +58,7 @@ Konsumenter må oppdatere sin parsing.
 ## Rules
 
 - First line: max 72 characters
+- Other lines: max 100 characters
 - Use imperative form: "add", not "added" or "adds"
 - Don't end with a period
 - Use Norwegian or English consistently within the project
