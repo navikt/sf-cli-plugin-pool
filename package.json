@@ -25,7 +25,6 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.3.2",
     "mocha": "^11.7.5",
-    "nyc": "^18.0.0",
     "oclif": "^4.22.85",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
@@ -76,8 +75,10 @@
     "postpack": "sf-clean --ignore-signing-artifacts",
     "prepack": "pnpm run build && oclif manifest && npm shrinkwrap",
     "test": "wireit",
-    "test:nuts": "nyc mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel",
+    "test:nuts": "c8 mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel",
     "test:only": "wireit",
+    "setup:test-packages": "node scripts/setup-test-packages.js",
+    "resolve:package-ids": "node scripts/resolve-package-ids.js",
     "version": "oclif readme"
   },
   "publishConfig": {
@@ -151,7 +152,7 @@
         "**/tsconfig.json",
         ".mocha*",
         "!*.nut.ts",
-        ".nycrc"
+        ".c8rc"
       ],
       "output": []
     },

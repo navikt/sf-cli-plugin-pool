@@ -29,7 +29,7 @@ Pools are defined via JSON config files:
 
 ## Project Structure
 
-```
+```txt
 src/
 ├── commands/pool/     # CLI command implementations (to be created)
 ├── lib/               # Shared business logic (to be created)
@@ -76,7 +76,7 @@ pnpm run format
 Run commands using the local dev file:
 
 ```bash
-./bin/dev pool list
+./bin/dev.js pool list
 ```
 
 Or link the plugin to the Salesforce CLI:
@@ -86,6 +86,100 @@ sf plugins link .
 sf plugins  # verify
 sf pool list
 ```
+
+## Local Test Environment Setup
+
+NUTs and most manual `pool prepare` runs require three test packages to exist in your DevHub. The repository ships with a small Salesforce package workspace under `test-packages/` and two scripts for generating root `sfdx-project.json` (gitignored):
+
+- `setup:test-packages` for bootstrapping missing packages/versions
+- `resolve:package-ids` for environments where packages/versions already exist
+
+### Test Environment Prerequisites
+
+- A Salesforce org with **Dev Hub enabled** (Setup → Dev Hub → Enable Dev Hub)
+- `sf` CLI in PATH
+- Authenticated DevHub: `sf org login web --set-default-dev-hub --alias my-devhub`
+
+### About the test packages
+
+Three test packages are maintained under `test-packages/`:
+
+- **`pool-test-a`** and **`pool-test-b`**: Local unlocked packages. Their Package2 IDs (`0Ho...`) are resolved and embedded in the root `sfdx-project.json`.
+- **`pool-test-c`**: Simulates an externally-managed package using its SubscriberPackageVersionId (`04t...`), as if it were installed from AppExchange or another source. This tests dependency resolution for packages referenced by their version ID rather than a local package definition.
+
+All three are created and versioned in the DevHub during setup.
+
+### How this relates to `pool-example.json`
+
+`config/pool-example.json` defines pool metadata only (`tag`, `count`, retries, expiration) and points to `config/project-scratch-def.json` via `definitionFilePath`.
+
+The package dependency behavior comes from the generated root `sfdx-project.json` (created by setup scripts), not from `pool-example.json` itself:
+
+- `pool-example.json`: declares which pools to maintain and which scratch-def file to use
+- `project-scratch-def.json`: scratch org shape/features
+- root `sfdx-project.json`: package alias/dependency resolution used during org creation
+
+This is why manual `pool prepare` and NUT runs require the three test packages first, even though `pool-example.json` does not list packages directly.
+
+### Setup path A: bootstrap packages and versions
+
+```bash
+pnpm install
+pnpm run setup:test-packages -- --target-dev-hub my-devhub
+```
+
+Preview the bootstrap run without creating packages, versions, or a root `sfdx-project.json`:
+
+```bash
+pnpm run setup:test-packages -- --target-dev-hub my-devhub --dry-run
+```
+
+This script will:
+
+1. Verify access to the DevHub
+2. Create the three packages (`pool-test-a`, `pool-test-b`, `pool-test-c`) if missing
+3. Create a package version per package if one is not already available
+4. Copy `test-packages/sfdx-project.json.template` to root and render aliases into `sfdx-project.json` (`0Ho...` for `pool-test-a`/`pool-test-b`, `04t...` for `pool-test-c`)
+
+The script is idempotent — running it again reuses existing packages and versions.
+Use `--dry-run` to verify what would be created before making changes in the DevHub.
+
+### Setup path B: resolve IDs from existing packages only
+
+If your DevHub already contains `pool-test-a`, `pool-test-b`, and `pool-test-c` with package versions, use:
+
+```bash
+pnpm run resolve:package-ids -- --target-dev-hub my-devhub
+```
+
+Preview without writing root `sfdx-project.json`:
+
+```bash
+pnpm run resolve:package-ids -- --target-dev-hub my-devhub --dry-run
+```
+
+The resolve script is strict: it fails if a package definition or package version is missing.
+
+### Manual validation
+
+```bash
+./bin/dev.js pool list --target-dev-hub my-devhub
+./bin/dev.js pool prepare --config-file config/pool-example.json --target-dev-hub my-devhub
+```
+
+### Run NUTs
+
+```bash
+pnpm run test:nuts
+```
+
+### Cleanup
+
+This repository no longer provides a teardown script for package/package-version deletion. In many Salesforce environments those deletions are blocked or restricted. If you need cleanup, remove package versions and package definitions manually in your DevHub.
+
+### CI behavior
+
+The GitHub Actions NUT job authenticates via JWT using the `TESTKIT_*` secrets and runs `setup-test-packages.js` automatically before NUTs. There is no CI teardown — package definitions persist in the DevHub between runs (the setup is idempotent). See [.github/workflows/test.yml](.github/workflows/test.yml).
 
 ## CI Setup
 

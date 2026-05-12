@@ -56,6 +56,8 @@ const result = await MyCommand.run(['--target-dev-hub', 'test@hub.org']);
 - `pnpm run test:only` — unit tests with coverage
 - Coverage thresholds: 75% lines/statements/functions/branches (enforced by nyc)
 
+Unit tests do not depend on a DevHub or the root `sfdx-project.json` — they use temp files and stubbed connections. If you also want to run NUTs locally, see the test-packages setup in `.github/instructions/nuts.instructions.md` and `README.md`.
+
 ## Reference implementation
 
 See `test/commands/pool/list.test.ts` for a working example.

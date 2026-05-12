@@ -1,0 +1,10 @@
+{
+  "orgName": "sf-pool scratch org",
+  "edition": "developer",
+  "features": [],
+  "settings": {
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    }
+  }
+}

@@ -46,6 +46,13 @@ If the command requires non-trivial business logic (org creation, pool state que
 
 Use `config/pool-example.json` as a reference pool configuration for tests and validation.
 
+Important context:
+
+- `config/pool-example.json` describes pool metadata and points to a scratch-def file.
+- It does not declare package dependencies directly.
+- Package dependency resolution happens through the generated root `sfdx-project.json`, which is produced by the setup scripts.
+- For local `pool prepare` validation and NUTs, ensure test packages (`pool-test-a`, `pool-test-b`, `pool-test-c`) are created/resolved first so `sfdx-project.json` contains valid IDs.
+
 ## Acceptance Criteria
 
 - [ ] Command extends `SfCommand`

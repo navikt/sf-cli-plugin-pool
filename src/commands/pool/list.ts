@@ -42,7 +42,7 @@ export default class PoolList extends SfCommand<PoolListResult> {
 
     const records = await queryPoolOrgs(connection, tags);
 
-    this.spinner.stop('Done');
+    this.spinner.stop(messages.getMessage('info.spinner-done'));
 
     const { pools, allStatuses, totalAvailable, totalOrgs } = aggregatePoolStats(records);
 
@@ -63,7 +63,7 @@ export default class PoolList extends SfCommand<PoolListResult> {
       });
       this.table({ data: detailedRows });
 
-      this.log('===================================');
+      this.log(messages.getMessage('info.separator'));
       this.log(messages.getMessage('info.totals-header'));
       this.log(messages.getMessage('info.unused-count', [String(totalAvailable)]));
       this.log(messages.getMessage('info.total-count', [String(totalOrgs)]));

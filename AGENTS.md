@@ -30,6 +30,8 @@ Run these before pushing any changes:
 
 NUTs (`pnpm run test:nuts`) require DevHub authentication and run in CI only.
 
+**Local NUT prerequisites**: NUTs depend on three test packages (`pool-test-a/b/c`) being available in the target DevHub and a generated root `sfdx-project.json`. Run `pnpm run setup:test-packages -- --target-dev-hub <alias>` once before running NUTs locally. See "Local Test Environment Setup" in [README.md](README.md).
+
 ## Project structure
 
 - Source: `src/`
@@ -44,8 +46,8 @@ NUTs (`pnpm run test:nuts`) require DevHub authentication and run in CI only.
 
 Triggered on pushes to non-main branches and on pull requests when `src/`, `test/`, `tsconfig.json`, `package.json`, or `pnpm-lock.yaml` change.
 
-1. **Unit Tests and Linting** — `pnpm test` (compile + lint + unit tests)
-2. **NUTs** (after unit tests pass) — `pnpm run build` then `pnpm run test:nuts` on Ubuntu and Windows
+1. **Build, Lint and Unit Tests** — `pnpm run build`, `pnpm run lint`, and `pnpm run test:only` on Ubuntu and Windows
+2. **NUTs** (after core tests pass) — `pnpm run build` then `pnpm run test:nuts` on Ubuntu
 
 ### `build` (main only)
 
