@@ -35,16 +35,16 @@ describe('pool mycommand NUTs', () => {
 
 ## Conventions
 
-- Use `TestSession.create()` in `before` and `testSession.clean()` in `after`
-- Run commands with `execCmd<ResultType>('command --json', { ensureExitCode: 0 })`
-- Assert on `jsonOutput.result` for structured validation
-- NUTs require DevHub auth — never run locally without setup
-- File naming: `<command>.nut.ts` alongside the unit test file
+1. Use `TestSession.create()` in `before` and `testSession.clean()` in `after`
+2. Run commands with `execCmd<ResultType>('command --json', { ensureExitCode: 0 })`
+3. Assert on `jsonOutput.result` for structured validation
+4. NUTs require DevHub authentication and setup. Do not run locally unless the setup script has been executed successfully.
+5. File naming: `<command>.nut.ts` alongside the unit test file
 
 ## Running
 
-- `pnpm run test:nuts` — requires DevHub authentication and the test packages set up
-- NUTs run in CI on Ubuntu and Windows after unit tests pass
+1. Run `pnpm run test:nuts` only after DevHub authentication and test package setup.
+2. In CI, NUTs run on Ubuntu after core tests pass.
 
 ## Test Package Prerequisite
 
