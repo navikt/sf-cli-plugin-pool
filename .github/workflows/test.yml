@@ -33,6 +33,129 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  detect-nuts-relevance:
+    name: Detect NUT Relevance
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      nuts_by_path: ${{ steps.detect.outputs.nuts_by_path }}
+      nuts_by_runtime_deps: ${{ steps.detect.outputs.nuts_by_runtime_deps }}
+      run_nuts: ${{ steps.detect.outputs.run_nuts }}
+      decision_reason: ${{ steps.detect.outputs.decision_reason }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: 'lts/*'
+      - name: Detect NUT relevance
+        id: detect
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PUSH_BASE_SHA: ${{ github.event.before }}
+          PUSH_HEAD_SHA: ${{ github.sha }}
+        run: |
+          node <<'NODE'
+          const {execSync} = require('node:child_process');
+          const fs = require('node:fs');
+
+          const outputFile = process.env.GITHUB_OUTPUT;
+
+          const writeOutput = (name, value) => {
+            fs.appendFileSync(outputFile, `${name}=${value}\n`);
+          };
+
+          const eventName = process.env.GITHUB_EVENT_NAME;
+
+          if (eventName === 'workflow_dispatch') {
+            writeOutput('nuts_by_path', 'false');
+            writeOutput('nuts_by_runtime_deps', 'false');
+            writeOutput('run_nuts', 'true');
+            writeOutput('decision_reason', 'manual_override');
+            process.exit(0);
+          }
+
+          if (eventName !== 'pull_request') {
+            writeOutput('nuts_by_path', 'false');
+            writeOutput('nuts_by_runtime_deps', 'false');
+            writeOutput('run_nuts', 'false');
+            writeOutput('decision_reason', 'non_pr_event');
+            process.exit(0);
+          }
+
+          const baseSha = process.env.PR_BASE_SHA;
+          const headSha = process.env.PR_HEAD_SHA;
+
+          if (!baseSha || !headSha) {
+            throw new Error('Missing base or head SHA for pull request event.');
+          }
+
+          const changedFiles = execSync(`git diff --name-only ${baseSha} ${headSha}`, {
+            encoding: 'utf8',
+          })
+            .split('\n')
+            .map((file) => file.trim())
+            .filter(Boolean);
+
+          const nutsByPath = changedFiles.some((file) => {
+            if (file.startsWith('src/')) {
+              return true;
+            }
+
+            if (file.startsWith('test/') && file.endsWith('.nut.ts')) {
+              return true;
+            }
+
+            if (file === 'scripts/setup-test-packages.js') {
+              return true;
+            }
+
+            if (file.startsWith('test-packages/')) {
+              return true;
+            }
+
+            return file === '.github/workflows/test.yml';
+          });
+
+          let nutsByRuntimeDeps = false;
+          if (changedFiles.includes('package.json')) {
+            const basePackage = JSON.parse(execSync(`git show ${baseSha}:package.json`, {encoding: 'utf8'}));
+            const headPackage = JSON.parse(execSync(`git show ${headSha}:package.json`, {encoding: 'utf8'}));
+
+            const runtimeSections = ['dependencies', 'optionalDependencies', 'peerDependencies'];
+            nutsByRuntimeDeps = runtimeSections.some((section) => {
+              const before = JSON.stringify(basePackage[section] ?? {});
+              const after = JSON.stringify(headPackage[section] ?? {});
+              return before !== after;
+            });
+          }
+
+          const runNuts = nutsByPath || nutsByRuntimeDeps;
+          let decisionReason = 'not_relevant';
+
+          if (nutsByPath && nutsByRuntimeDeps) {
+            decisionReason = 'path_and_runtime_deps';
+          } else if (nutsByPath) {
+            decisionReason = 'path_change';
+          } else if (nutsByRuntimeDeps) {
+            decisionReason = 'runtime_dependency_change';
+          }
+
+          writeOutput('nuts_by_path', String(nutsByPath));
+          writeOutput('nuts_by_runtime_deps', String(nutsByRuntimeDeps));
+          writeOutput('run_nuts', String(runNuts));
+          writeOutput('decision_reason', decisionReason);
+          NODE
+      - name: Summarize NUT decision
+        run: |
+          echo "run_nuts=${{ steps.detect.outputs.run_nuts }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "reason=${{ steps.detect.outputs.decision_reason }}" >> "$GITHUB_STEP_SUMMARY"
+
   unit-tests:
     name: Build, Lint and Unit Tests
     runs-on: ${{ matrix.os }}
@@ -62,7 +185,8 @@ jobs:
 
   setup-packages:
     name: Set up Test Packages
-    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    needs: detect-nuts-relevance
+    if: needs.detect-nuts-relevance.result == 'success' && needs.detect-nuts-relevance.outputs.run_nuts == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -112,8 +236,10 @@ jobs:
 
   nuts:
     name: NUTs
-    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-    needs: setup-packages
+    if: needs.detect-nuts-relevance.result == 'success' && needs.detect-nuts-relevance.outputs.run_nuts == 'true' && needs.setup-packages.result == 'success'
+    needs:
+      - detect-nuts-relevance
+      - setup-packages
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -164,3 +290,39 @@ jobs:
         if: always()
         shell: bash
         run: sf org logout --target-org devhub --no-prompt || true
+
+  nuts-status:
+    name: NUT Status
+    if: always()
+    needs:
+      - detect-nuts-relevance
+      - setup-packages
+      - nuts
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Validate NUT outcome
+        shell: bash
+        run: |
+          if [[ "${{ needs.detect-nuts-relevance.result }}" != 'success' ]]; then
+            echo 'Failed to determine whether NUTs are required.'
+            exit 1
+          fi
+
+          if [[ "${{ needs.detect-nuts-relevance.outputs.run_nuts }}" != 'true' ]]; then
+            echo 'NUTs were skipped because the change set is not NUT-relevant.'
+            exit 0
+          fi
+
+          if [[ "${{ needs.setup-packages.result }}" != 'success' ]]; then
+            echo 'NUTs were required, but test package setup failed.'
+            exit 1
+          fi
+
+          if [[ "${{ needs.nuts.result }}" != 'success' ]]; then
+            echo 'NUTs were required, but the NUT job did not succeed.'
+            exit 1
+          fi
+
+          echo 'NUTs were required and completed successfully.'
