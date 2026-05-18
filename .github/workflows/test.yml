@@ -153,8 +153,11 @@ jobs:
           NODE
       - name: Summarize NUT decision
         run: |
-          echo "run_nuts=${{ steps.detect.outputs.run_nuts }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "reason=${{ steps.detect.outputs.decision_reason }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "run_nuts=${STEPS_DETECT_OUTPUTS_RUN_NUTS}" >> "$GITHUB_STEP_SUMMARY"
+          echo "reason=${STEPS_DETECT_OUTPUTS_DECISION_REASON}" >> "$GITHUB_STEP_SUMMARY"
+        env:
+          STEPS_DETECT_OUTPUTS_RUN_NUTS: ${{ steps.detect.outputs.run_nuts }}
+          STEPS_DETECT_OUTPUTS_DECISION_REASON: ${{ steps.detect.outputs.decision_reason }}
 
   unit-tests:
     name: Build, Lint and Unit Tests
@@ -303,24 +306,29 @@ jobs:
       - name: Validate NUT outcome
         shell: bash
         run: |
-          if [[ "${{ needs.detect-nuts-relevance.result }}" != 'success' ]]; then
+          if [[ "${NEEDS_DETECT_NUTS_RELEVANCE_RESULT}" != 'success' ]]; then
             echo 'Failed to determine whether NUTs are required.'
             exit 1
           fi
 
-          if [[ "${{ needs.detect-nuts-relevance.outputs.run_nuts }}" != 'true' ]]; then
+          if [[ "${NEEDS_DETECT_NUTS_RELEVANCE_OUTPUTS_RUN_NUTS}" != 'true' ]]; then
             echo 'NUTs were skipped because the change set is not NUT-relevant.'
             exit 0
           fi
 
-          if [[ "${{ needs.setup-packages.result }}" != 'success' ]]; then
+          if [[ "${NEEDS_SETUP_PACKAGES_RESULT}" != 'success' ]]; then
             echo 'NUTs were required, but test package setup failed.'
             exit 1
           fi
 
-          if [[ "${{ needs.nuts.result }}" != 'success' ]]; then
+          if [[ "${NEEDS_NUTS_RESULT}" != 'success' ]]; then
             echo 'NUTs were required, but the NUT job did not succeed.'
             exit 1
           fi
 
           echo 'NUTs were required and completed successfully.'
+        env:
+          NEEDS_DETECT_NUTS_RELEVANCE_RESULT: ${{ needs.detect-nuts-relevance.result }}
+          NEEDS_SETUP_PACKAGES_RESULT: ${{ needs.setup-packages.result }}
+          NEEDS_NUTS_RESULT: ${{ needs.nuts.result }}
+          NEEDS_DETECT_NUTS_RELEVANCE_OUTPUTS_RUN_NUTS: ${{ needs.detect-nuts-relevance.outputs.run_nuts }}
