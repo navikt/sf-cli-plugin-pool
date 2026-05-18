@@ -36,9 +36,23 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run test
       - run: pnpm run build
+      - name: Generate SBOM
+        run: pnpm exec cdxgen -o sbom.cyclonedx.json
+      - name: Validate SBOM
+        run: |
+          if [[ ! -f sbom.cyclonedx.json ]] || [[ ! -s sbom.cyclonedx.json ]]; then
+            echo "SBOM generation failed: file missing or empty"
+            exit 1
+          fi
+          echo "SBOM generated successfully"
       - run: pnpm pack
-      - name: Upload artifact
+      - name: Upload plugin artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: plugin-tarball
           path: '*.tgz'
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sbom
+          path: sbom.cyclonedx.json

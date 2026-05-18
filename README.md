@@ -42,6 +42,16 @@ config/                # Example pool configuration files
 
 > **Note:** This is a new project. The `src/commands/hello/` directory contains auto-generated examples that demonstrate the command, test, and message patterns. Pool commands will replace these as the project develops.
 
+## SBOM (Software Bill of Materials)
+
+A CycloneDX SBOM is generated for each build on the main branch:
+
+- **Generation:** `pnpm dlx @cyclonedx/cdxgen` runs during CI
+- **Filename:** `sbom.cyclonedx.json`
+- **Availability:** Uploaded as a build artifact and included in package distributions
+- **Location in builds:** Download from the "sbom" workflow artifact on main builds
+- **Location in package:** Included in the distribution tarball under root directory
+
 ## Development
 
 ### Prerequisites
