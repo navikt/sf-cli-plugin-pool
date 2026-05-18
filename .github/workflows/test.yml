@@ -210,13 +210,11 @@ jobs:
           TESTKIT_HUB_USERNAME: ${{ secrets.TESTKIT_HUB_USERNAME }}
           TESTKIT_JWT_CLIENT_ID: ${{ secrets.TESTKIT_JWT_CLIENT_ID }}
           TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }}
-          TESTKIT_HUB_INSTANCE: ${{ secrets.TESTKIT_HUB_INSTANCE }}
         run: |
           sf org login jwt \
             --client-id "$TESTKIT_JWT_CLIENT_ID" \
             --jwt-key-file <(printf '%s' "$TESTKIT_JWT_KEY") \
             --username "$TESTKIT_HUB_USERNAME" \
-            --instance-url "$TESTKIT_HUB_INSTANCE" \
             --set-default-dev-hub \
             --alias devhub
       - name: Set up test packages
