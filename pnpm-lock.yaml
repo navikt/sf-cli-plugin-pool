@@ -10,13 +10,13 @@ importers:
     dependencies:
       '@oclif/core':
         specifier: ^4.11.2
-        version: 4.11.3
+        version: 4.11.2
       '@salesforce/core':
         specifier: ^8.29.1
-        version: 8.30.4
+        version: 8.29.1
       '@salesforce/sf-plugins-core':
-        specifier: ^12.2.17
-        version: 12.2.17(@types/node@25.1.0)
+        specifier: ^12.2.16
+        version: 12.2.16(@types/node@25.1.0)
     devDependencies:
       '@commitlint/cli':
         specifier: ^20.4.3
@@ -842,8 +842,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
-  '@jsforce/jsforce-node@3.10.15':
-    resolution: {integrity: sha512-rtl4MCmy5EzUQ8ehJfjcQCVW2EPCBfopxpZjmXzJrKdtwH6ptjeC5VdyfjS40XNjD7k7heXRZr1jRVU3Ej6kcQ==}
+  '@jsforce/jsforce-node@3.10.14':
+    resolution: {integrity: sha512-p8Ug1SypcAT7Q0zZA0+7fyBmgUpB/aXkde4Bxmu0S/O4p28CVwgYvKyFd9vswmHIhFabd/QqUCrlYuVhYdr2Ew==}
     engines: {node: '>=18'}
 
   '@jsonjoy.com/base64@1.1.2':
@@ -924,8 +924,8 @@ packages:
     resolution: {integrity: sha512-OLUaoqBuyxeTqUvjA3FZFiXUfYC1alp3Sa99gW3EUDz3tZ3CbXDdcZ7qWKBzicrJleIgucoWamWH1saAmH/l2Q==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  '@oclif/core@4.11.3':
-    resolution: {integrity: sha512-gQCSYAtUhJilGKaSaZhqejH9X1dDu+jWQjLmtGOgN/XcKaAEPPSeT2mu1UvlvtPox1/NNRdlBcUa8KRKo2HnJQ==}
+  '@oclif/core@4.11.2':
+    resolution: {integrity: sha512-LWDalCgy+hYyAkLa9sMIXMXk6ws5RzQhVnkmfXtVIIyEEYigbXQ/9/x+s76p53MiXxNc6SJB7lfwkPF+SdzfMQ==}
     engines: {node: '>=18.0.0'}
 
   '@oclif/core@4.9.0':
@@ -949,8 +949,8 @@ packages:
     resolution: {integrity: sha512-y8BiMMiX3gnDO3kSck7R61bB74N8SI38pN9LbpaDlhZcjcN27wuIR5trePFxTxx85iow1YC5qvzYtwUZsDVjXg==}
     engines: {node: '>=18.0.0'}
 
-  '@oclif/table@0.5.8':
-    resolution: {integrity: sha512-yIWar+oDCoN1ji3gUB1QSQAewBiWevwLI7Stg9a+0MX7dtmLXcYucqyR6L5BvJ1b+ekG8C/JY+GJc+ytnzrR9A==}
+  '@oclif/table@0.5.7':
+    resolution: {integrity: sha512-iS7gXzOhUf2toij0pxkcD6sPnXzr/j4eLugHwjSKI2+WgytjUycP7A3i6OIvXDrIGMuq8+S7wgZ7tCC1I18q+Q==}
     engines: {node: '>=18.0.0'}
 
   '@pinojs/redact@0.4.0':
@@ -979,8 +979,8 @@ packages:
     resolution: {integrity: sha512-K6fZfvzJAb0WFJFlgyIHgLyWLXR7i2SKDZ069kvCmDN0QVfftp/OwYrtosIzxiXdpHOtcoAkt65M1UR1aw0XzA==}
     engines: {node: '>=16.0.0'}
 
-  '@salesforce/core@8.30.4':
-    resolution: {integrity: sha512-lMX+X87HbelGU9IA3IOHdP0CDcru1kQG4qDDJXoDYSp8MAcvJpNdOk6P06SutMqKv39XVS3VRfKL5lGiuRcDnA==}
+  '@salesforce/core@8.29.1':
+    resolution: {integrity: sha512-Pdo9yjKU6Lgm3CJOVJPTM4PzUHhTVMX43K5XmClsBEt75fs8mHNFALniHZwnZbVf+TSMfGsUygYAyTX6ShnNQA==}
     engines: {node: '>=18.0.0'}
 
   '@salesforce/dev-config@4.3.2':
@@ -989,9 +989,6 @@ packages:
   '@salesforce/dev-scripts@11.0.4':
     resolution: {integrity: sha512-8RebBJpcgoO0AVmrb3pFwSUD8vCqdWbUmv3JwoDy2lWofAT0vYM3NywCCdKj26XnSASkRgKvsY6AQpkxLs+vVg==}
     hasBin: true
-
-  '@salesforce/kit@3.2.4':
-    resolution: {integrity: sha512-9buqZ2puIGWqjUFWYNroSeNih4d1s9kdQAzZfutr/Re/JMl6xBct0ATO5LVb1ty5UhdBruJrVaiTg03PqVKU+Q==}
 
   '@salesforce/kit@3.2.6':
     resolution: {integrity: sha512-O8S4LWerHa9Zosqh+IoQjgLtpxMOfObRxaRnUdRV4MLtFUi+bQxQiyFvve6eEaBaMP1b1xVDQpvSvQ+PXEDGFQ==}
@@ -1002,8 +999,8 @@ packages:
   '@salesforce/prettier-config@0.0.4':
     resolution: {integrity: sha512-GBjR7f/jv7rcSrTvNgbkWvOykXg/PZqL7TztylKwaogWdrCbypJE8qEfBy9nILkICrwmDbQApOC8TqoO3bQKSw==}
 
-  '@salesforce/sf-plugins-core@12.2.17':
-    resolution: {integrity: sha512-a8wHzT4IPUxvqUcguTd6wXp4C7R2i+HTjjiCBNNEqL5/OFXmROlttalgxFceRsnfoi2Sq9jYuVIVWHOs43uEWQ==}
+  '@salesforce/sf-plugins-core@12.2.16':
+    resolution: {integrity: sha512-csZxi6gJ675/+9dc1Q9KDDq21XRy+tKtgr1ZSPyA6TeP0J4bnuIfsk9cZCOzxaI6T8L6lM3CyWltQMJ927vpzA==}
     engines: {node: '>=18.0.0'}
 
   '@salesforce/ts-types@2.0.12':
@@ -2679,10 +2676,6 @@ packages:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
     engines: {node: 6.* || 8.* || >= 10.*}
 
-  get-east-asian-width@1.5.0:
-    resolution: {integrity: sha512-CQ+bEO+Tva/qlmw24dCejulK5pMzVnUOFOijVogd3KQs07HnRIgp8TGipvCCRT06xeYEbpbgwaCxglFyiuIcmA==}
-    engines: {node: '>=18'}
-
   get-east-asian-width@1.6.0:
     resolution: {integrity: sha512-QRbvDIbx6YklUe6RxeTeleMR0yv3cYH6PsPZHcnVn7xv7zO1BHN8r0XETu8n6Ye3Q+ahtSarc3WgtNWmehIBfA==}
     engines: {node: '>=18'}
@@ -4333,10 +4326,6 @@ packages:
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
-  sax@1.5.0:
-    resolution: {integrity: sha512-21IYA3Q5cQf089Z6tgaUTr7lDAyzoTPx5HRtbhsME8Udispad8dC/+sziTNugOEx54ilvatQ9YCzl4KQLPcRHA==}
-    engines: {node: '>=11.0.0'}
-
   sax@1.6.0:
     resolution: {integrity: sha512-6R3J5M4AcbtLUdZmRv2SygeVaM7IhrLXu9BmnOGmmACak8fiUtOsYNWUS4uK7upbmHIBbLBeFeI//477BKLBzA==}
     engines: {node: '>=11.0.0'}
@@ -5070,8 +5059,8 @@ packages:
     resolution: {integrity: sha512-OTIk8iR8/aCRWBqvxrzxR0hgxWpnYBblY1S5hDWBQfk/VFmJwzmJgQFN3WsoUKHISv2eAwe+PpbUzyL1CKTLXg==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  ws@8.20.1:
-    resolution: {integrity: sha512-It4dO0K5v//JtTXuPkfEOaI3uUN87iYPnqo/ZzqCoG3g8uhA66QUMs/SrM0YK7/NAu+r4LMh/9dq2A7k+rHs+w==}
+  ws@8.20.0:
+    resolution: {integrity: sha512-sAt8BhgNbzCtgGbt2OxmpuryO63ZoDk/sqaB/znQm94T4fCEsy/yV+7CdC1kJhOU9lboAEU7R3kquuycDoibVA==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -6439,7 +6428,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@jsforce/jsforce-node@3.10.15':
+  '@jsforce/jsforce-node@3.10.14':
     dependencies:
       '@sindresorhus/is': 4.6.0
       base64url: 3.0.1
@@ -6513,7 +6502,7 @@ snapshots:
 
   '@npmcli/fs@5.0.0':
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.0
 
   '@npmcli/git@7.0.2':
     dependencies:
@@ -6523,7 +6512,7 @@ snapshots:
       lru-cache: 11.2.5
       npm-pick-manifest: 11.0.3
       proc-log: 6.1.0
-      semver: 7.7.4
+      semver: 7.8.0
       which: 6.0.1
 
   '@npmcli/map-workspaces@5.0.3':
@@ -6542,14 +6531,14 @@ snapshots:
       hosted-git-info: 9.0.3
       json-parse-even-better-errors: 5.0.0
       proc-log: 6.1.0
-      semver: 7.7.4
+      semver: 7.8.0
       spdx-expression-parse: 4.0.0
 
   '@npmcli/promise-spawn@9.0.1':
     dependencies:
       which: 6.0.1
 
-  '@oclif/core@4.11.3':
+  '@oclif/core@4.11.2':
     dependencies:
       ansi-escapes: 4.3.2
       ansis: 3.17.0
@@ -6583,7 +6572,7 @@ snapshots:
       is-wsl: 2.2.0
       lilconfig: 3.1.3
       minimatch: 10.2.5
-      semver: 7.7.4
+      semver: 7.8.0
       string-width: 4.2.3
       supports-color: 8.1.1
       tinyglobby: 0.2.16
@@ -6593,24 +6582,24 @@ snapshots:
 
   '@oclif/plugin-command-snapshot@5.3.13':
     dependencies:
-      '@oclif/core': 4.11.3
+      '@oclif/core': 4.11.2
       ansis: 3.17.0
       globby: 14.1.0
       just-diff: 5.2.0
       lodash.difference: 4.5.0
       lodash.get: 4.4.2
       lodash.sortby: 4.7.0
-      semver: 7.7.4
+      semver: 7.8.0
       ts-json-schema-generator: 1.5.1
 
   '@oclif/plugin-help@6.2.40':
     dependencies:
-      '@oclif/core': 4.11.3
+      '@oclif/core': 4.11.2
 
   '@oclif/plugin-not-found@3.2.77(@types/node@25.1.0)':
     dependencies:
       '@inquirer/prompts': 7.10.1(@types/node@25.1.0)
-      '@oclif/core': 4.11.3
+      '@oclif/core': 4.11.2
       ansis: 3.17.0
       fast-levenshtein: 3.0.0
     transitivePeerDependencies:
@@ -6618,7 +6607,7 @@ snapshots:
 
   '@oclif/plugin-warn-if-update-available@3.1.57':
     dependencies:
-      '@oclif/core': 4.11.3
+      '@oclif/core': 4.11.2
       ansis: 3.17.0
       debug: 4.4.3(supports-color@8.1.1)
       http-call: 5.3.0
@@ -6627,7 +6616,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@oclif/table@0.5.8':
+  '@oclif/table@0.5.7':
     dependencies:
       '@types/react': 18.3.28
       change-case: 5.4.4
@@ -6665,8 +6654,8 @@ snapshots:
 
   '@salesforce/cli-plugins-testkit@5.3.41':
     dependencies:
-      '@salesforce/core': 8.30.4
-      '@salesforce/kit': 3.2.4
+      '@salesforce/core': 8.29.1
+      '@salesforce/kit': 3.2.6
       '@salesforce/ts-types': 2.0.12
       '@types/shelljs': 0.8.17
       debug: 4.4.3(supports-color@8.1.1)
@@ -6679,9 +6668,9 @@ snapshots:
       - encoding
       - supports-color
 
-  '@salesforce/core@8.30.4':
+  '@salesforce/core@8.29.1':
     dependencies:
-      '@jsforce/jsforce-node': 3.10.15
+      '@jsforce/jsforce-node': 3.10.14
       '@salesforce/kit': 3.2.6
       '@salesforce/ts-types': 2.0.12
       ajv: 8.20.0
@@ -6742,10 +6731,6 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  '@salesforce/kit@3.2.4':
-    dependencies:
-      '@salesforce/ts-types': 2.0.12
-
   '@salesforce/kit@3.2.6':
     dependencies:
       '@salesforce/ts-types': 2.0.12
@@ -6754,13 +6739,13 @@ snapshots:
 
   '@salesforce/prettier-config@0.0.4': {}
 
-  '@salesforce/sf-plugins-core@12.2.17(@types/node@25.1.0)':
+  '@salesforce/sf-plugins-core@12.2.16(@types/node@25.1.0)':
     dependencies:
       '@inquirer/confirm': 6.0.13(@types/node@25.1.0)
       '@inquirer/password': 5.0.13(@types/node@25.1.0)
-      '@oclif/core': 4.11.3
-      '@oclif/table': 0.5.8
-      '@salesforce/core': 8.30.4
+      '@oclif/core': 4.11.2
+      '@oclif/table': 0.5.7
+      '@salesforce/core': 8.29.1
       '@salesforce/kit': 3.2.6
       '@salesforce/ts-types': 2.0.12
       ansis: 3.17.0
@@ -8470,7 +8455,7 @@ snapshots:
 
   eslint-plugin-sf-plugin@1.20.33(eslint@8.57.1)(typescript@5.9.3):
     dependencies:
-      '@salesforce/core': 8.30.4
+      '@salesforce/core': 8.29.1
       '@typescript-eslint/utils': 7.18.0(eslint@8.57.1)(typescript@5.9.3)
     transitivePeerDependencies:
       - encoding
@@ -8799,8 +8784,6 @@ snapshots:
   gensync@1.0.0-beta.2: {}
 
   get-caller-file@2.0.5: {}
-
-  get-east-asian-width@1.5.0: {}
 
   get-east-asian-width@1.6.0: {}
 
@@ -9199,7 +9182,7 @@ snapshots:
       type-fest: 4.41.0
       widest-line: 5.0.0
       wrap-ansi: 9.0.2
-      ws: 8.20.1
+      ws: 8.20.0
       yoga-wasm-web: 0.3.3
     optionalDependencies:
       '@types/react': 18.3.28
@@ -9981,7 +9964,7 @@ snapshots:
   normalize-package-data@6.0.2:
     dependencies:
       hosted-git-info: 7.0.2
-      semver: 7.7.4
+      semver: 7.8.0
       validate-npm-package-license: 3.0.4
 
   normalize-path@3.0.0: {}
@@ -9990,7 +9973,7 @@ snapshots:
 
   npm-install-checks@8.0.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.0
 
   npm-normalize-package-bin@5.0.0: {}
 
@@ -9998,7 +9981,7 @@ snapshots:
     dependencies:
       hosted-git-info: 9.0.3
       proc-log: 6.1.0
-      semver: 7.7.4
+      semver: 7.8.0
       validate-npm-package-name: 7.0.2
 
   npm-pick-manifest@11.0.3:
@@ -10006,7 +9989,7 @@ snapshots:
       npm-install-checks: 8.0.0
       npm-normalize-package-bin: 5.0.0
       npm-package-arg: 13.0.2
-      semver: 7.7.4
+      semver: 7.8.0
 
   npm-run-path@4.0.1:
     dependencies:
@@ -10105,7 +10088,7 @@ snapshots:
       got: 13.0.0
       lodash: 4.18.1
       normalize-package-data: 6.0.2
-      semver: 7.7.4
+      semver: 7.8.0
       sort-package-json: 2.15.1
       tiny-jsonc: 1.0.2
       validate-npm-package-name: 5.0.1
@@ -10623,8 +10606,6 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
-  sax@1.5.0: {}
-
   sax@1.6.0: {}
 
   scheduler@0.23.2:
@@ -10793,7 +10774,7 @@ snapshots:
       get-stdin: 9.0.0
       git-hooks-list: 3.2.0
       is-plain-obj: 4.1.0
-      semver: 7.7.4
+      semver: 7.8.0
       sort-object-keys: 1.1.3
       tinyglobby: 0.2.16
 
@@ -10880,7 +10861,7 @@ snapshots:
   string-width@7.2.0:
     dependencies:
       emoji-regex: 10.6.0
-      get-east-asian-width: 1.5.0
+      get-east-asian-width: 1.6.0
       strip-ansi: 7.2.0
 
   string-width@8.2.1:
@@ -11454,11 +11435,11 @@ snapshots:
     dependencies:
       signal-exit: 4.1.0
 
-  ws@8.20.1: {}
+  ws@8.20.0: {}
 
   xml-js@1.6.11:
     dependencies:
-      sax: 1.5.0
+      sax: 1.6.0
 
   xml-naming@0.1.0: {}
 
