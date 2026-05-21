@@ -9,7 +9,7 @@
     "@salesforce/sf-plugins-core": "^12.2.16"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.4.3",
+    "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^20.4.3",
     "@cyclonedx/cdxgen": "12.3.3",
     "@oclif/plugin-command-snapshot": "^5.3.10",
