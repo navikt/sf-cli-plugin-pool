@@ -12,8 +12,8 @@ importers:
         specifier: ^4.11.2
         version: 4.11.2
       '@salesforce/core':
-        specifier: ^8.29.1
-        version: 8.29.1
+        specifier: ^8.30.4
+        version: 8.30.4
       '@salesforce/sf-plugins-core':
         specifier: ^12.2.16
         version: 12.2.16(@types/node@25.1.0)
@@ -846,8 +846,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
-  '@jsforce/jsforce-node@3.10.14':
-    resolution: {integrity: sha512-p8Ug1SypcAT7Q0zZA0+7fyBmgUpB/aXkde4Bxmu0S/O4p28CVwgYvKyFd9vswmHIhFabd/QqUCrlYuVhYdr2Ew==}
+  '@jsforce/jsforce-node@3.10.15':
+    resolution: {integrity: sha512-rtl4MCmy5EzUQ8ehJfjcQCVW2EPCBfopxpZjmXzJrKdtwH6ptjeC5VdyfjS40XNjD7k7heXRZr1jRVU3Ej6kcQ==}
     engines: {node: '>=18'}
 
   '@jsonjoy.com/base64@1.1.2':
@@ -983,8 +983,8 @@ packages:
     resolution: {integrity: sha512-K6fZfvzJAb0WFJFlgyIHgLyWLXR7i2SKDZ069kvCmDN0QVfftp/OwYrtosIzxiXdpHOtcoAkt65M1UR1aw0XzA==}
     engines: {node: '>=16.0.0'}
 
-  '@salesforce/core@8.29.1':
-    resolution: {integrity: sha512-Pdo9yjKU6Lgm3CJOVJPTM4PzUHhTVMX43K5XmClsBEt75fs8mHNFALniHZwnZbVf+TSMfGsUygYAyTX6ShnNQA==}
+  '@salesforce/core@8.30.4':
+    resolution: {integrity: sha512-lMX+X87HbelGU9IA3IOHdP0CDcru1kQG4qDDJXoDYSp8MAcvJpNdOk6P06SutMqKv39XVS3VRfKL5lGiuRcDnA==}
     engines: {node: '>=18.0.0'}
 
   '@salesforce/dev-config@4.3.2':
@@ -6436,7 +6436,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@jsforce/jsforce-node@3.10.14':
+  '@jsforce/jsforce-node@3.10.15':
     dependencies:
       '@sindresorhus/is': 4.6.0
       base64url: 3.0.1
@@ -6510,7 +6510,7 @@ snapshots:
 
   '@npmcli/fs@5.0.0':
     dependencies:
-      semver: 7.8.0
+      semver: 7.7.4
 
   '@npmcli/git@7.0.2':
     dependencies:
@@ -6520,7 +6520,7 @@ snapshots:
       lru-cache: 11.2.5
       npm-pick-manifest: 11.0.3
       proc-log: 6.1.0
-      semver: 7.8.0
+      semver: 7.7.4
       which: 6.0.1
 
   '@npmcli/map-workspaces@5.0.3':
@@ -6539,7 +6539,7 @@ snapshots:
       hosted-git-info: 9.0.3
       json-parse-even-better-errors: 5.0.0
       proc-log: 6.1.0
-      semver: 7.8.0
+      semver: 7.7.4
       spdx-expression-parse: 4.0.0
 
   '@npmcli/promise-spawn@9.0.1':
@@ -6662,7 +6662,7 @@ snapshots:
 
   '@salesforce/cli-plugins-testkit@5.3.41':
     dependencies:
-      '@salesforce/core': 8.29.1
+      '@salesforce/core': 8.30.4
       '@salesforce/kit': 3.2.6
       '@salesforce/ts-types': 2.0.12
       '@types/shelljs': 0.8.17
@@ -6676,9 +6676,9 @@ snapshots:
       - encoding
       - supports-color
 
-  '@salesforce/core@8.29.1':
+  '@salesforce/core@8.30.4':
     dependencies:
-      '@jsforce/jsforce-node': 3.10.14
+      '@jsforce/jsforce-node': 3.10.15
       '@salesforce/kit': 3.2.6
       '@salesforce/ts-types': 2.0.12
       ajv: 8.20.0
@@ -6753,7 +6753,7 @@ snapshots:
       '@inquirer/password': 5.0.13(@types/node@25.1.0)
       '@oclif/core': 4.11.2
       '@oclif/table': 0.5.7
-      '@salesforce/core': 8.29.1
+      '@salesforce/core': 8.30.4
       '@salesforce/kit': 3.2.6
       '@salesforce/ts-types': 2.0.12
       ansis: 3.17.0
@@ -8470,7 +8470,7 @@ snapshots:
 
   eslint-plugin-sf-plugin@1.20.33(eslint@8.57.1)(typescript@5.9.3):
     dependencies:
-      '@salesforce/core': 8.29.1
+      '@salesforce/core': 8.30.4
       '@typescript-eslint/utils': 7.18.0(eslint@8.57.1)(typescript@5.9.3)
     transitivePeerDependencies:
       - encoding
@@ -9984,7 +9984,7 @@ snapshots:
 
   npm-install-checks@8.0.0:
     dependencies:
-      semver: 7.8.0
+      semver: 7.7.4
 
   npm-normalize-package-bin@5.0.0: {}
 
@@ -9992,7 +9992,7 @@ snapshots:
     dependencies:
       hosted-git-info: 9.0.3
       proc-log: 6.1.0
-      semver: 7.8.0
+      semver: 7.7.4
       validate-npm-package-name: 7.0.2
 
   npm-pick-manifest@11.0.3:
@@ -10000,7 +10000,7 @@ snapshots:
       npm-install-checks: 8.0.0
       npm-normalize-package-bin: 5.0.0
       npm-package-arg: 13.0.2
-      semver: 7.8.0
+      semver: 7.7.4
 
   npm-run-path@4.0.1:
     dependencies:
