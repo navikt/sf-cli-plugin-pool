@@ -28,7 +28,7 @@
     "mocha": "^11.7.5",
     "oclif": "^4.22.85",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "wireit": "^0.14.12"
   },
   "engines": {
