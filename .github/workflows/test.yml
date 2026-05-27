@@ -213,11 +213,18 @@ jobs:
           TESTKIT_HUB_USERNAME: ${{ secrets.TESTKIT_HUB_USERNAME }}
           TESTKIT_JWT_CLIENT_ID: ${{ secrets.TESTKIT_JWT_CLIENT_ID }}
           TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }}
+          TESTKIT_HUB_INSTANCE: ${{ secrets.TESTKIT_HUB_INSTANCE }}
         run: |
+          "${TESTKIT_HUB_USERNAME:?Missing TESTKIT_HUB_USERNAME secret}"
+          "${TESTKIT_JWT_CLIENT_ID:?Missing TESTKIT_JWT_CLIENT_ID secret}"
+          "${TESTKIT_JWT_KEY:?Missing TESTKIT_JWT_KEY secret}"
+          "${TESTKIT_HUB_INSTANCE:?Missing TESTKIT_HUB_INSTANCE secret}"
+          
           sf org login jwt \
             --client-id "$TESTKIT_JWT_CLIENT_ID" \
             --jwt-key-file <(printf '%s' "$TESTKIT_JWT_KEY") \
             --username "$TESTKIT_HUB_USERNAME" \
+            --instance-url "$TESTKIT_HUB_INSTANCE" \
             --set-default-dev-hub \
             --alias devhub
       - name: Set up test packages
@@ -273,6 +280,11 @@ jobs:
           TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }}
           TESTKIT_HUB_INSTANCE: ${{ secrets.TESTKIT_HUB_INSTANCE }}
         run: |
+          "${TESTKIT_HUB_USERNAME:?Missing TESTKIT_HUB_USERNAME secret}"
+          "${TESTKIT_JWT_CLIENT_ID:?Missing TESTKIT_JWT_CLIENT_ID secret}"
+          "${TESTKIT_JWT_KEY:?Missing TESTKIT_JWT_KEY secret}"
+          "${TESTKIT_HUB_INSTANCE:?Missing TESTKIT_HUB_INSTANCE secret}"
+          
           sf org login jwt \
             --client-id "$TESTKIT_JWT_CLIENT_ID" \
             --jwt-key-file <(printf '%s' "$TESTKIT_JWT_KEY") \
