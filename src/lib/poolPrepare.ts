@@ -165,6 +165,7 @@ export async function preparePool(
   for (let i = 0; i < gap; i++) {
     let lastError: Error | undefined;
     let orgId: string | undefined;
+    let username: string | undefined;
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
@@ -172,6 +173,7 @@ export async function preparePool(
 
         const created = await deps.createScratchOrg(hubOrg, poolDef.definitionFilePath, poolDef.expirationDays);
         orgId = created.orgId;
+        username = created.username;
         logger.info('Scratch org created', { orgId, username: created.username, tag: poolDef.tag });
         onProgress?.(`[${poolDef.tag}] Scratch org created: ${created.username}`);
 
@@ -203,7 +205,14 @@ export async function preparePool(
         if (orgId) {
           if (!keepFailed) {
             try {
-              await deps.deleteOrg(connection, orgId);
+              /* eslint-disable camelcase */
+              await deps.deleteOrg({
+                Id: orgId,
+                Pool_allocation_status__c: STATUS_FAILED,
+                Pool_tag__c: poolDef.tag,
+                SignupUsername: username,
+              });
+              /* eslint-enable camelcase */
             } catch (deleteError) {
               logger.debug('Failed to delete failed org', {
                 orgId,
@@ -221,6 +230,7 @@ export async function preparePool(
             }
           }
           orgId = undefined;
+          username = undefined;
         }
       }
     }

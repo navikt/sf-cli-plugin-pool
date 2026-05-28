@@ -1,7 +1,13 @@
 import { TestContext } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
 import { Connection, SfError } from '@salesforce/core';
-import { buildTagFilter, aggregatePoolStats, queryPoolOrgs } from '../../src/lib/poolQuery.js';
+import {
+  buildTagFilter,
+  buildStatusFilter,
+  aggregatePoolStats,
+  queryPoolOrgs,
+  queryPoolOrgsForClean,
+} from '../../src/lib/poolQuery.js';
 import { ScratchOrgInfoRow } from '../../src/types/scratch-org-info.js';
 
 describe('poolQuery', () => {
@@ -246,7 +252,9 @@ describe('poolQuery', () => {
       const queryArg = fakeConnection.query.firstCall.args[0] as string;
       expect(queryArg).to.include('Pool_tag__c != null');
       expect(queryArg).to.include("Status = 'Active'");
-      expect(queryArg).to.include('SELECT Id, Pool_allocation_status__c, Pool_tag__c FROM ScratchOrgInfo');
+      expect(queryArg).to.include(
+        'SELECT Id, Pool_allocation_status__c, Pool_tag__c, SignupUsername FROM ScratchOrgInfo'
+      );
     });
 
     it('passes correct SOQL query with specific tags', async () => {
@@ -286,6 +294,134 @@ describe('poolQuery', () => {
         const sfErr = err as SfError;
         expect(sfErr.name).to.equal('PoolQueryError');
         expect(sfErr.message).to.include('Failed to query scratch org pool information from DevHub');
+      }
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // buildStatusFilter
+  // ---------------------------------------------------------------------------
+  describe('buildStatusFilter', () => {
+    it('returns != null for empty array', () => {
+      expect(buildStatusFilter([])).to.equal('!= null');
+    });
+
+    it('returns IN clause for a single status', () => {
+      expect(buildStatusFilter(['failed'])).to.equal("IN ('failed')");
+    });
+
+    it('returns IN clause for multiple statuses', () => {
+      expect(buildStatusFilter(['failed', 'Available'])).to.equal("IN ('failed', 'Available')");
+    });
+
+    it('escapes single quotes in status values', () => {
+      expect(buildStatusFilter(["it's"])).to.equal("IN ('it\\'s')");
+    });
+
+    it('escapes backslashes in status values', () => {
+      expect(buildStatusFilter(['back\\slash'])).to.equal("IN ('back\\\\slash')");
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // queryPoolOrgsForClean
+  // ---------------------------------------------------------------------------
+  describe('queryPoolOrgsForClean', () => {
+    it('returns records from the connection query', async () => {
+      const expectedRecords: ScratchOrgInfoRow[] = [
+        { Id: '001', Pool_allocation_status__c: 'failed', Pool_tag__c: 'pool1' },
+        { Id: '002', Pool_allocation_status__c: 'Available', Pool_tag__c: 'pool1' },
+      ];
+
+      const fakeConnection = {
+        query: $$.SANDBOX.stub().resolves({
+          totalSize: expectedRecords.length,
+          done: true,
+          records: expectedRecords,
+        }),
+      };
+
+      const result = await queryPoolOrgsForClean(fakeConnection as unknown as Connection);
+
+      expect(result).to.deep.equal(expectedRecords);
+    });
+
+    it('constructs SOQL with status filter when statuses are provided', async () => {
+      const fakeConnection = {
+        query: $$.SANDBOX.stub().resolves({ totalSize: 0, done: true, records: [] }),
+      };
+
+      await queryPoolOrgsForClean(fakeConnection as unknown as Connection, [], ['failed']);
+
+      const queryArg = fakeConnection.query.firstCall.args[0] as string;
+      expect(queryArg).to.include("Pool_allocation_status__c IN ('failed')");
+      expect(queryArg).to.include('Pool_tag__c != null');
+      expect(queryArg).to.include("Status = 'Active'");
+    });
+
+    it('constructs SOQL with both tag and status filters', async () => {
+      const fakeConnection = {
+        query: $$.SANDBOX.stub().resolves({ totalSize: 0, done: true, records: [] }),
+      };
+
+      await queryPoolOrgsForClean(fakeConnection as unknown as Connection, ['myPool'], ['failed', 'Available']);
+
+      const queryArg = fakeConnection.query.firstCall.args[0] as string;
+      expect(queryArg).to.include("Pool_tag__c IN ('myPool')");
+      expect(queryArg).to.include("Pool_allocation_status__c IN ('failed', 'Available')");
+      expect(queryArg).to.include("Status = 'Active'");
+    });
+
+    it('uses != null for both filters when no tags or statuses given', async () => {
+      const fakeConnection = {
+        query: $$.SANDBOX.stub().resolves({ totalSize: 0, done: true, records: [] }),
+      };
+
+      await queryPoolOrgsForClean(fakeConnection as unknown as Connection);
+
+      const queryArg = fakeConnection.query.firstCall.args[0] as string;
+      expect(queryArg).to.include('Pool_tag__c != null');
+      expect(queryArg).to.include('Pool_allocation_status__c != null');
+    });
+
+    it('returns empty array when no records match', async () => {
+      const fakeConnection = {
+        query: $$.SANDBOX.stub().resolves({ totalSize: 0, done: true, records: [] }),
+      };
+
+      const result = await queryPoolOrgsForClean(fakeConnection as unknown as Connection, ['noMatch'], ['noStatus']);
+
+      expect(result).to.deep.equal([]);
+    });
+
+    it('throws PoolQueryError on connection failure', async () => {
+      const fakeConnection = {
+        query: $$.SANDBOX.stub().rejects(new Error('INVALID_FIELD: No such column')),
+      };
+
+      try {
+        await queryPoolOrgsForClean(fakeConnection as unknown as Connection);
+        expect.fail('Expected queryPoolOrgsForClean to throw');
+      } catch (err) {
+        expect(err).to.be.instanceOf(SfError);
+        const sfErr = err as SfError;
+        expect(sfErr.name).to.equal('PoolQueryError');
+        expect(sfErr.message).to.include('Failed to query scratch org pool information from DevHub');
+        expect(sfErr.message).to.include('INVALID_FIELD: No such column');
+      }
+    });
+
+    it('wraps non-Error thrown values in SfError message', async () => {
+      const fakeConnection = {
+        query: $$.SANDBOX.stub().rejects('string error'),
+      };
+
+      try {
+        await queryPoolOrgsForClean(fakeConnection as unknown as Connection);
+        expect.fail('Expected queryPoolOrgsForClean to throw');
+      } catch (err) {
+        expect(err).to.be.instanceOf(SfError);
+        expect((err as SfError).name).to.equal('PoolQueryError');
       }
     });
   });
