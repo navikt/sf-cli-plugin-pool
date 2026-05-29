@@ -1,64 +1,118 @@
 # AI Coding Instructions for sf-cli-plugin-pool
 
-This file covers architecture, workflows, and design decisions.
+A Salesforce CLI plugin for managing pools of pre-created scratch organizations.
 For file-specific conventions, see `.github/instructions/` (scoped by `applyTo` patterns).
-For build/test/CI commands, see `AGENTS.md`.
 
-## Logging Strategy
+## Build, Test, and Lint
 
-See `.github/instructions/commands.instructions.md` for command logging and `.github/instructions/lib.instructions.md` for library logging.
+```bash
+pnpm install                       # install dependencies
+pnpm run build                     # compile + lint (via wireit)
+pnpm run lint                      # ESLint on src/ and test/
+pnpm run test:only                 # unit tests with coverage (c8 + mocha)
+pnpm test                          # compile + lint + unit tests
+```
 
-## Critical Workflows
+Run a single test file:
 
-**Common command workflow**:
+```bash
+npx mocha "test/commands/pool/list.test.ts"
+```
 
-1. Parse flags/args (e.g., config file path, pool name, target org)
-2. Validate inputs (error via `SfError` for invalid configs or missing orgs)
-3. Load pool configuration from JSON file
-4. Perform org operations (create/fetch/delete using DevHub context)
-5. Log activity and return structured results (compatible with `--json` output)
+NUTs (integration tests) require DevHub authentication and run in CI only:
+
+```bash
+pnpm run test:nuts
+```
+
+Pre-submit: `pnpm run lint` → `pnpm run test:only` → `pnpm run build` (all must pass).
+
+Coverage thresholds: 75% lines/statements/functions/branches (enforced by c8, see `.c8rc`).
+
+## Architecture
+
+This is an **oclif-based Salesforce CLI plugin** (`sf pool <subcommand>`). Three layers:
+
+```
+src/commands/pool/   →  Thin CLI commands (flag parsing, output formatting)
+src/lib/             →  Business logic (pool operations, SOQL queries, org lifecycle)
+src/types/           →  Pure TypeScript type declarations (no runtime logic)
+messages/            →  User-facing strings as Markdown files (loaded via @salesforce/core Messages)
+test/                →  Mirrors src/ structure; unit tests (*.test.ts) and NUTs (*.nut.ts)
+```
+
+**Pool state** is tracked via two custom fields on `ScratchOrgInfo` in the DevHub:
+
+- `Pool_tag__c` — identifies which pool an org belongs to
+- `Pool_allocation_status__c` — picklist that tracks org status. Available values below, structured as `api_name` Label (description))
+  - `in_progress` - In Progress (being prepared)
+  - `available` - Available (ready to use)
+  - `under_update` - Under Update (being updated with changes)
+  - `failed` - Failed (preparation failed)
+  - `assigned` - Assigned (checked out by a user)
+
+Pool operations work by querying/updating these fields through the DevHub `Connection` using SOQL.
 
 **Pool management lifecycle**:
 
-1. **Prepare**: Parse JSON config → validate pool specs → create orgs in DevHub → tag with pool name → persist pool state
-2. **Fetch**: Load pool state → find available org → mark as allocated → return org credentials
-3. **List**: Load pool state → aggregate counts by pool → display available/total/in-use status
-4. **Clean**: Load pool state → delete failed/stale/expired orgs from DevHub → update pool state
+1. **Prepare**: Parse JSON config → create scratch orgs in DevHub → tag with pool name
+2. **Fetch**: Find available org → mark as allocated → return credentials
+3. **List**: Query pool orgs → aggregate counts by pool/status → display
+4. **Clean**: Query failed/stale/expired orgs → delete from DevHub
 
-**Doctor integration**:
-Commands should register health checks that validate:
+## Key Conventions
 
-- DevHub org is accessible
-- Pool configuration files are readable and valid JSON
-- All tracked orgs still exist in DevHub (cleanup orphaned entries)
+### Commands (`src/commands/`)
+
+- Every command extends `SfCommand<ResultType>` from `@salesforce/sf-plugins-core`
+- All user-facing strings come from message files — never hardcode text
+- Flag names: kebab-case in CLI (`--pool-tag`), camelCase in code (`flags.poolTag`)
+- Return typed result objects compatible with `--json` output
+- Commands are thin: parse flags, call lib functions, format output
+- Use `this.log()` for user output, `this.logToFile()` for debug/doctor logs
+- Errors: `throw new SfError(messages.getMessage('error.key'))`
+
+### Library code (`src/lib/`)
+
+- Contains shared business logic used by multiple commands
+- Use `Logger.childFromRoot('moduleName')` for logging (not `this.log()`)
+- Accept dependencies as parameters (connections, config) for testability
+- Export functions/classes explicitly — no default exports
+- One module per domain concept
+
+### Types (`src/types/`)
+
+- Use `type` (not `interface`) for data shapes
+- No default exports, no runtime logic
+- One file per domain concept
+
+### Messages (`messages/`)
+
+- Markdown files: `messages/pool.<command>.md`
+- `# heading` defines a message key; use `%s` for runtime placeholders
+- Required keys: `summary`, `description`, `examples`, `flags.<name>.summary`
+- Examples use EJS templates: `<%= config.bin %>` and `<%= command.id %>`
+
+### Tests
+
+- Mocha `describe`/`it` with Chai `expect` assertions
+- Every test file uses `TestContext` for sandboxing and `stubSfCommandUx` for output capture
+- Run commands via `CommandClass.run(['--flag', 'value'])`
+- Use `$$.fakeConnectionRequest` to stub SOQL responses
+- NUTs use `TestSession` and `execCmd` from `@salesforce/cli-plugins-testkit`
 
 ## Key Salesforce APIs
 
-When implementing pool logic, explore these classes in `@salesforce/core` (inspect type definitions in node_modules):
+From `@salesforce/core` (inspect type definitions in `node_modules`):
 
-- `Org` — represents a Salesforce org connection. Use `Org.create()` with an alias or username.
-- `AuthInfo` — manages authentication. The DevHub is an authenticated org.
-- `ScratchOrgCreate` / `scratchOrgCreate()` — creates scratch orgs from a definition file.
-- `Connection` — low-level SOQL/API access. Use `org.getConnection()`.
-- `SfError` — standard error class for all thrown errors.
-- `Logger` — structured logging for lib code.
-- `Config` / `ConfigFile` — local persistent key-value storage.
+- `Org` — Salesforce org connection. Use `Org.create()` with alias or username
+- `Connection` — SOQL/API access via `org.getConnection()`
+- `SfError` — standard error class for all thrown errors
+- `Logger` — structured logging for lib code
+- `AuthInfo` — authentication management
 
-Pool state is tracked by tagging scratch orgs with a custom description or field in the DevHub,
-then querying `ScratchOrgInfo` via SOQL through the DevHub connection.
+## Commit Conventions
 
-### Online References
+Enforced by `commitlint` (conventional commits). Use the `conventional-commit` skill when generating commit messages.
 
-- CLI plugin development: https://github.com/salesforcecli/cli/wiki
-- Common coding patterns: https://developer.salesforce.com/docs/platform/salesforce-cli-plugin/guide/common-coding-patterns.html
-- @salesforce/core API: https://forcedotcom.github.io/sfdx-core/
-- Scratch org concepts: https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs.htm
-- Reference plugin (scratch org create/list/delete): https://github.com/salesforcecli/plugin-org
-
-## Commit & PR Conventions
-
-Enforced by `commitlint` (see `commitlint.config.cjs`).
-
-Use the `conventional-commit` skill (`.github/skills/conventional-commit/SKILL.md`) when generating commit messages.
-
-**Scope**: Command name or component (e.g., `pool:prepare`, `poolManager`)
+**Scope**: command name or component (e.g., `pool:prepare`, `poolQuery`)
