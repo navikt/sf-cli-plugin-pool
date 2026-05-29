@@ -215,10 +215,10 @@ jobs:
           TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }}
           TESTKIT_HUB_INSTANCE: ${{ secrets.TESTKIT_HUB_INSTANCE }}
         run: |
-          "${TESTKIT_HUB_USERNAME:?Missing TESTKIT_HUB_USERNAME secret}"
-          "${TESTKIT_JWT_CLIENT_ID:?Missing TESTKIT_JWT_CLIENT_ID secret}"
-          "${TESTKIT_JWT_KEY:?Missing TESTKIT_JWT_KEY secret}"
-          "${TESTKIT_HUB_INSTANCE:?Missing TESTKIT_HUB_INSTANCE secret}"
+          : "${TESTKIT_HUB_USERNAME:?Missing TESTKIT_HUB_USERNAME secret}"
+          : "${TESTKIT_JWT_CLIENT_ID:?Missing TESTKIT_JWT_CLIENT_ID secret}"
+          : "${TESTKIT_JWT_KEY:?Missing TESTKIT_JWT_KEY secret}"
+          : "${TESTKIT_HUB_INSTANCE:?Missing TESTKIT_HUB_INSTANCE secret}"
           
           sf org login jwt \
             --client-id "$TESTKIT_JWT_CLIENT_ID" \
@@ -280,10 +280,10 @@ jobs:
           TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }}
           TESTKIT_HUB_INSTANCE: ${{ secrets.TESTKIT_HUB_INSTANCE }}
         run: |
-          "${TESTKIT_HUB_USERNAME:?Missing TESTKIT_HUB_USERNAME secret}"
-          "${TESTKIT_JWT_CLIENT_ID:?Missing TESTKIT_JWT_CLIENT_ID secret}"
-          "${TESTKIT_JWT_KEY:?Missing TESTKIT_JWT_KEY secret}"
-          "${TESTKIT_HUB_INSTANCE:?Missing TESTKIT_HUB_INSTANCE secret}"
+          : "${TESTKIT_HUB_USERNAME:?Missing TESTKIT_HUB_USERNAME secret}"
+          : "${TESTKIT_JWT_CLIENT_ID:?Missing TESTKIT_JWT_CLIENT_ID secret}"
+          : "${TESTKIT_JWT_KEY:?Missing TESTKIT_JWT_KEY secret}"
+          : "${TESTKIT_HUB_INSTANCE:?Missing TESTKIT_HUB_INSTANCE secret}"
           
           sf org login jwt \
             --client-id "$TESTKIT_JWT_CLIENT_ID" \
@@ -293,7 +293,13 @@ jobs:
             --set-default-dev-hub \
             --alias devhub
       - name: Run NUT tests
-        run: pnpm run test:nuts
+        run: |
+          : "${TESTKIT_HUB_USERNAME:?Missing TESTKIT_HUB_USERNAME secret}"
+          : "${TESTKIT_JWT_CLIENT_ID:?Missing TESTKIT_JWT_CLIENT_ID secret}"
+          : "${TESTKIT_JWT_KEY:?Missing TESTKIT_JWT_KEY secret}"
+          : "${TESTKIT_HUB_INSTANCE:?Missing TESTKIT_HUB_INSTANCE secret}"
+          
+          pnpm run test:nuts
         env:
           TESTKIT_HUB_USERNAME: ${{ secrets.TESTKIT_HUB_USERNAME }} # From @salesforce/cli-plugins-testkit
           TESTKIT_JWT_CLIENT_ID: ${{ secrets.TESTKIT_JWT_CLIENT_ID }} # From @salesforce/cli-plugins-testkit
