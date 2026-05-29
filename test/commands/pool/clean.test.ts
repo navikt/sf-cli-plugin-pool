@@ -128,7 +128,25 @@ describe('pool clean', () => {
     const records: OrgRecord[] = [
       {
         Id: '001',
-        Pool_allocation_status__c: 'Available',
+        Pool_allocation_status__c: 'available',
+        Pool_tag__c: 'pool1',
+        SignupUsername: 'scratch1@example.com',
+      },
+    ];
+    fakeCleanRequests(records);
+
+    const result = await PoolClean.run(['--target-dev-hub', devHub.username, '--status', 'available']);
+
+    expect(result.orgs).to.have.lengthOf(1);
+    expect(result.orgs[0].status).to.equal('available');
+    expect(result.summary.deleted).to.equal(1);
+  });
+
+  it('accepts label-style status values and maps them to API names', async () => {
+    const records: OrgRecord[] = [
+      {
+        Id: '001',
+        Pool_allocation_status__c: 'available',
         Pool_tag__c: 'pool1',
         SignupUsername: 'scratch1@example.com',
       },
@@ -138,19 +156,24 @@ describe('pool clean', () => {
     const result = await PoolClean.run(['--target-dev-hub', devHub.username, '--status', 'Available']);
 
     expect(result.orgs).to.have.lengthOf(1);
-    expect(result.orgs[0].status).to.equal('Available');
+    expect(result.orgs[0].status).to.equal('available');
     expect(result.summary.deleted).to.equal(1);
   });
 
-  it('--all targets all statuses including In Use (with --no-prompt)', async () => {
+  it('--all targets all statuses including assigned (with --no-prompt)', async () => {
     const records: OrgRecord[] = [
       {
         Id: '001',
-        Pool_allocation_status__c: 'Available',
+        Pool_allocation_status__c: 'available',
         Pool_tag__c: 'pool1',
         SignupUsername: 'scratch1@example.com',
       },
-      { Id: '002', Pool_allocation_status__c: 'In Use', Pool_tag__c: 'pool1', SignupUsername: 'scratch2@example.com' },
+      {
+        Id: '002',
+        Pool_allocation_status__c: 'assigned',
+        Pool_tag__c: 'pool1',
+        SignupUsername: 'scratch2@example.com',
+      },
       { Id: '003', Pool_allocation_status__c: 'failed', Pool_tag__c: 'pool1', SignupUsername: 'scratch3@example.com' },
     ];
     fakeCleanRequests(records);
@@ -173,9 +196,14 @@ describe('pool clean', () => {
     }
   });
 
-  it('prompts for confirmation when In Use orgs exist and user confirms', async () => {
+  it('prompts for confirmation when assigned orgs exist and user confirms', async () => {
     const records: OrgRecord[] = [
-      { Id: '001', Pool_allocation_status__c: 'In Use', Pool_tag__c: 'pool1', SignupUsername: 'scratch1@example.com' },
+      {
+        Id: '001',
+        Pool_allocation_status__c: 'assigned',
+        Pool_tag__c: 'pool1',
+        SignupUsername: 'scratch1@example.com',
+      },
       { Id: '002', Pool_allocation_status__c: 'failed', Pool_tag__c: 'pool1', SignupUsername: 'scratch2@example.com' },
     ];
     fakeCleanRequests(records);
@@ -185,7 +213,7 @@ describe('pool clean', () => {
       '--target-dev-hub',
       devHub.username,
       '--status',
-      'In Use',
+      'assigned',
       '--status',
       'failed',
     ]);
@@ -194,14 +222,19 @@ describe('pool clean', () => {
     expect(result.summary.total).to.equal(2);
   });
 
-  it('aborts when user declines confirmation for In Use orgs', async () => {
+  it('aborts when user declines confirmation for assigned orgs', async () => {
     const records: OrgRecord[] = [
-      { Id: '001', Pool_allocation_status__c: 'In Use', Pool_tag__c: 'pool1', SignupUsername: 'scratch1@example.com' },
+      {
+        Id: '001',
+        Pool_allocation_status__c: 'assigned',
+        Pool_tag__c: 'pool1',
+        SignupUsername: 'scratch1@example.com',
+      },
     ];
     fakeCleanRequests(records);
     $$.SANDBOX.stub(PoolClean.prototype, 'confirm').resolves(false);
 
-    const result = await PoolClean.run(['--target-dev-hub', devHub.username, '--status', 'In Use']);
+    const result = await PoolClean.run(['--target-dev-hub', devHub.username, '--status', 'assigned']);
 
     expect(result.orgs).to.deep.equal([]);
     expect(result.summary).to.deep.equal({ deleted: 0, failed: 0, total: 0 });
@@ -209,12 +242,17 @@ describe('pool clean', () => {
 
   it('logs declined message when user aborts', async () => {
     const records: OrgRecord[] = [
-      { Id: '001', Pool_allocation_status__c: 'In Use', Pool_tag__c: 'pool1', SignupUsername: 'scratch1@example.com' },
+      {
+        Id: '001',
+        Pool_allocation_status__c: 'assigned',
+        Pool_tag__c: 'pool1',
+        SignupUsername: 'scratch1@example.com',
+      },
     ];
     fakeCleanRequests(records);
     $$.SANDBOX.stub(PoolClean.prototype, 'confirm').resolves(false);
 
-    await PoolClean.run(['--target-dev-hub', devHub.username, '--status', 'In Use']);
+    await PoolClean.run(['--target-dev-hub', devHub.username, '--status', 'assigned']);
 
     const output = sfCommandStubs.log
       .getCalls()
@@ -223,20 +261,25 @@ describe('pool clean', () => {
     expect(output).to.include('Aborted');
   });
 
-  it('--no-prompt skips confirmation even with In Use orgs', async () => {
+  it('--no-prompt skips confirmation even with assigned orgs', async () => {
     const records: OrgRecord[] = [
-      { Id: '001', Pool_allocation_status__c: 'In Use', Pool_tag__c: 'pool1', SignupUsername: 'scratch1@example.com' },
+      {
+        Id: '001',
+        Pool_allocation_status__c: 'assigned',
+        Pool_tag__c: 'pool1',
+        SignupUsername: 'scratch1@example.com',
+      },
     ];
     fakeCleanRequests(records);
     const confirmStub = $$.SANDBOX.stub(PoolClean.prototype, 'confirm').resolves(true);
 
-    const result = await PoolClean.run(['--target-dev-hub', devHub.username, '--status', 'In Use', '--no-prompt']);
+    const result = await PoolClean.run(['--target-dev-hub', devHub.username, '--status', 'assigned', '--no-prompt']);
 
     expect(confirmStub.called).to.be.false;
     expect(result.summary.deleted).to.equal(1);
   });
 
-  it('does not prompt when no In Use orgs exist', async () => {
+  it('does not prompt when no assigned orgs exist', async () => {
     const records: OrgRecord[] = [
       { Id: '001', Pool_allocation_status__c: 'failed', Pool_tag__c: 'pool1', SignupUsername: 'scratch1@example.com' },
     ];

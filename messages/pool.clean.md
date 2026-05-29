@@ -4,7 +4,7 @@ Delete scratch orgs from a pool.
 
 # description
 
-Deletes scratch orgs from one or more pools. By default only orgs with status 'failed' are targeted. Use --status to target specific statuses, or --all to target every status. When 'In Use' orgs are included, the command prompts for confirmation unless --no-prompt is set.
+Deletes scratch orgs from one or more pools. By default only orgs with status 'Failed' are targeted. Use --status to target specific statuses, or --all to target every status. When 'Assigned' orgs are included, the command prompts for confirmation unless --no-prompt is set.
 
 # examples
 
@@ -18,7 +18,7 @@ Deletes scratch orgs from one or more pools. By default only orgs with status 'f
 
 - Clean scratch orgs with specific statuses.
 
-  <%= config.bin %> <%= command.id %> --status failed --status Available
+  <%= config.bin %> <%= command.id %> --status Failed --status Available
 
 - Clean all scratch orgs from a pool without confirmation.
 
@@ -30,15 +30,15 @@ Tag of the pool to clean. Repeat to target multiple pools.
 
 # flags.status.summary
 
-Allocation status of orgs to delete. Repeat to target multiple statuses. Default: failed.
+Allocation status of orgs to delete. Repeat to target multiple statuses. Default: Failed.
 
 # flags.all.summary
 
-Target all allocation statuses. Prompts for confirmation when 'In Use' orgs are present.
+Target all allocation statuses. Prompts for confirmation when 'Assigned' orgs are present.
 
 # flags.no-prompt.summary
 
-Skip confirmation prompt when deleting 'In Use' orgs.
+Skip confirmation prompt when deleting 'Assigned' orgs.
 
 # info.spinner-start
 
@@ -78,8 +78,8 @@ Deleted: %s, Failed: %s, Total: %s
 
 # prompt.confirm-in-use
 
-This will delete %s 'In Use' scratch org(s). Continue?
+This will delete %s 'Assigned' scratch org(s). Continue?
 
 # error.prompt-declined
 
-Aborted: user declined to delete 'In Use' orgs.
+Aborted: user declined to delete 'Assigned' orgs.

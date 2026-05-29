@@ -7,8 +7,26 @@ import { PoolCleanResult } from '../../types/pool-clean.js';
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('pool', 'pool.clean');
 
-const IN_USE_STATUS = 'In Use';
+const IN_USE_STATUS = 'assigned';
 const DEFAULT_STATUSES = ['failed'];
+
+const STATUS_LABEL_TO_API: Record<string, string> = {
+  'in progress': 'in_progress',
+  available: 'available',
+  'under update': 'under_update',
+  failed: 'failed',
+  assigned: 'assigned',
+};
+
+function normalizeStatusInput(status: string): string {
+  const normalized = status.trim().toLowerCase();
+  if (STATUS_LABEL_TO_API[normalized]) {
+    return STATUS_LABEL_TO_API[normalized];
+  }
+
+  const normalizedApi = normalized.replace(/[\s-]+/g, '_');
+  return STATUS_LABEL_TO_API[normalizedApi.replace(/_/g, ' ')] ?? normalizedApi;
+}
 
 export default class PoolClean extends SfCommand<PoolCleanResult> {
   public static readonly summary = messages.getMessage('summary');
@@ -42,7 +60,7 @@ export default class PoolClean extends SfCommand<PoolCleanResult> {
     const { flags } = await this.parse(PoolClean);
 
     const tags = flags['pool-tag'] ?? [];
-    const statuses = flags.all ? [] : flags.status ?? DEFAULT_STATUSES;
+    const statuses = flags.all ? [] : (flags.status ?? DEFAULT_STATUSES).map(normalizeStatusInput);
     const devhub = flags['target-dev-hub'];
     const connection = devhub.getConnection(flags['api-version']);
 
@@ -61,11 +79,11 @@ export default class PoolClean extends SfCommand<PoolCleanResult> {
       this.log(messages.getMessage('info.found-orgs', [String(orgs.length)]));
     }
 
-    const hasInUse = orgs.some((o) => o.Pool_allocation_status__c === IN_USE_STATUS);
-    if (hasInUse && !flags['no-prompt']) {
-      const inUseCount = orgs.filter((o) => o.Pool_allocation_status__c === IN_USE_STATUS).length;
+    const hasAssigned = orgs.some((o) => o.Pool_allocation_status__c === IN_USE_STATUS);
+    if (hasAssigned && !flags['no-prompt']) {
+      const assignedCount = orgs.filter((o) => o.Pool_allocation_status__c === IN_USE_STATUS).length;
       const confirmed = await this.confirm({
-        message: messages.getMessage('prompt.confirm-in-use', [String(inUseCount)]),
+        message: messages.getMessage('prompt.confirm-in-use', [String(assignedCount)]),
       });
       if (!confirmed) {
         if (!this.jsonEnabled()) {
