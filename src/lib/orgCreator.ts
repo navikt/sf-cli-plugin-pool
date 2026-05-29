@@ -38,16 +38,33 @@ export async function createScratchOrg(
   return { orgId, username };
 }
 
-export async function tagScratchOrg(connection: Connection, orgId: string, tag: string, status: string): Promise<void> {
+export async function tagScratchOrg(
+  connection: Connection,
+  orgId: string,
+  tag: string,
+  status: string,
+  sfdxAuthUrl?: string
+): Promise<void> {
   logger.debug('Tagging scratch org', { orgId, tag, status });
 
   try {
-    /* eslint-disable camelcase */
-    await connection.sobject('ScratchOrgInfo').update({
+    const updatePayload: {
+      Id: string;
+      Pool_tag__c: string;
+      Pool_allocation_status__c: string;
+      Sfdx_Auth_Url__c?: string;
+    } = {
       Id: orgId,
       Pool_tag__c: tag,
       Pool_allocation_status__c: status,
-    });
+    };
+
+    if (sfdxAuthUrl) {
+      updatePayload.Sfdx_Auth_Url__c = sfdxAuthUrl;
+    }
+
+    /* eslint-disable camelcase */
+    await connection.sobject('ScratchOrgInfo').update(updatePayload);
     /* eslint-enable camelcase */
     logger.debug('Scratch org tagged', { orgId, tag, status });
   } catch (error) {

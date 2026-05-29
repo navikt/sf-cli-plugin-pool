@@ -115,6 +115,7 @@ export type PreparePoolDeps = {
   ) => Promise<PackageDependency[]>;
   installPackage: typeof installPackage;
   getTargetOrgConnection: (username: string) => Promise<Connection>;
+  getSfdxAuthUrl: (username: string) => Promise<string>;
 };
 
 const defaultDeps: PreparePoolDeps = {
@@ -126,6 +127,10 @@ const defaultDeps: PreparePoolDeps = {
   getTargetOrgConnection: async (username: string): Promise<Connection> => {
     const authInfo = await AuthInfo.create({ username });
     return Connection.create({ authInfo });
+  },
+  getSfdxAuthUrl: async (username: string): Promise<string> => {
+    const authInfo = await AuthInfo.create({ username });
+    return authInfo.getSfdxAuthUrl();
   },
 };
 
@@ -187,7 +192,8 @@ export async function preparePool(
           onProgress?.(`[${poolDef.tag}] Package '${dep.alias}' installed.`);
         }
 
-        await deps.tagScratchOrg(connection, orgId, poolDef.tag, STATUS_AVAILABLE);
+        const sfdxAuthUrl = await deps.getSfdxAuthUrl(created.username);
+        await deps.tagScratchOrg(connection, orgId, poolDef.tag, STATUS_AVAILABLE, sfdxAuthUrl);
 
         result.created++;
         lastError = undefined;
