@@ -335,7 +335,10 @@ describe('poolPrepare', () => {
       const result = await preparePool(hubOrg, { ...poolDef, count: 1 }, {}, '.', false, undefined, deps);
 
       expect(result.failed).to.equal(1);
-      expect(deleteOrgStub.calledWith($$.SANDBOX.match.any, 'org-fail')).to.be.true;
+      expect(deleteOrgStub.calledOnce).to.be.true;
+      const deleteArg = deleteOrgStub.firstCall.args[0] as { Id: string; SignupUsername?: string };
+      expect(deleteArg.Id).to.equal('org-fail');
+      expect(deleteArg.SignupUsername).to.equal('fail@scratch.org');
     });
 
     it('tags org as Failed when keepFailed is true', async () => {

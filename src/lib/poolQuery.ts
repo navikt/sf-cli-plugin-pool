@@ -30,9 +30,37 @@ export function buildTagFilter(tags: string[]): string {
 
 export async function queryPoolOrgs(connection: Connection, tags: string[] = []): Promise<ScratchOrgInfoRow[]> {
   const tagFilter = buildTagFilter(tags);
-  const query = `SELECT Id, Pool_allocation_status__c, Pool_tag__c FROM ScratchOrgInfo WHERE Pool_tag__c ${tagFilter} AND Status = 'Active'`;
+  const query = `SELECT Id, Pool_allocation_status__c, Pool_tag__c, SignupUsername FROM ScratchOrgInfo WHERE Pool_tag__c ${tagFilter} AND Status = 'Active'`;
 
   logger.debug('Querying pool orgs', { query });
+
+  try {
+    const result = await connection.query<ScratchOrgInfoRow>(query);
+    return result.records;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new SfError(`Failed to query scratch org pool information from DevHub. ${message}`, 'PoolQueryError');
+  }
+}
+
+export function buildStatusFilter(statuses: string[]): string {
+  if (statuses.length === 0) {
+    return '!= null';
+  }
+  const sanitized = statuses.map((s) => `'${escapeSOQL(s)}'`).join(', ');
+  return `IN (${sanitized})`;
+}
+
+export async function queryPoolOrgsForClean(
+  connection: Connection,
+  tags: string[] = [],
+  statuses: string[] = []
+): Promise<ScratchOrgInfoRow[]> {
+  const tagFilter = buildTagFilter(tags);
+  const statusFilter = buildStatusFilter(statuses);
+  const query = `SELECT Id, Pool_allocation_status__c, Pool_tag__c, SignupUsername FROM ScratchOrgInfo WHERE Pool_tag__c ${tagFilter} AND Pool_allocation_status__c ${statusFilter} AND Status = 'Active'`;
+
+  logger.debug('Querying pool orgs for clean', { query });
 
   try {
     const result = await connection.query<ScratchOrgInfoRow>(query);
