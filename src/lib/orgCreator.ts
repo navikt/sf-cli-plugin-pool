@@ -48,6 +48,7 @@ export async function tagScratchOrg(
   logger.debug('Tagging scratch org', { orgId, tag, status });
 
   try {
+    /* eslint-disable camelcase */
     const updatePayload: {
       Id: string;
       Pool_tag__c: string;
@@ -62,8 +63,6 @@ export async function tagScratchOrg(
     if (sfdxAuthUrl) {
       updatePayload.Sfdx_Auth_Url__c = sfdxAuthUrl;
     }
-
-    /* eslint-disable camelcase */
     await connection.sobject('ScratchOrgInfo').update(updatePayload);
     /* eslint-enable camelcase */
     logger.debug('Scratch org tagged', { orgId, tag, status });
