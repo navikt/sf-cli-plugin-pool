@@ -11,8 +11,8 @@
   "devDependencies": {
     "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^21.0.1",
-    "@cyclonedx/cdxgen": "12.4.1",
-    "@oclif/plugin-command-snapshot": "^5.3.21",
+    "@cyclonedx/cdxgen": "12.4.3",
+    "@oclif/plugin-command-snapshot": "^5.3.22",
     "@salesforce/cli-plugins-testkit": "^5.3.58",
     "@salesforce/dev-config": "^4.3.3",
     "@salesforce/dev-scripts": "^11.0.4",
@@ -26,7 +26,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.0.5",
     "mocha": "^11.7.6",
-    "oclif": "^4.23.7",
+    "oclif": "^4.23.8",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "wireit": "^0.14.12"
