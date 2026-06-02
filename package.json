@@ -77,7 +77,7 @@
     "postpack": "sf-clean --ignore-signing-artifacts",
     "prepack": "pnpm run build && oclif manifest && npm shrinkwrap",
     "test": "wireit",
-    "test:nuts": "c8 mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel",
+    "test:nuts": "c8 mocha test/commands/pool/prepare.nut.ts test/commands/pool/list.nut.ts test/commands/pool/fetch.nut.ts test/commands/pool/clean.nut.ts --slow 4500 --timeout 600000",
     "test:only": "wireit",
     "setup:test-packages": "node scripts/setup-test-packages.js",
     "resolve:package-ids": "node scripts/resolve-package-ids.js",
