@@ -25,7 +25,7 @@ describe('pool clean NUTs', () => {
   });
 
   it('should clean a specific pool by tag', () => {
-    const result = execCmd<PoolCleanResult>('pool clean --pool-tag dev-pool --json --no-prompt', {
+    const result = execCmd<PoolCleanResult>('pool clean --pool-tag nut-test-pool --json --no-prompt', {
       ensureExitCode: 0,
     }).jsonOutput?.result;
     expect(result).to.have.property('orgs').that.is.an('array');

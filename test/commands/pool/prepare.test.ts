@@ -38,7 +38,7 @@ describe('pool prepare', () => {
         records: Array.from({ length: 10 }, (_, i) => ({
           Id: `00${i}`,
           Pool_allocation_status__c: 'Available',
-          Pool_tag__c: 'ci-pool',
+          Pool_tag__c: 'nut-test-pool',
         })),
         /* eslint-enable camelcase */
       });
@@ -46,28 +46,24 @@ describe('pool prepare', () => {
     const result = await PoolPrepare.run(['--target-dev-hub', devHub.username, '--config-file', configFixture]);
 
     expect(result.pools).to.have.length.greaterThan(0);
-    const ciPool = result.pools.find((p) => p.tag === 'ci-pool');
+    const ciPool = result.pools.find((p) => p.tag === 'nut-test-pool');
     expect(ciPool?.skipped).to.be.true;
     expect(ciPool?.created).to.equal(0);
   });
 
   it('returns pools array in JSON result', async () => {
-    $$.fakeConnectionRequest = (request: unknown) => {
-      const soql = (request as { url?: string })?.url ?? '';
-      const tag = soql.includes('dev-pool') ? 'dev-pool' : 'ci-pool';
-      const count = tag === 'dev-pool' ? 5 : 10;
-      return Promise.resolve({
-        totalSize: count,
+    $$.fakeConnectionRequest = () =>
+      Promise.resolve({
+        totalSize: 5,
         done: true,
         /* eslint-disable camelcase */
-        records: Array.from({ length: count }, (_, i) => ({
+        records: Array.from({ length: 5 }, (_, i) => ({
           Id: `00${i}`,
           Pool_allocation_status__c: 'Available',
-          Pool_tag__c: tag,
+          Pool_tag__c: 'nut-test-pool',
         })),
         /* eslint-enable camelcase */
       });
-    };
 
     const result = await PoolPrepare.run(['--target-dev-hub', devHub.username, '--config-file', configFixture]);
 
