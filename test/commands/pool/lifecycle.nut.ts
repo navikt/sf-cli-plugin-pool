@@ -1,4 +1,4 @@
-import { execCmd, TestSession } from '@salesforce/cli-plugins-testkit';
+import { execCmd } from '@salesforce/cli-plugins-testkit';
 import { expect } from 'chai';
 import { PoolPrepareCommandResult } from '../../../src/commands/pool/prepare.js';
 import { PoolListResult } from '../../../src/commands/pool/list.js';
@@ -6,16 +6,6 @@ import { PoolFetchResult } from '../../../src/types/pool-fetch.js';
 import { PoolCleanResult } from '../../../src/types/pool-clean.js';
 
 describe('pool lifecycle NUTs', () => {
-  let testSession: TestSession;
-
-  before(async () => {
-    testSession = await TestSession.create({ devhubAuthStrategy: 'AUTO' });
-  });
-
-  after(async () => {
-    await testSession?.clean();
-  });
-
   it('should prepare the pool and return valid JSON', () => {
     const result = execCmd<PoolPrepareCommandResult>('pool prepare --config-file config/pool-example.json --json', {
       ensureExitCode: 0,
