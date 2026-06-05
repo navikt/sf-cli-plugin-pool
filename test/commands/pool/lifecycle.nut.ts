@@ -1,4 +1,4 @@
-import { execCmd } from '@salesforce/cli-plugins-testkit';
+import { execCmd, ExecCmdResult } from '@salesforce/cli-plugins-testkit';
 import { expect } from 'chai';
 import { PoolPrepareCommandResult } from '../../../src/commands/pool/prepare.js';
 import { PoolListResult } from '../../../src/commands/pool/list.js';
@@ -8,13 +8,28 @@ import { PoolCleanResult } from '../../../src/types/pool-clean.js';
 describe('pool lifecycle NUTs', () => {
   const targetDevHubFlag = '--target-dev-hub testdevhub';
 
+  const logCommandOutput = (command: string, output: ExecCmdResult<unknown>) => {
+    process.stderr.write(`[NUT DEBUG] Command: ${command}\n`);
+    process.stderr.write(`[NUT DEBUG] stdout:\n${output.shellOutput.stdout}\n`);
+    process.stderr.write(`[NUT DEBUG] stderr:\n${output.shellOutput.stderr}\n`);
+    process.stderr.write(`[NUT DEBUG] jsonOutput:\n${JSON.stringify(output.jsonOutput, null, 2)}\n`);
+  };
+
+  const execJsonResult = <T>(command: string, ensureExitCode = 0): T => {
+    const output = execCmd<T>(command, { ensureExitCode });
+
+    if (!output.jsonOutput?.result) {
+      logCommandOutput(command, output);
+      expect.fail(`Expected JSON result for command: ${command}`);
+    }
+
+    return output.jsonOutput.result;
+  };
+
   it('should prepare the pool and return valid JSON', () => {
-    const result = execCmd<PoolPrepareCommandResult>(
-      `pool prepare ${targetDevHubFlag} --config-file config/pool-example.json --json`,
-      {
-        ensureExitCode: 0,
-      }
-    ).jsonOutput?.result;
+    const result = execJsonResult<PoolPrepareCommandResult>(
+      `pool prepare ${targetDevHubFlag} --config-file config/pool-example.json --json`
+    );
 
     expect(result).to.have.property('pools').that.is.an('array');
     expect(result?.pools).to.have.lengthOf(1);
@@ -36,12 +51,9 @@ describe('pool lifecycle NUTs', () => {
   });
 
   it('should skip prepare when the pool is already at capacity', () => {
-    const result = execCmd<PoolPrepareCommandResult>(
-      `pool prepare ${targetDevHubFlag} --config-file config/pool-example.json --json`,
-      {
-        ensureExitCode: 0,
-      }
-    ).jsonOutput?.result;
+    const result = execJsonResult<PoolPrepareCommandResult>(
+      `pool prepare ${targetDevHubFlag} --config-file config/pool-example.json --json`
+    );
 
     expect(result?.pools).to.have.lengthOf(1);
 
@@ -51,9 +63,7 @@ describe('pool lifecycle NUTs', () => {
   });
 
   it('should list the prepared pool with an available org', () => {
-    const result = execCmd<PoolListResult>(`pool list ${targetDevHubFlag} --pool-tag nut-test-pool --json`, {
-      ensureExitCode: 0,
-    }).jsonOutput?.result;
+    const result = execJsonResult<PoolListResult>(`pool list ${targetDevHubFlag} --pool-tag nut-test-pool --json`);
 
     expect(result).to.have.property('pools').that.is.an('array');
     expect(result?.totals.totalOrgs).to.equal(1);
@@ -74,12 +84,9 @@ describe('pool lifecycle NUTs', () => {
   });
 
   it('should fetch the org with an alias and return valid JSON', () => {
-    const result = execCmd<PoolFetchResult>(
-      `pool fetch ${targetDevHubFlag} --pool-tag nut-test-pool --alias nutAlias --json`,
-      {
-        ensureExitCode: 0,
-      }
-    ).jsonOutput?.result;
+    const result = execJsonResult<PoolFetchResult>(
+      `pool fetch ${targetDevHubFlag} --pool-tag nut-test-pool --alias nutAlias --json`
+    );
 
     expect(result).to.have.property('username').that.is.a('string');
     expect(result).to.have.property('orgId').that.is.a('string');
@@ -88,9 +95,7 @@ describe('pool lifecycle NUTs', () => {
   });
 
   it('should mark the fetched org as assigned', () => {
-    const result = execCmd<PoolListResult>(`pool list ${targetDevHubFlag} --pool-tag nut-test-pool --json`, {
-      ensureExitCode: 0,
-    }).jsonOutput?.result;
+    const result = execJsonResult<PoolListResult>(`pool list ${targetDevHubFlag} --pool-tag nut-test-pool --json`);
 
     const pool = result?.pools.find((entry) => entry.tag === 'nut-test-pool');
     expect(pool).to.exist;
@@ -102,16 +107,18 @@ describe('pool lifecycle NUTs', () => {
       ensureExitCode: 1,
     });
 
+    if (!output.jsonOutput) {
+      logCommandOutput(`pool fetch ${targetDevHubFlag} --pool-tag nonexistent-pool-xyz --json`, output);
+      expect.fail('Expected JSON error output for nonexistent pool fetch');
+    }
+
     expect(output.jsonOutput?.name).to.include('Error');
   });
 
   it('should clean the pool and return valid JSON', () => {
-    const result = execCmd<PoolCleanResult>(
-      `pool clean ${targetDevHubFlag} --pool-tag nut-test-pool --all --json --no-prompt`,
-      {
-        ensureExitCode: 0,
-      }
-    ).jsonOutput?.result;
+    const result = execJsonResult<PoolCleanResult>(
+      `pool clean ${targetDevHubFlag} --pool-tag nut-test-pool --all --json --no-prompt`
+    );
 
     expect(result).to.have.property('orgs').that.is.an('array');
     expect(result).to.have.property('summary');
