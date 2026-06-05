@@ -6,10 +6,15 @@ import { PoolFetchResult } from '../../../src/types/pool-fetch.js';
 import { PoolCleanResult } from '../../../src/types/pool-clean.js';
 
 describe('pool lifecycle NUTs', () => {
+  const targetDevHubFlag = '--target-dev-hub testdevhub';
+
   it('should prepare the pool and return valid JSON', () => {
-    const result = execCmd<PoolPrepareCommandResult>('pool prepare --config-file config/pool-example.json --json', {
-      ensureExitCode: 0,
-    }).jsonOutput?.result;
+    const result = execCmd<PoolPrepareCommandResult>(
+      `pool prepare ${targetDevHubFlag} --config-file config/pool-example.json --json`,
+      {
+        ensureExitCode: 0,
+      }
+    ).jsonOutput?.result;
 
     expect(result).to.have.property('pools').that.is.an('array');
     expect(result?.pools).to.have.lengthOf(1);
@@ -22,7 +27,7 @@ describe('pool lifecycle NUTs', () => {
   });
 
   it('should produce human-readable prepare output', () => {
-    const output = execCmd('pool prepare --config-file config/pool-example.json', {
+    const output = execCmd(`pool prepare ${targetDevHubFlag} --config-file config/pool-example.json`, {
       ensureExitCode: 0,
     }).shellOutput.stdout;
 
@@ -31,9 +36,12 @@ describe('pool lifecycle NUTs', () => {
   });
 
   it('should skip prepare when the pool is already at capacity', () => {
-    const result = execCmd<PoolPrepareCommandResult>('pool prepare --config-file config/pool-example.json --json', {
-      ensureExitCode: 0,
-    }).jsonOutput?.result;
+    const result = execCmd<PoolPrepareCommandResult>(
+      `pool prepare ${targetDevHubFlag} --config-file config/pool-example.json --json`,
+      {
+        ensureExitCode: 0,
+      }
+    ).jsonOutput?.result;
 
     expect(result?.pools).to.have.lengthOf(1);
 
@@ -43,7 +51,7 @@ describe('pool lifecycle NUTs', () => {
   });
 
   it('should list the prepared pool with an available org', () => {
-    const result = execCmd<PoolListResult>('pool list --pool-tag nut-test-pool --json', {
+    const result = execCmd<PoolListResult>(`pool list ${targetDevHubFlag} --pool-tag nut-test-pool --json`, {
       ensureExitCode: 0,
     }).jsonOutput?.result;
 
@@ -57,16 +65,21 @@ describe('pool lifecycle NUTs', () => {
   });
 
   it('should produce human-readable list output', () => {
-    const output = execCmd('pool list --pool-tag nut-test-pool', { ensureExitCode: 0 }).shellOutput.stdout;
+    const output = execCmd(`pool list ${targetDevHubFlag} --pool-tag nut-test-pool`, {
+      ensureExitCode: 0,
+    }).shellOutput.stdout;
 
     expect(output).to.include('Scratch Org Pool Totals');
     expect(output).to.include('Total Scratch Orgs in the Pool');
   });
 
   it('should fetch the org with an alias and return valid JSON', () => {
-    const result = execCmd<PoolFetchResult>('pool fetch --pool-tag nut-test-pool --alias nutAlias --json', {
-      ensureExitCode: 0,
-    }).jsonOutput?.result;
+    const result = execCmd<PoolFetchResult>(
+      `pool fetch ${targetDevHubFlag} --pool-tag nut-test-pool --alias nutAlias --json`,
+      {
+        ensureExitCode: 0,
+      }
+    ).jsonOutput?.result;
 
     expect(result).to.have.property('username').that.is.a('string');
     expect(result).to.have.property('orgId').that.is.a('string');
@@ -75,7 +88,7 @@ describe('pool lifecycle NUTs', () => {
   });
 
   it('should mark the fetched org as assigned', () => {
-    const result = execCmd<PoolListResult>('pool list --pool-tag nut-test-pool --json', {
+    const result = execCmd<PoolListResult>(`pool list ${targetDevHubFlag} --pool-tag nut-test-pool --json`, {
       ensureExitCode: 0,
     }).jsonOutput?.result;
 
@@ -85,7 +98,7 @@ describe('pool lifecycle NUTs', () => {
   });
 
   it('should fail when fetching from a nonexistent pool', () => {
-    const output = execCmd('pool fetch --pool-tag nonexistent-pool-xyz --json', {
+    const output = execCmd(`pool fetch ${targetDevHubFlag} --pool-tag nonexistent-pool-xyz --json`, {
       ensureExitCode: 1,
     });
 
@@ -93,9 +106,12 @@ describe('pool lifecycle NUTs', () => {
   });
 
   it('should clean the pool and return valid JSON', () => {
-    const result = execCmd<PoolCleanResult>('pool clean --pool-tag nut-test-pool --all --json --no-prompt', {
-      ensureExitCode: 0,
-    }).jsonOutput?.result;
+    const result = execCmd<PoolCleanResult>(
+      `pool clean ${targetDevHubFlag} --pool-tag nut-test-pool --all --json --no-prompt`,
+      {
+        ensureExitCode: 0,
+      }
+    ).jsonOutput?.result;
 
     expect(result).to.have.property('orgs').that.is.an('array');
     expect(result).to.have.property('summary');
@@ -105,7 +121,7 @@ describe('pool lifecycle NUTs', () => {
   });
 
   it('should produce human-readable clean output', () => {
-    const output = execCmd('pool clean --pool-tag nut-test-pool --all --no-prompt', {
+    const output = execCmd(`pool clean ${targetDevHubFlag} --pool-tag nut-test-pool --all --no-prompt`, {
       ensureExitCode: 0,
     }).shellOutput.stdout;
 

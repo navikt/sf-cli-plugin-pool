@@ -226,9 +226,9 @@ jobs:
             --username "$TESTKIT_HUB_USERNAME" \
             --instance-url "$TESTKIT_HUB_INSTANCE" \
             --set-default-dev-hub \
-            --alias devhub
+            --alias testdevhub
       - name: Set up test packages
-        run: node scripts/setup-test-packages.js --target-dev-hub devhub --yes
+        run: node scripts/setup-test-packages.js --target-dev-hub testdevhub --yes
       - name: Upload generated sfdx-project.json
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -240,7 +240,7 @@ jobs:
       - name: Logout from Dev Hub
         if: always()
         shell: bash
-        run: sf org logout --target-org devhub --no-prompt || true
+        run: sf org logout --target-org testdevhub --no-prompt || true
 
   nuts:
     name: NUTs
@@ -291,7 +291,30 @@ jobs:
             --username "$TESTKIT_HUB_USERNAME" \
             --instance-url "$TESTKIT_HUB_INSTANCE" \
             --set-default-dev-hub \
-            --alias devhub
+            --alias testdevhub
+      - name: Preflight DevHub safety check
+        shell: bash
+        env:
+          TESTKIT_HUB_USERNAME: ${{ secrets.TESTKIT_HUB_USERNAME }}
+        run: |
+          : "${TESTKIT_HUB_USERNAME:?Missing TESTKIT_HUB_USERNAME secret}"
+
+          # Safety check: fail fast if the active target-dev-hub is not the dedicated NUT alias/user.
+          config_json="$(sf config get target-dev-hub --json)"
+          config_value="$(printf '%s' "$config_json" | node -e "let data='';process.stdin.on('data',(c)=>data+=c);process.stdin.on('end',()=>{const json=JSON.parse(data);const value=(json.result||[]).find((entry)=>entry.name==='target-dev-hub')?.value||'';process.stdout.write(value);});")"
+
+          if [[ "$config_value" != 'testdevhub' && "$config_value" != "$TESTKIT_HUB_USERNAME" ]]; then
+            echo "Unexpected target-dev-hub value: '$config_value'"
+            exit 1
+          fi
+
+          org_json="$(sf org display --target-org testdevhub --json)"
+          org_username="$(printf '%s' "$org_json" | node -e "let data='';process.stdin.on('data',(c)=>data+=c);process.stdin.on('end',()=>{const json=JSON.parse(data);process.stdout.write(json.result?.username||'');});")"
+
+          if [[ "$org_username" != "$TESTKIT_HUB_USERNAME" ]]; then
+            echo "Authenticated org username '$org_username' does not match TESTKIT_HUB_USERNAME '$TESTKIT_HUB_USERNAME'"
+            exit 1
+          fi
       - name: Run NUT tests
         run: |
           : "${TESTKIT_HUB_USERNAME:?Missing TESTKIT_HUB_USERNAME secret}"
@@ -308,7 +331,7 @@ jobs:
       - name: Logout from Dev Hub
         if: always()
         shell: bash
-        run: sf org logout --target-org devhub --no-prompt || true
+        run: sf org logout --target-org testdevhub --no-prompt || true
 
   nuts-status:
     name: NUT Status
