@@ -18,8 +18,9 @@ describe('pool lifecycle NUTs', () => {
   const execJsonResult = <T>(command: string, ensureExitCode = 0): T => {
     const output = execCmd<T>(command, { ensureExitCode });
 
+    logCommandOutput(command, output);
+
     if (!output.jsonOutput?.result) {
-      logCommandOutput(command, output);
       expect.fail(`Expected JSON result for command: ${command}`);
     }
 
