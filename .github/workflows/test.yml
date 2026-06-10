@@ -70,6 +70,14 @@ jobs:
             fs.appendFileSync(outputFile, `${name}=${value}\n`);
           };
 
+          // Temporary bypass for all NUTs due to upstream Salesforce CLI / platform issue (C-1016).
+          // Tracking: https://github.com/forcedotcom/cli/issues/3515
+          writeOutput('nuts_by_path', 'false');
+          writeOutput('nuts_by_runtime_deps', 'false');
+          writeOutput('run_nuts', 'false');
+          writeOutput('decision_reason', 'temporarily_disabled_c1016_upstream_cli_3515');
+          process.exit(0);
+
           const eventName = process.env.GITHUB_EVENT_NAME;
 
           if (eventName === 'workflow_dispatch') {
