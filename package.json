@@ -2,7 +2,7 @@
   "name": "pool",
   "description": "A plugin for scratch org pooling.",
   "version": "1.0.0",
-  "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319",
+  "packageManager": "pnpm@11.5.3+sha512.7ac1c919341c213a34dc0d02afb7143c5c26ac26ee8c4782deea821b8ac64d2134a081fd8941dae6e29bbb48f58dfc2b7fbceeccc07cb2f09d219d342a4969ed",
   "dependencies": {
     "@oclif/core": "^4.11.3",
     "@salesforce/core": "^8.30.4",
@@ -27,6 +27,7 @@
     "lint-staged": "^17.0.7",
     "mocha": "^11.7.6",
     "oclif": "^4.23.10",
+    "prettier": "2.8.8",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "wireit": "^0.14.12"
@@ -77,7 +78,7 @@
     "postpack": "sf-clean --ignore-signing-artifacts",
     "prepack": "pnpm run build && oclif manifest && npm shrinkwrap",
     "test": "wireit",
-    "test:nuts": "c8 mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel",
+    "test:nuts": "c8 mocha test/commands/pool/lifecycle.nut.ts --slow 4500 --timeout 600000 --bail",
     "test:only": "wireit",
     "setup:test-packages": "node scripts/setup-test-packages.js",
     "resolve:package-ids": "node scripts/resolve-package-ids.js",

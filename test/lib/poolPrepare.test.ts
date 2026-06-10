@@ -217,6 +217,9 @@ describe('poolPrepare', () => {
         readSfdxProjectDependencies: readDepsStub as unknown as PreparePoolDeps['readSfdxProjectDependencies'],
         installPackage: installPackageStub as unknown as PreparePoolDeps['installPackage'],
         getTargetOrgConnection: $$.SANDBOX.stub().resolves({}) as unknown as PreparePoolDeps['getTargetOrgConnection'],
+        getSfdxAuthUrl: $$.SANDBOX.stub().resolves(
+          'force://test-auth-url'
+        ) as unknown as PreparePoolDeps['getSfdxAuthUrl'],
       };
     });
 
@@ -374,6 +377,20 @@ describe('poolPrepare', () => {
       await preparePool(hubOrg, poolDef, {}, '.', false, '58.0', deps);
 
       expect(getConnectionSpy.calledWith('58.0')).to.be.true;
+    });
+
+    it('stores sfdxAuthUrl on ScratchOrgInfo after org creation', async () => {
+      $$.fakeConnectionRequest = () => Promise.resolve({ totalSize: 0, done: true, records: [] });
+
+      createScratchOrgStub.resolves({ orgId: 'org-auth', username: 'auth@scratch.org' });
+      const getSfdxAuthUrlStub = deps.getSfdxAuthUrl as ReturnType<typeof $$.SANDBOX.stub>;
+      getSfdxAuthUrlStub.resolves('force://PlatformCLI::refresh-token@test.salesforce.com');
+
+      const hubOrg = await Org.create({ aliasOrUsername: devHub.username });
+      await preparePool(hubOrg, { ...poolDef, count: 1 }, {}, '.', false, undefined, deps);
+
+      expect(getSfdxAuthUrlStub.calledOnce).to.be.true;
+      expect(getSfdxAuthUrlStub.calledWith('auth@scratch.org')).to.be.true;
     });
   });
 });
