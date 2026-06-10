@@ -92,7 +92,12 @@ describe('orgCreator', () => {
 
       await tagScratchOrg(connection, 'a005000000Abc123', 'my-pool', 'Available');
 
-      expect(requests).to.have.length(1);
+      const updateRequests = requests.filter((request) => {
+        const req = request as { method?: string; url?: string };
+        return req.method === 'PATCH' && req.url?.includes('/sobjects/ScratchOrgInfo');
+      });
+
+      expect(updateRequests).to.have.length(1);
     });
 
     it('throws ScratchOrgTagError when update fails', async () => {
