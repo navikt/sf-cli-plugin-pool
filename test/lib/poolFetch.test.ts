@@ -1,8 +1,9 @@
 import { TestContext, MockTestOrgData } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
 import { SfError } from '@salesforce/core';
-import { queryOldestAvailableOrg, assignOrg, fetchPoolOrg } from '../../src/lib/poolFetch.js';
+import { queryAvailableOrgs, claimOrg, isContentionError, fetchPoolOrg } from '../../src/lib/poolFetch.js';
 import type { FetchPoolDeps, AuthenticateResult } from '../../src/lib/poolFetch.js';
+import type { ScratchOrgInfoRow } from '../../src/types/scratch-org-info.js';
 
 /* eslint-disable camelcase */
 describe('poolFetch', () => {
@@ -27,8 +28,8 @@ describe('poolFetch', () => {
     $$.restore();
   });
 
-  describe('queryOldestAvailableOrg', () => {
-    it('returns the oldest available org', async () => {
+  describe('queryAvailableOrgs', () => {
+    it('returns available orgs', async () => {
       $$.fakeConnectionRequest = () =>
         Promise.resolve({
           totalSize: 1,
@@ -46,21 +47,21 @@ describe('poolFetch', () => {
         });
 
       const connection = await devHub.getConnection();
-      const result = await queryOldestAvailableOrg(connection, 'myPool');
+      const result = await queryAvailableOrgs(connection, 'myPool');
 
-      expect(result).to.not.be.null;
-      expect(result!.Id).to.equal('001');
-      expect(result!.SignupUsername).to.equal('scratch1@example.com');
-      expect(result!.Sfdx_Auth_Url__c).to.equal('force://PlatformCLI::token@test.salesforce.com');
+      expect(result).to.have.length(1);
+      expect(result[0].Id).to.equal('001');
+      expect(result[0].SignupUsername).to.equal('scratch1@example.com');
+      expect(result[0].Sfdx_Auth_Url__c).to.equal('force://PlatformCLI::token@test.salesforce.com');
     });
 
-    it('returns null when no available orgs exist', async () => {
+    it('returns an empty array when no available orgs exist', async () => {
       $$.fakeConnectionRequest = () => Promise.resolve({ totalSize: 0, done: true, records: [] });
 
       const connection = await devHub.getConnection();
-      const result = await queryOldestAvailableOrg(connection, 'emptyPool');
+      const result = await queryAvailableOrgs(connection, 'emptyPool');
 
-      expect(result).to.be.null;
+      expect(result).to.deep.equal([]);
     });
 
     it('throws PoolFetchQueryError on query failure', async () => {
@@ -68,7 +69,7 @@ describe('poolFetch', () => {
 
       const connection = await devHub.getConnection();
       try {
-        await queryOldestAvailableOrg(connection, 'myPool');
+        await queryAvailableOrgs(connection, 'myPool');
         expect.fail('Expected error');
       } catch (err) {
         expect(err).to.be.instanceOf(SfError);
@@ -77,20 +78,57 @@ describe('poolFetch', () => {
     });
   });
 
-  describe('assignOrg', () => {
-    it('updates org status to assigned', async () => {
-      $$.fakeConnectionRequest = () => Promise.resolve({});
-
-      const connection = await devHub.getConnection();
-      await assignOrg(connection, '001');
+  describe('isContentionError', () => {
+    it('detects the validation-rule status code', () => {
+      expect(isContentionError({ errorCode: 'FIELD_CUSTOM_VALIDATION_EXCEPTION' })).to.be.true;
+      expect(isContentionError(new Error('FIELD_CUSTOM_VALIDATION_EXCEPTION: token already set'))).to.be.true;
     });
 
-    it('throws PoolFetchAssignError on update failure', async () => {
+    it('returns false for unrelated errors', () => {
+      expect(isContentionError(new Error('Connection reset'))).to.be.false;
+      expect(isContentionError(null)).to.be.false;
+    });
+  });
+
+  describe('claimOrg', () => {
+    it('returns true when the claim succeeds', async () => {
+      $$.fakeConnectionRequest = () => Promise.resolve({ id: '001', success: true, errors: [] });
+
+      const connection = await devHub.getConnection();
+      const won = await claimOrg(connection, '001', 'token-1');
+      expect(won).to.be.true;
+    });
+
+    it('returns false when a validation rule rejects the claim (thrown)', async () => {
+      $$.fakeConnectionRequest = () =>
+        Promise.reject(
+          Object.assign(new Error('token already set'), { errorCode: 'FIELD_CUSTOM_VALIDATION_EXCEPTION' }),
+        );
+
+      const connection = await devHub.getConnection();
+      const won = await claimOrg(connection, '001', 'token-1');
+      expect(won).to.be.false;
+    });
+
+    it('returns false when the save result reports a validation rule rejection', async () => {
+      $$.fakeConnectionRequest = () =>
+        Promise.resolve({
+          id: '001',
+          success: false,
+          errors: [{ statusCode: 'FIELD_CUSTOM_VALIDATION_EXCEPTION', message: 'token already set' }],
+        });
+
+      const connection = await devHub.getConnection();
+      const won = await claimOrg(connection, '001', 'token-1');
+      expect(won).to.be.false;
+    });
+
+    it('throws PoolFetchAssignError on a non-contention failure', async () => {
       $$.fakeConnectionRequest = () => Promise.reject(new Error('Update failed'));
 
       const connection = await devHub.getConnection();
       try {
-        await assignOrg(connection, '001');
+        await claimOrg(connection, '001', 'token-1');
         expect.fail('Expected error');
       } catch (err) {
         expect(err).to.be.instanceOf(SfError);
@@ -101,36 +139,47 @@ describe('poolFetch', () => {
 
   describe('fetchPoolOrg', () => {
     let queryStub: ReturnType<typeof $$.SANDBOX.stub>;
-    let assignStub: ReturnType<typeof $$.SANDBOX.stub>;
+    let claimStub: ReturnType<typeof $$.SANDBOX.stub>;
     let authStub: ReturnType<typeof $$.SANDBOX.stub>;
     let setupStub: ReturnType<typeof $$.SANDBOX.stub>;
+    let sleepStub: ReturnType<typeof $$.SANDBOX.stub>;
     let deps: FetchPoolDeps;
+
+    const org = (overrides: Partial<ScratchOrgInfoRow> = {}): ScratchOrgInfoRow => ({
+      Id: '001',
+      Pool_allocation_status__c: 'available',
+      Pool_tag__c: 'devPool',
+      SignupUsername: 'user@scratch.org',
+      CreatedDate: '2025-01-01T00:00:00.000Z',
+      Sfdx_Auth_Url__c: 'force://PlatformCLI::token@test.salesforce.com',
+      ...overrides,
+    });
 
     beforeEach(() => {
       queryStub = $$.SANDBOX.stub();
-      assignStub = $$.SANDBOX.stub().resolves();
+      claimStub = $$.SANDBOX.stub().resolves(true);
       authStub = $$.SANDBOX.stub();
       setupStub = $$.SANDBOX.stub().resolves();
+      sleepStub = $$.SANDBOX.stub().resolves();
 
       deps = {
-        queryOldestAvailableOrg: queryStub as unknown as FetchPoolDeps['queryOldestAvailableOrg'],
-        assignOrg: assignStub as unknown as FetchPoolDeps['assignOrg'],
+        queryAvailableOrgs: queryStub as unknown as FetchPoolDeps['queryAvailableOrgs'],
+        claimOrg: claimStub as unknown as FetchPoolDeps['claimOrg'],
         authenticateToOrg: authStub as unknown as FetchPoolDeps['authenticateToOrg'],
         handlePostFetchSetup: setupStub as unknown as FetchPoolDeps['handlePostFetchSetup'],
+        generateToken: () => 'fixed-token',
+        sleep: sleepStub as unknown as FetchPoolDeps['sleep'],
       };
     });
 
-    it('fetches the oldest available org and authenticates', async () => {
-      queryStub.resolves({
-        Id: '001',
-        Pool_allocation_status__c: 'available',
-        Pool_tag__c: 'devPool',
-        SignupUsername: 'user@scratch.org',
-        CreatedDate: '2025-01-01T00:00:00.000Z',
-        Sfdx_Auth_Url__c: 'force://PlatformCLI::token@test.salesforce.com',
-      });
-      const fakeAuthInfo = { getUsername: () => 'user@scratch.org' };
+    function stubAuthSuccess(username = 'user@scratch.org'): void {
+      const fakeAuthInfo = { getUsername: () => username };
       authStub.resolves({ authInfo: fakeAuthInfo, instanceUrl: 'https://test.salesforce.com' } as AuthenticateResult);
+    }
+
+    it('claims an available org and authenticates', async () => {
+      queryStub.resolves([org()]);
+      stubAuthSuccess();
 
       const connection = await devHub.getConnection();
       const result = await fetchPoolOrg(connection, 'devPool', undefined, false, deps);
@@ -140,12 +189,41 @@ describe('poolFetch', () => {
       expect(result.poolTag).to.equal('devPool');
       expect(result.isDefault).to.be.false;
       expect(result.instanceUrl).to.equal('https://test.salesforce.com');
-      expect(assignStub.calledOnce).to.be.true;
+      expect(claimStub.calledOnceWith(connection, '001', 'fixed-token')).to.be.true;
       expect(authStub.calledOnce).to.be.true;
     });
 
+    it('moves to the next candidate when a claim is lost, then wins', async () => {
+      queryStub.resolves([org({ Id: '001' }), org({ Id: '002', SignupUsername: 'second@scratch.org' })]);
+      claimStub.withArgs($$.SANDBOX.match.any, '001').resolves(false);
+      claimStub.withArgs($$.SANDBOX.match.any, '002').resolves(true);
+      stubAuthSuccess('second@scratch.org');
+
+      const connection = await devHub.getConnection();
+      const result = await fetchPoolOrg(connection, 'devPool', undefined, false, deps);
+
+      expect(result.orgId).to.equal('002');
+      expect(result.username).to.equal('second@scratch.org');
+    });
+
+    it('throws PoolFetchContentionError when every claim is lost', async () => {
+      queryStub.resolves([org({ Id: '001' }), org({ Id: '002' })]);
+      claimStub.resolves(false);
+
+      const connection = await devHub.getConnection();
+      try {
+        await fetchPoolOrg(connection, 'devPool', undefined, false, deps);
+        expect.fail('Expected error');
+      } catch (err) {
+        expect(err).to.be.instanceOf(SfError);
+        expect((err as SfError).name).to.equal('PoolFetchContentionError');
+      }
+      expect(sleepStub.called).to.be.true;
+      expect(authStub.called).to.be.false;
+    });
+
     it('throws when no available orgs exist', async () => {
-      queryStub.resolves(null);
+      queryStub.resolves([]);
 
       const connection = await devHub.getConnection();
       try {
@@ -158,13 +236,7 @@ describe('poolFetch', () => {
     });
 
     it('throws when org has no SignupUsername', async () => {
-      queryStub.resolves({
-        Id: '001',
-        Pool_allocation_status__c: 'available',
-        Pool_tag__c: 'devPool',
-        SignupUsername: null,
-        Sfdx_Auth_Url__c: 'force://PlatformCLI::token@test.salesforce.com',
-      });
+      queryStub.resolves([org({ SignupUsername: null })]);
 
       const connection = await devHub.getConnection();
       try {
@@ -177,13 +249,7 @@ describe('poolFetch', () => {
     });
 
     it('throws when org has no stored auth URL', async () => {
-      queryStub.resolves({
-        Id: '001',
-        Pool_allocation_status__c: 'available',
-        Pool_tag__c: 'devPool',
-        SignupUsername: 'user@scratch.org',
-        Sfdx_Auth_Url__c: null,
-      });
+      queryStub.resolves([org({ Sfdx_Auth_Url__c: null })]);
 
       const connection = await devHub.getConnection();
       try {
@@ -196,53 +262,32 @@ describe('poolFetch', () => {
     });
 
     it('sets alias when provided', async () => {
-      queryStub.resolves({
-        Id: '001',
-        Pool_allocation_status__c: 'available',
-        Pool_tag__c: 'devPool',
-        SignupUsername: 'user@scratch.org',
-        Sfdx_Auth_Url__c: 'force://PlatformCLI::token@test.salesforce.com',
-      });
-      const fakeAuthInfo = { getUsername: () => 'user@scratch.org' };
-      authStub.resolves({ authInfo: fakeAuthInfo, instanceUrl: 'https://test.salesforce.com' } as AuthenticateResult);
+      queryStub.resolves([org()]);
+      stubAuthSuccess();
 
       const connection = await devHub.getConnection();
       const result = await fetchPoolOrg(connection, 'devPool', 'myAlias', false, deps);
 
       expect(result.alias).to.equal('myAlias');
       expect(setupStub.calledOnce).to.be.true;
-      expect(setupStub.calledWith(fakeAuthInfo, 'myAlias', false)).to.be.true;
+      expect(setupStub.calledWith($$.SANDBOX.match.any, 'myAlias', false)).to.be.true;
     });
 
     it('sets default when requested', async () => {
-      queryStub.resolves({
-        Id: '001',
-        Pool_allocation_status__c: 'available',
-        Pool_tag__c: 'devPool',
-        SignupUsername: 'user@scratch.org',
-        Sfdx_Auth_Url__c: 'force://PlatformCLI::token@test.salesforce.com',
-      });
-      const fakeAuthInfo = { getUsername: () => 'user@scratch.org' };
-      authStub.resolves({ authInfo: fakeAuthInfo, instanceUrl: 'https://test.salesforce.com' } as AuthenticateResult);
+      queryStub.resolves([org()]);
+      stubAuthSuccess();
 
       const connection = await devHub.getConnection();
       const result = await fetchPoolOrg(connection, 'devPool', undefined, true, deps);
 
       expect(result.isDefault).to.be.true;
       expect(setupStub.calledOnce).to.be.true;
-      expect(setupStub.calledWith(fakeAuthInfo, undefined, true)).to.be.true;
+      expect(setupStub.calledWith($$.SANDBOX.match.any, undefined, true)).to.be.true;
     });
 
     it('does not call handlePostFetchSetup when no alias or default', async () => {
-      queryStub.resolves({
-        Id: '001',
-        Pool_allocation_status__c: 'available',
-        Pool_tag__c: 'devPool',
-        SignupUsername: 'user@scratch.org',
-        Sfdx_Auth_Url__c: 'force://PlatformCLI::token@test.salesforce.com',
-      });
-      const fakeAuthInfo = { getUsername: () => 'user@scratch.org' };
-      authStub.resolves({ authInfo: fakeAuthInfo, instanceUrl: 'https://test.salesforce.com' } as AuthenticateResult);
+      queryStub.resolves([org()]);
+      stubAuthSuccess();
 
       const connection = await devHub.getConnection();
       await fetchPoolOrg(connection, 'devPool', undefined, false, deps);
@@ -251,15 +296,8 @@ describe('poolFetch', () => {
     });
 
     it('maps null Pool_tag__c to "undefined"', async () => {
-      queryStub.resolves({
-        Id: '001',
-        Pool_allocation_status__c: 'available',
-        Pool_tag__c: null,
-        SignupUsername: 'user@scratch.org',
-        Sfdx_Auth_Url__c: 'force://PlatformCLI::token@test.salesforce.com',
-      });
-      const fakeAuthInfo = { getUsername: () => 'user@scratch.org' };
-      authStub.resolves({ authInfo: fakeAuthInfo, instanceUrl: 'https://test.salesforce.com' } as AuthenticateResult);
+      queryStub.resolves([org({ Pool_tag__c: null })]);
+      stubAuthSuccess();
 
       const connection = await devHub.getConnection();
       const result = await fetchPoolOrg(connection, 'devPool', undefined, false, deps);

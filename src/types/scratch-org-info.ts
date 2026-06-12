@@ -5,4 +5,5 @@ export type ScratchOrgInfoRow = {
   SignupUsername?: string | null;
   CreatedDate?: string;
   Sfdx_Auth_Url__c?: string | null;
+  Pool_claim_token__c?: string | null;
 };

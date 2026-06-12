@@ -27,7 +27,44 @@ Pools are defined via JSON config files:
 }
 ```
 
-## Project Structure
+## DevHub Requirements
+
+Pool state is tracked via custom fields on the standard **`ScratchOrgInfo`** object in the DevHub.
+These must exist before using the plugin (SOQL against a missing field fails):
+
+| Field                       | Type                                                                        | Purpose                                                                          |
+| --------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `Pool_tag__c`               | Text                                                                        | Identifies which pool an org belongs to                                          |
+| `Pool_allocation_status__c` | Picklist (`in_progress`, `available`, `under_update`, `failed`, `assigned`) | Tracks org lifecycle status                                                      |
+| `Sfdx_Auth_Url__c`          | Text (Long/255)                                                             | Stores the SFDX auth URL so `pool fetch` can authenticate; cleared on assignment |
+| `Pool_claim_token__c`       | Text (255)                                                                  | Per-fetch claim token used to make `pool fetch` safe under concurrency           |
+
+### Concurrency: claim-token validation rule (required)
+
+`sf pool fetch` is designed to be called by many CI jobs in parallel. To prevent two concurrent
+fetches from claiming the same org, each fetch writes a unique token into `Pool_claim_token__c`.
+A **validation rule** on `ScratchOrgInfo` must reject any attempt to overwrite a token that is
+already set with a different value. Salesforce serializes concurrent updates to the same record, so
+this makes the claim **first-writer-wins**: exactly one fetch succeeds and the rest receive a
+`FIELD_CUSTOM_VALIDATION_EXCEPTION`, which the plugin treats as "lost the race" and retries against
+another org.
+
+Create a validation rule (e.g. `Pool_claim_token_immutable`) with this error condition formula:
+
+```
+AND(
+  NOT(ISBLANK(PRIORVALUE(Pool_claim_token__c))),
+  NOT(ISBLANK(Pool_claim_token__c)),
+  PRIORVALUE(Pool_claim_token__c) <> Pool_claim_token__c
+)
+```
+
+This allows the initial claim (blank → value) and recycling/cleanup (value → blank), but rejects
+changing a non-blank token to a different non-blank value. The plugin keys on the
+`FIELD_CUSTOM_VALIDATION_EXCEPTION` status code, so the rule's error message text is not significant.
+
+> **Without this validation rule the concurrency guarantee does not hold** — concurrent fetches
+> could hand the same scratch org to multiple consumers.
 
 ```txt
 src/
