@@ -27,6 +27,19 @@ updates:
       interval: "daily"
       time: "05:00"
       timezone: "Europe/Oslo"
+    ignore:
+      - dependency-name: "eslint"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "@typescript-eslint/eslint-plugin"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "@typescript-eslint/parser"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "eslint-plugin-sf-plugin"
+        update-types:
+          - "version-update:semver-major"
     cooldown:
       default-days: 7
     groups:
