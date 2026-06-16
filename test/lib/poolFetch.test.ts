@@ -1,9 +1,16 @@
 import { TestContext, MockTestOrgData } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
 import { SfError } from '@salesforce/core';
-import { queryAvailableOrgs, claimOrg, isContentionError, fetchPoolOrg } from '../../src/lib/poolFetch.js';
+import {
+  queryAvailableOrgs,
+  claimOrg,
+  isContentionError,
+  fetchPoolOrg,
+  updateActiveScratchOrgOwner,
+  getRunningUserId,
+} from '../../src/lib/poolFetch.js';
 import type { FetchPoolDeps, AuthenticateResult } from '../../src/lib/poolFetch.js';
-import type { ScratchOrgInfoRow } from '../../src/types/scratch-org-info.js';
+import type { AvailableOrgRow } from '../../src/types/scratch-org-info.js';
 
 /* eslint-disable camelcase */
 describe('poolFetch', () => {
@@ -36,12 +43,15 @@ describe('poolFetch', () => {
           done: true,
           records: [
             {
-              Id: '001',
-              Pool_allocation_status__c: 'available',
-              Pool_tag__c: 'myPool',
-              SignupUsername: 'scratch1@example.com',
-              CreatedDate: '2025-01-01T00:00:00.000Z',
-              Sfdx_Auth_Url__c: 'force://PlatformCLI::token@test.salesforce.com',
+              Id: 'a01',
+              ScratchOrgInfo: {
+                Id: '001',
+                Pool_allocation_status__c: 'available',
+                Pool_tag__c: 'myPool',
+                SignupUsername: 'scratch1@example.com',
+                CreatedDate: '2025-01-01T00:00:00.000Z',
+                Sfdx_Auth_Url__c: 'force://PlatformCLI::token@test.salesforce.com',
+              },
             },
           ],
         });
@@ -50,9 +60,10 @@ describe('poolFetch', () => {
       const result = await queryAvailableOrgs(connection, 'myPool');
 
       expect(result).to.have.length(1);
-      expect(result[0].Id).to.equal('001');
-      expect(result[0].SignupUsername).to.equal('scratch1@example.com');
-      expect(result[0].Sfdx_Auth_Url__c).to.equal('force://PlatformCLI::token@test.salesforce.com');
+      expect(result[0].Id).to.equal('a01');
+      expect(result[0].ScratchOrgInfo.Id).to.equal('001');
+      expect(result[0].ScratchOrgInfo.SignupUsername).to.equal('scratch1@example.com');
+      expect(result[0].ScratchOrgInfo.Sfdx_Auth_Url__c).to.equal('force://PlatformCLI::token@test.salesforce.com');
     });
 
     it('returns an empty array when no available orgs exist', async () => {
@@ -95,8 +106,22 @@ describe('poolFetch', () => {
       $$.fakeConnectionRequest = () => Promise.resolve({ id: '001', success: true, errors: [] });
 
       const connection = await devHub.getConnection();
-      const won = await claimOrg(connection, '001', 'token-1');
+      const won = await claimOrg(connection, '001', 'token-1', 'user-1');
       expect(won).to.be.true;
+    });
+
+    it('includes OwnerId in the update payload', async () => {
+      let body: Record<string, unknown> | undefined;
+      $$.fakeConnectionRequest = (request: unknown) => {
+        const req = request as { body?: string };
+        if (req.body) body = JSON.parse(req.body) as Record<string, unknown>;
+        return Promise.resolve({ id: '001', success: true, errors: [] });
+      };
+
+      const connection = await devHub.getConnection();
+      await claimOrg(connection, '001', 'token-1', 'user-1');
+      expect(body).to.have.property('OwnerId', 'user-1');
+      expect(body).to.have.property('Pool_allocation_status__c', 'assigned');
     });
 
     it('returns false when a validation rule rejects the claim (thrown)', async () => {
@@ -106,7 +131,7 @@ describe('poolFetch', () => {
         );
 
       const connection = await devHub.getConnection();
-      const won = await claimOrg(connection, '001', 'token-1');
+      const won = await claimOrg(connection, '001', 'token-1', 'user-1');
       expect(won).to.be.false;
     });
 
@@ -119,7 +144,7 @@ describe('poolFetch', () => {
         });
 
       const connection = await devHub.getConnection();
-      const won = await claimOrg(connection, '001', 'token-1');
+      const won = await claimOrg(connection, '001', 'token-1', 'user-1');
       expect(won).to.be.false;
     });
 
@@ -128,7 +153,7 @@ describe('poolFetch', () => {
 
       const connection = await devHub.getConnection();
       try {
-        await claimOrg(connection, '001', 'token-1');
+        await claimOrg(connection, '001', 'token-1', 'user-1');
         expect.fail('Expected error');
       } catch (err) {
         expect(err).to.be.instanceOf(SfError);
@@ -137,27 +162,109 @@ describe('poolFetch', () => {
     });
   });
 
+  describe('updateActiveScratchOrgOwner', () => {
+    it('updates the ActiveScratchOrg owner', async () => {
+      let body: Record<string, unknown> | undefined;
+      $$.fakeConnectionRequest = (request: unknown) => {
+        const req = request as { body?: string };
+        if (req.body) body = JSON.parse(req.body) as Record<string, unknown>;
+        return Promise.resolve({ id: 'a01', success: true, errors: [] });
+      };
+
+      const connection = await devHub.getConnection();
+      await updateActiveScratchOrgOwner(connection, 'a01', 'user-1');
+      expect(body).to.have.property('OwnerId', 'user-1');
+    });
+
+    it('throws PoolFetchActiveOrgOwnerError when the save result fails', async () => {
+      $$.fakeConnectionRequest = () =>
+        Promise.resolve({ id: 'a01', success: false, errors: [{ message: 'not updatable' }] });
+
+      const connection = await devHub.getConnection();
+      try {
+        await updateActiveScratchOrgOwner(connection, 'a01', 'user-1');
+        expect.fail('Expected error');
+      } catch (err) {
+        expect(err).to.be.instanceOf(SfError);
+        expect((err as SfError).name).to.equal('PoolFetchActiveOrgOwnerError');
+      }
+    });
+
+    it('throws PoolFetchActiveOrgOwnerError when the request rejects', async () => {
+      $$.fakeConnectionRequest = () => Promise.reject(new Error('network down'));
+
+      const connection = await devHub.getConnection();
+      try {
+        await updateActiveScratchOrgOwner(connection, 'a01', 'user-1');
+        expect.fail('Expected error');
+      } catch (err) {
+        expect(err).to.be.instanceOf(SfError);
+        expect((err as SfError).name).to.equal('PoolFetchActiveOrgOwnerError');
+      }
+    });
+  });
+
+  describe('getRunningUserId', () => {
+    it('returns the userId from the connection auth fields', async () => {
+      const connection = await devHub.getConnection();
+      $$.SANDBOX.stub(connection, 'getAuthInfoFields').returns({ userId: 'user-123' });
+
+      const userId = await getRunningUserId(connection);
+      expect(userId).to.equal('user-123');
+    });
+
+    it('falls back to identity() when auth fields lack a userId', async () => {
+      const connection = await devHub.getConnection();
+      $$.SANDBOX.stub(connection, 'getAuthInfoFields').returns({});
+      $$.SANDBOX.stub(connection, 'identity').resolves({ user_id: 'ident-456' } as never);
+
+      const userId = await getRunningUserId(connection);
+      expect(userId).to.equal('ident-456');
+    });
+
+    it('throws PoolFetchUserIdError when no userId can be resolved', async () => {
+      const connection = await devHub.getConnection();
+      $$.SANDBOX.stub(connection, 'getAuthInfoFields').returns({});
+      $$.SANDBOX.stub(connection, 'identity').resolves({} as never);
+
+      try {
+        await getRunningUserId(connection);
+        expect.fail('Expected error');
+      } catch (err) {
+        expect(err).to.be.instanceOf(SfError);
+        expect((err as SfError).name).to.equal('PoolFetchUserIdError');
+      }
+    });
+  });
+
   describe('fetchPoolOrg', () => {
     let queryStub: ReturnType<typeof $$.SANDBOX.stub>;
     let claimStub: ReturnType<typeof $$.SANDBOX.stub>;
+    let activeOwnerStub: ReturnType<typeof $$.SANDBOX.stub>;
+    let userIdStub: ReturnType<typeof $$.SANDBOX.stub>;
     let authStub: ReturnType<typeof $$.SANDBOX.stub>;
     let setupStub: ReturnType<typeof $$.SANDBOX.stub>;
     let sleepStub: ReturnType<typeof $$.SANDBOX.stub>;
     let deps: FetchPoolDeps;
 
-    const org = (overrides: Partial<ScratchOrgInfoRow> = {}): ScratchOrgInfoRow => ({
-      Id: '001',
-      Pool_allocation_status__c: 'available',
-      Pool_tag__c: 'devPool',
-      SignupUsername: 'user@scratch.org',
-      CreatedDate: '2025-01-01T00:00:00.000Z',
-      Sfdx_Auth_Url__c: 'force://PlatformCLI::token@test.salesforce.com',
-      ...overrides,
+    const org = (overrides: Partial<AvailableOrgRow['ScratchOrgInfo']> = {}, activeId = 'a01'): AvailableOrgRow => ({
+      Id: activeId,
+      ScratchOrgInfo: {
+        Id: '001',
+        Pool_allocation_status__c: 'available',
+        Pool_tag__c: 'devPool',
+        SignupUsername: 'user@scratch.org',
+        CreatedDate: '2025-01-01T00:00:00.000Z',
+        Sfdx_Auth_Url__c: 'force://PlatformCLI::token@test.salesforce.com',
+        ...overrides,
+      },
     });
 
     beforeEach(() => {
       queryStub = $$.SANDBOX.stub();
       claimStub = $$.SANDBOX.stub().resolves(true);
+      activeOwnerStub = $$.SANDBOX.stub().resolves();
+      userIdStub = $$.SANDBOX.stub().resolves('user-1');
       authStub = $$.SANDBOX.stub();
       setupStub = $$.SANDBOX.stub().resolves();
       sleepStub = $$.SANDBOX.stub().resolves();
@@ -165,6 +272,8 @@ describe('poolFetch', () => {
       deps = {
         queryAvailableOrgs: queryStub as unknown as FetchPoolDeps['queryAvailableOrgs'],
         claimOrg: claimStub as unknown as FetchPoolDeps['claimOrg'],
+        updateActiveScratchOrgOwner: activeOwnerStub as unknown as FetchPoolDeps['updateActiveScratchOrgOwner'],
+        getRunningUserId: userIdStub as unknown as FetchPoolDeps['getRunningUserId'],
         authenticateToOrg: authStub as unknown as FetchPoolDeps['authenticateToOrg'],
         handlePostFetchSetup: setupStub as unknown as FetchPoolDeps['handlePostFetchSetup'],
         generateToken: () => 'fixed-token',
@@ -189,12 +298,52 @@ describe('poolFetch', () => {
       expect(result.poolTag).to.equal('devPool');
       expect(result.isDefault).to.be.false;
       expect(result.instanceUrl).to.equal('https://test.salesforce.com');
-      expect(claimStub.calledOnceWith(connection, '001', 'fixed-token')).to.be.true;
+      expect(claimStub.calledOnceWith(connection, '001', 'fixed-token', 'user-1')).to.be.true;
       expect(authStub.calledOnce).to.be.true;
     });
 
+    it('transfers ActiveScratchOrg ownership after winning the claim', async () => {
+      queryStub.resolves([org()]);
+      stubAuthSuccess();
+
+      const connection = await devHub.getConnection();
+      await fetchPoolOrg(connection, 'devPool', undefined, false, deps);
+
+      expect(activeOwnerStub.calledOnceWith(connection, 'a01', 'user-1')).to.be.true;
+      expect(claimStub.calledBefore(activeOwnerStub)).to.be.true;
+    });
+
+    it('propagates a fatal ActiveScratchOrg ownership failure', async () => {
+      queryStub.resolves([org()]);
+      activeOwnerStub.rejects(new SfError('owner update failed', 'PoolFetchActiveOrgOwnerError'));
+
+      const connection = await devHub.getConnection();
+      try {
+        await fetchPoolOrg(connection, 'devPool', undefined, false, deps);
+        expect.fail('Expected error');
+      } catch (err) {
+        expect(err).to.be.instanceOf(SfError);
+        expect((err as SfError).name).to.equal('PoolFetchActiveOrgOwnerError');
+      }
+      expect(authStub.called).to.be.false;
+    });
+
+    it('does not touch ActiveScratchOrg ownership when claims are lost', async () => {
+      queryStub.resolves([org({ Id: '001' }, 'a01'), org({ Id: '002', SignupUsername: 'second@scratch.org' }, 'a02')]);
+      claimStub.resolves(false);
+
+      const connection = await devHub.getConnection();
+      try {
+        await fetchPoolOrg(connection, 'devPool', undefined, false, deps);
+        expect.fail('Expected error');
+      } catch (err) {
+        expect((err as SfError).name).to.equal('PoolFetchContentionError');
+      }
+      expect(activeOwnerStub.called).to.be.false;
+    });
+
     it('moves to the next candidate when a claim is lost, then wins', async () => {
-      queryStub.resolves([org({ Id: '001' }), org({ Id: '002', SignupUsername: 'second@scratch.org' })]);
+      queryStub.resolves([org({ Id: '001' }, 'a01'), org({ Id: '002', SignupUsername: 'second@scratch.org' }, 'a02')]);
       claimStub.withArgs($$.SANDBOX.match.any, '001').resolves(false);
       claimStub.withArgs($$.SANDBOX.match.any, '002').resolves(true);
       stubAuthSuccess('second@scratch.org');
@@ -204,10 +353,11 @@ describe('poolFetch', () => {
 
       expect(result.orgId).to.equal('002');
       expect(result.username).to.equal('second@scratch.org');
+      expect(activeOwnerStub.calledOnceWith(connection, 'a02', 'user-1')).to.be.true;
     });
 
     it('throws PoolFetchContentionError when every claim is lost', async () => {
-      queryStub.resolves([org({ Id: '001' }), org({ Id: '002' })]);
+      queryStub.resolves([org({ Id: '001' }, 'a01'), org({ Id: '002' }, 'a02')]);
       claimStub.resolves(false);
 
       const connection = await devHub.getConnection();

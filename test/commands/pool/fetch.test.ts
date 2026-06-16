@@ -39,10 +39,11 @@ describe('pool fetch', () => {
   };
 
   function stubFetchFlow(records: FetchOrgRecord[]): void {
+    const nested = records.map((r) => ({ Id: `a${r.Id}`, ScratchOrgInfo: r }));
     $$.fakeConnectionRequest = (request: unknown) => {
       const req = request as { method?: string; url?: string };
       if (req.url?.includes('/query')) {
-        return Promise.resolve({ totalSize: records.length, done: true, records });
+        return Promise.resolve({ totalSize: nested.length, done: true, records: nested });
       }
       return Promise.resolve({});
     };
@@ -205,12 +206,15 @@ describe('pool fetch', () => {
           done: true,
           records: [
             {
-              Id: '001',
-              Pool_allocation_status__c: 'available',
-              Pool_tag__c: 'devPool',
-              SignupUsername: 'scratch@example.com',
-              CreatedDate: '2025-01-01T00:00:00.000Z',
-              Sfdx_Auth_Url__c: null,
+              Id: 'a001',
+              ScratchOrgInfo: {
+                Id: '001',
+                Pool_allocation_status__c: 'available',
+                Pool_tag__c: 'devPool',
+                SignupUsername: 'scratch@example.com',
+                CreatedDate: '2025-01-01T00:00:00.000Z',
+                Sfdx_Auth_Url__c: null,
+              },
             },
           ],
         });

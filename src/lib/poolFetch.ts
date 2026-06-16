@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { AuthInfo, Connection, Logger, SfError } from '@salesforce/core';
-import { ScratchOrgInfoRow } from '../types/scratch-org-info.js';
+import { AvailableOrgRow } from '../types/scratch-org-info.js';
 import { PoolFetchResult } from '../types/pool-fetch.js';
 
 const logger = Logger.childFromRoot('poolFetch');
@@ -32,19 +32,43 @@ export async function queryAvailableOrgs(
   connection: Connection,
   tag: string,
   limit: number = BATCH_SIZE,
-): Promise<ScratchOrgInfoRow[]> {
+): Promise<AvailableOrgRow[]> {
   const sanitizedTag = escapeSOQL(tag);
-  const query = `SELECT Id, Pool_allocation_status__c, Pool_tag__c, SignupUsername, CreatedDate, Sfdx_Auth_Url__c FROM ScratchOrgInfo WHERE Pool_tag__c = '${sanitizedTag}' AND Pool_allocation_status__c = 'available' AND Status = 'Active' ORDER BY CreatedDate ASC LIMIT ${limit}`;
+  // Query from ActiveScratchOrg (traversing up to the parent ScratchOrgInfo) so a single
+  // query yields both the ActiveScratchOrg Id (needed to transfer its ownership) and the
+  // ScratchOrgInfo fields used to claim the org.
+  const query = `SELECT Id, ScratchOrgInfo.Id, ScratchOrgInfo.Pool_allocation_status__c, ScratchOrgInfo.Pool_tag__c, ScratchOrgInfo.SignupUsername, ScratchOrgInfo.CreatedDate, ScratchOrgInfo.Sfdx_Auth_Url__c FROM ActiveScratchOrg WHERE ScratchOrgInfo.Pool_tag__c = '${sanitizedTag}' AND ScratchOrgInfo.Pool_allocation_status__c = 'available' AND ScratchOrgInfo.Status = 'Active' ORDER BY ScratchOrgInfo.CreatedDate ASC LIMIT ${limit}`;
 
   logger.debug('Querying available orgs', { tag, query });
 
   try {
-    const result = await connection.query<ScratchOrgInfoRow>(query);
+    const result = await connection.query<AvailableOrgRow>(query);
     return result.records;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new SfError(`Failed to query pool for available orgs. ${message}`, 'PoolFetchQueryError');
   }
+}
+
+/**
+ * Resolves the Salesforce Id of the user running the fetch (the authenticated DevHub user),
+ * used to transfer ownership of the claimed org's records.
+ *
+ * @throws SfError if the running user Id cannot be determined.
+ */
+export async function getRunningUserId(connection: Connection): Promise<string> {
+  const userId = connection.getAuthInfoFields().userId;
+  if (userId) return userId;
+
+  try {
+    const identity = await connection.identity();
+    if (identity?.user_id) return identity.user_id;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new SfError(`Failed to resolve the running user Id. ${message}`, 'PoolFetchUserIdError');
+  }
+
+  throw new SfError('Could not resolve the running user Id from the DevHub connection.', 'PoolFetchUserIdError');
 }
 
 type SaveError = { statusCode?: string; message?: string };
@@ -66,12 +90,19 @@ function saveErrorsAreContention(errors: SaveError[] | undefined): boolean {
 
 /**
  * Attempts to claim an org by setting a unique claim token (and marking it assigned). A DevHub
- * validation rule rejects overwriting a token that another fetch already set.
+ * validation rule rejects overwriting a token that another fetch already set. Ownership of the
+ * `ScratchOrgInfo` record is transferred to the running user as part of the same atomic update,
+ * so it is only changed when this caller wins the claim.
  *
  * @returns `true` if this caller won the claim, `false` if another caller claimed it first.
  * @throws SfError for any non-contention failure.
  */
-export async function claimOrg(connection: Connection, orgId: string, token: string): Promise<boolean> {
+export async function claimOrg(
+  connection: Connection,
+  orgId: string,
+  token: string,
+  ownerId: string,
+): Promise<boolean> {
   logger.debug('Attempting to claim org', { orgId });
 
   try {
@@ -81,6 +112,7 @@ export async function claimOrg(connection: Connection, orgId: string, token: str
       Pool_allocation_status__c: 'assigned',
       Pool_claim_token__c: token,
       Sfdx_Auth_Url__c: '', // Clear the auth URL so the credential does not linger after hand-off.
+      OwnerId: ownerId,
     })) as SaveResultLike | SaveResultLike[];
     /* eslint-enable camelcase */
 
@@ -107,6 +139,47 @@ export async function claimOrg(connection: Connection, orgId: string, token: str
   }
 }
 
+/**
+ * Transfers ownership of an `ActiveScratchOrg` record to the running user. Called only after the
+ * corresponding `ScratchOrgInfo` claim has been won, so it never touches an org this caller lost.
+ *
+ * @throws SfError if the ownership update fails (fatal: ownership must be guaranteed).
+ */
+export async function updateActiveScratchOrgOwner(
+  connection: Connection,
+  activeScratchOrgId: string,
+  ownerId: string,
+): Promise<void> {
+  logger.debug('Transferring ActiveScratchOrg ownership', { activeScratchOrgId });
+
+  try {
+    /* eslint-disable camelcase */
+    const result = (await connection.sobject('ActiveScratchOrg').update({
+      Id: activeScratchOrgId,
+      OwnerId: ownerId,
+    })) as SaveResultLike | SaveResultLike[];
+    /* eslint-enable camelcase */
+
+    const record = Array.isArray(result) ? result[0] : result;
+    if (record && record.success === false) {
+      const detail = record.errors?.map((e) => e.message).join('; ') ?? 'unknown error';
+      throw new SfError(
+        `Failed to set owner on ActiveScratchOrg ${activeScratchOrgId}. ${detail}`,
+        'PoolFetchActiveOrgOwnerError',
+      );
+    }
+
+    logger.debug('ActiveScratchOrg ownership transferred', { activeScratchOrgId });
+  } catch (error) {
+    if (error instanceof SfError) throw error;
+    const message = error instanceof Error ? error.message : String(error);
+    throw new SfError(
+      `Failed to set owner on ActiveScratchOrg ${activeScratchOrgId}. ${message}`,
+      'PoolFetchActiveOrgOwnerError',
+    );
+  }
+}
+
 export type AuthenticateResult = {
   authInfo: AuthInfo;
   instanceUrl?: string;
@@ -115,6 +188,8 @@ export type AuthenticateResult = {
 export type FetchPoolDeps = {
   queryAvailableOrgs: typeof queryAvailableOrgs;
   claimOrg: typeof claimOrg;
+  updateActiveScratchOrgOwner: typeof updateActiveScratchOrgOwner;
+  getRunningUserId: typeof getRunningUserId;
   authenticateToOrg: (sfdxAuthUrl: string) => Promise<AuthenticateResult>;
   handlePostFetchSetup: (authInfo: AuthInfo, alias?: string, setDefault?: boolean) => Promise<void>;
   generateToken: () => string;
@@ -148,6 +223,8 @@ export async function handlePostFetchSetup(authInfo: AuthInfo, alias?: string, s
 const defaultDeps: FetchPoolDeps = {
   queryAvailableOrgs,
   claimOrg,
+  updateActiveScratchOrgOwner,
+  getRunningUserId,
   authenticateToOrg,
   handlePostFetchSetup,
   generateToken: randomUUID,
@@ -163,25 +240,39 @@ function shuffle<T>(items: T[]): T[] {
   return copy;
 }
 
-type ClaimedOrg = { org: ScratchOrgInfoRow; username: string; sfdxAuthUrl: string };
+type ClaimedOrg = {
+  scratchOrgInfoId: string;
+  activeScratchOrgId: string;
+  poolTag: string | null;
+  username: string;
+  sfdxAuthUrl: string;
+};
 
-function validateCandidate(org: ScratchOrgInfoRow): ClaimedOrg {
-  const username = org.SignupUsername?.trim();
+function validateCandidate(candidate: AvailableOrgRow): ClaimedOrg {
+  const info = candidate.ScratchOrgInfo;
+  const username = info.SignupUsername?.trim();
   if (!username) {
-    throw new SfError(`Scratch org ${org.Id} has no SignupUsername.`, 'PoolFetchNoUsernameError');
+    throw new SfError(`Scratch org ${info.Id} has no SignupUsername.`, 'PoolFetchNoUsernameError');
   }
-  if (!org.Sfdx_Auth_Url__c) {
+  if (!info.Sfdx_Auth_Url__c) {
     throw new SfError(
-      `Scratch org ${org.Id} has no stored auth URL. The org may have been created before auth URL storage was enabled. Re-create the pool with the latest version of pool prepare.`,
+      `Scratch org ${info.Id} has no stored auth URL. The org may have been created before auth URL storage was enabled. Re-create the pool with the latest version of pool prepare.`,
       'PoolFetchNoAuthUrlError',
     );
   }
-  return { org, username, sfdxAuthUrl: org.Sfdx_Auth_Url__c };
+  return {
+    scratchOrgInfoId: info.Id,
+    activeScratchOrgId: candidate.Id,
+    poolTag: info.Pool_tag__c,
+    username,
+    sfdxAuthUrl: info.Sfdx_Auth_Url__c,
+  };
 }
 
 async function claimAvailableOrg(
   connection: Connection,
   tag: string,
+  ownerId: string,
   deps: FetchPoolDeps,
   onProgress?: (message: string) => void,
 ): Promise<ClaimedOrg> {
@@ -201,9 +292,13 @@ async function claimAvailableOrg(
     for (const candidate of shuffle(candidates)) {
       const claimable = validateCandidate(candidate);
       onProgress?.(`Attempting to claim org: ${claimable.username}`);
-      const won = await deps.claimOrg(connection, candidate.Id, token);
+      const won = await deps.claimOrg(connection, claimable.scratchOrgInfoId, token, ownerId);
       if (won) {
         onProgress?.(`Claimed org: ${claimable.username}`);
+        // Transfer ownership of the related ActiveScratchOrg only after winning the claim, so a
+        // lost candidate's ownership is never touched.
+        onProgress?.('Transferring ownership...');
+        await deps.updateActiveScratchOrgOwner(connection, claimable.activeScratchOrgId, ownerId);
         return claimable;
       }
     }
@@ -230,7 +325,14 @@ export async function fetchPoolOrg(
   deps: FetchPoolDeps = defaultDeps,
   onProgress?: (message: string) => void,
 ): Promise<PoolFetchResult> {
-  const { org, username, sfdxAuthUrl } = await claimAvailableOrg(connection, tag, deps, onProgress);
+  const ownerId = await deps.getRunningUserId(connection);
+  const { scratchOrgInfoId, poolTag, username, sfdxAuthUrl } = await claimAvailableOrg(
+    connection,
+    tag,
+    ownerId,
+    deps,
+    onProgress,
+  );
 
   onProgress?.('Authenticating to scratch org...');
   const { authInfo, instanceUrl } = await deps.authenticateToOrg(sfdxAuthUrl);
@@ -243,8 +345,8 @@ export async function fetchPoolOrg(
 
   return {
     username,
-    orgId: org.Id,
-    poolTag: org.Pool_tag__c ?? 'undefined',
+    orgId: scratchOrgInfoId,
+    poolTag: poolTag ?? 'undefined',
     alias,
     isDefault: setDefault ?? false,
     instanceUrl,

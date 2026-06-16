@@ -66,6 +66,13 @@ changing a non-blank token to a different non-blank value. The plugin keys on th
 > **Without this validation rule the concurrency guarantee does not hold** — concurrent fetches
 > could hand the same scratch org to multiple consumers.
 
+### Ownership transfer on fetch
+
+When `sf pool fetch` claims an org, it transfers ownership to the user running the command (the
+authenticated DevHub user): `OwnerId` is set on the winning `ScratchOrgInfo` record (as part of the
+atomic claim) and on the related `ActiveScratchOrg` record. The running user must therefore have
+permission to update `OwnerId` on both objects; an ownership-transfer failure aborts the fetch.
+
 ```txt
 src/
 ├── commands/pool/     # CLI command implementations (to be created)
