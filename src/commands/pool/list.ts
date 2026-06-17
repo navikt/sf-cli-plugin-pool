@@ -3,7 +3,7 @@ import { Messages } from '@salesforce/core';
 import { queryPoolOrgs, aggregatePoolStats } from '../../lib/poolQuery.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('pool', 'pool.list');
+const messages = Messages.loadMessages('@navikt/sf-cli-plugin-pool', 'pool.list');
 
 export type PoolListResult = {
   pools: Array<{

@@ -4,7 +4,7 @@ import { fetchPoolOrg } from '../../lib/poolFetch.js';
 import { PoolFetchResult } from '../../types/pool-fetch.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('pool', 'pool.fetch');
+const messages = Messages.loadMessages('@navikt/sf-cli-plugin-pool', 'pool.fetch');
 
 export default class PoolFetch extends SfCommand<PoolFetchResult> {
   public static readonly summary = messages.getMessage('summary');

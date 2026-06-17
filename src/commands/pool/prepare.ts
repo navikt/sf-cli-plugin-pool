@@ -5,7 +5,7 @@ import { loadPoolConfig, loadPackageKeys, loadPackageKeysFromString, preparePool
 import { PoolPrepareResult } from '../../types/pool-prepare.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('pool', 'pool.prepare');
+const messages = Messages.loadMessages('@navikt/sf-cli-plugin-pool', 'pool.prepare');
 
 export type PoolPrepareCommandResult = {
   pools: PoolPrepareResult[];
@@ -98,7 +98,7 @@ export default class PoolPrepare extends SfCommand<PoolPrepareCommandResult> {
         flags['keep-failed'],
         flags['api-version'],
         undefined,
-        logProgress
+        logProgress,
       );
       results.push(result);
     }
@@ -118,7 +118,7 @@ export default class PoolPrepare extends SfCommand<PoolPrepareCommandResult> {
               String(r.failed),
               String(r.requested),
               String(r.existing),
-            ])
+            ]),
           );
         }
         for (const err of r.errors) {

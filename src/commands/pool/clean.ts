@@ -5,7 +5,7 @@ import { cleanPoolOrgs } from '../../lib/poolClean.js';
 import { PoolCleanResult } from '../../types/pool-clean.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('pool', 'pool.clean');
+const messages = Messages.loadMessages('@navikt/sf-cli-plugin-pool', 'pool.clean');
 
 const IN_USE_STATUS = 'assigned';
 const DEFAULT_STATUSES = ['failed'];
@@ -103,7 +103,7 @@ export default class PoolClean extends SfCommand<PoolCleanResult> {
           String(result.summary.deleted),
           String(result.summary.failed),
           String(result.summary.total),
-        ])
+        ]),
       );
       this.log();
     }
