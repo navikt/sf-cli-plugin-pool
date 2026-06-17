@@ -16,7 +16,7 @@ pnpm test                          # compile + lint + unit tests
 Run a single test file:
 
 ```bash
-npx mocha "test/commands/pool/list.test.ts"
+pnpm exec mocha "test/commands/pool/list.test.ts"
 ```
 
 NUTs (integration tests) require DevHub authentication and run in CI only:
