@@ -35,6 +35,9 @@ npm-shrinkwrap.json
 oclif.manifest.json
 oclif.lock
 
+# generated SBOM (produced by prepack/CI)
+sbom.cyclonedx.json
+
 # -- CLEAN ALL
 *.tsbuildinfo
 .eslintcache

@@ -75,16 +75,14 @@ permission to update `OwnerId` on both objects; an ownership-transfer failure ab
 
 ```txt
 src/
-├── commands/pool/     # CLI command implementations (to be created)
-├── lib/               # Shared business logic (to be created)
+├── commands/pool/     # CLI command implementations
+├── lib/               # Shared business logic
 └── types/             # TypeScript interfaces
 
 test/                  # Unit tests matching src/ structure
 messages/              # User-facing strings (Markdown files with # key headers)
 config/                # Example pool configuration files
 ```
-
-> **Note:** This is a new project. The `src/commands/hello/` directory contains auto-generated examples that demonstrate the command, test, and message patterns. Pool commands will replace these as the project develops.
 
 ## SBOM (Software Bill of Materials)
 

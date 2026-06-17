@@ -231,6 +231,60 @@ describe('pool fetch', () => {
     }
   });
 
+  it('skips an invalid org and claims a valid one in the same batch', async () => {
+    // A batch mixing a legacy org without an auth URL and a current, claimable org. The invalid
+    // candidate must be skipped rather than aborting the whole fetch.
+    stubFetchFlow([
+      {
+        Id: '001',
+        Pool_allocation_status__c: 'available',
+        Pool_tag__c: 'devPool',
+        SignupUsername: 'legacy@example.com',
+        CreatedDate: '2025-01-01T00:00:00.000Z',
+        Sfdx_Auth_Url__c: null,
+      },
+      {
+        Id: '002',
+        Pool_allocation_status__c: 'available',
+        Pool_tag__c: 'devPool',
+        SignupUsername: 'scratch@example.com',
+        CreatedDate: '2025-01-02T00:00:00.000Z',
+        Sfdx_Auth_Url__c: 'force://PlatformCLI::token@test.salesforce.com',
+      },
+    ]);
+
+    const result = await PoolFetch.run(['--target-dev-hub', devHub.username, '--pool-tag', 'devPool']);
+
+    expect(result.orgId).to.equal('002');
+    expect(result.username).to.equal('scratch@example.com');
+  });
+
+  it('skips an org missing SignupUsername and claims a valid one', async () => {
+    stubFetchFlow([
+      {
+        Id: '001',
+        Pool_allocation_status__c: 'available',
+        Pool_tag__c: 'devPool',
+        SignupUsername: '',
+        CreatedDate: '2025-01-01T00:00:00.000Z',
+        Sfdx_Auth_Url__c: 'force://PlatformCLI::token@test.salesforce.com',
+      },
+      {
+        Id: '002',
+        Pool_allocation_status__c: 'available',
+        Pool_tag__c: 'devPool',
+        SignupUsername: 'scratch@example.com',
+        CreatedDate: '2025-01-02T00:00:00.000Z',
+        Sfdx_Auth_Url__c: 'force://PlatformCLI::token@test.salesforce.com',
+      },
+    ]);
+
+    const result = await PoolFetch.run(['--target-dev-hub', devHub.username, '--pool-tag', 'devPool']);
+
+    expect(result.orgId).to.equal('002');
+    expect(result.username).to.equal('scratch@example.com');
+  });
+
   it('requires --pool-tag flag', async () => {
     try {
       await PoolFetch.run(['--target-dev-hub', devHub.username]);

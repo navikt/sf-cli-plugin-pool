@@ -278,6 +278,12 @@ async function claimAvailableOrg(
 ): Promise<ClaimedOrg> {
   const token = deps.generateToken();
 
+  // A malformed candidate (missing username or auth URL) must not abort the whole fetch: other
+  // available orgs in the same batch may still be claimable. Track whether any candidate passed
+  // validation so we can report the right failure reason if nothing is ultimately claimed.
+  let sawValidCandidate = false;
+  let lastValidationError: SfError | undefined;
+
   /* eslint-disable no-await-in-loop */
   for (let round = 0; round < MAX_ROUNDS; round++) {
     onProgress?.('Querying pool for available orgs...');
@@ -290,7 +296,23 @@ async function claimAvailableOrg(
     }
 
     for (const candidate of shuffle(candidates)) {
-      const claimable = validateCandidate(candidate);
+      let claimable: ClaimedOrg;
+      try {
+        claimable = validateCandidate(candidate);
+      } catch (err) {
+        // Skip this candidate and keep trying the rest. Retain the error so it can be surfaced
+        // if every available candidate turns out to be invalid.
+        lastValidationError = err instanceof SfError ? err : new SfError(String(err));
+        logger.debug('Skipping invalid candidate', {
+          scratchOrgInfoId: candidate.ScratchOrgInfo?.Id,
+          reason: lastValidationError.message,
+        });
+        onProgress?.(
+          `Skipping invalid org ${candidate.ScratchOrgInfo?.Id ?? '<unknown>'}: ${lastValidationError.message}`,
+        );
+        continue;
+      }
+      sawValidCandidate = true;
       onProgress?.(`Attempting to claim org: ${claimable.username}`);
       const won = await deps.claimOrg(connection, claimable.scratchOrgInfoId, token, ownerId);
       if (won) {
@@ -310,6 +332,12 @@ async function claimAvailableOrg(
     }
   }
   /* eslint-enable no-await-in-loop */
+
+  // If no candidate ever passed validation, the operative reason for failure is the invalid
+  // candidate(s), not contention. Surface that instead of the generic contention message.
+  if (!sawValidCandidate && lastValidationError) {
+    throw lastValidationError;
+  }
 
   throw new SfError(
     `Could not claim an available scratch org in pool '${tag}' after ${MAX_ROUNDS} attempts due to concurrent fetches. Try again.`,
