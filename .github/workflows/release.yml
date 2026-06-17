@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: release
+
+# Publishes the package to GitHub Packages when a GitHub Release is published.
+# Auth uses the repository-scoped GITHUB_TOKEN (no PAT required); the scoped
+# @navikt registry and publishConfig.registry route the upload to GitHub Packages.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish to GitHub Packages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # checkout
+      packages: write # upload the package to GitHub Packages
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 'lts/*'
+          package-manager-cache: false
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@navikt'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run test
+      # prepack runs build, oclif manifest, and SBOM generation before the tarball is created.
+      - run: pnpm publish --no-git-checks # zizmor: ignore[use-trusted-publishing] GitHub Packages does not support npm trusted publishing.
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
