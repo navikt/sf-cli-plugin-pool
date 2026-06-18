@@ -9,6 +9,26 @@ A Salesforce CLI plugin for managing pools of pre-created scratch organizations.
 - **`sf pool list`** — Display pool status: available/total/in-use counts (used by developers and platform team)
 - **`sf pool clean`** — Remove failed, stale, or expired orgs from pools (used by CI jobs and platform team)
 
+## Diagnostics (`sf doctor`)
+
+This plugin registers diagnostic tests with the standard `sf doctor` command. There is no separate `sf pool doctor` subcommand — the checks run automatically when you invoke:
+
+```bash
+sf doctor
+```
+
+The plugin verifies:
+
+- **Default DevHub configured** — a `target-dev-hub` is set and resolvable via `sf config`.
+- **`Pool_tag__c` accessible** — the custom field exists and is readable on `ScratchOrgInfo` in the DevHub.
+- **`Pool_allocation_status__c` accessible** — same.
+- **`Sfdx_Auth_Url__c` accessible** — same.
+- **`Pool_claim_token__c` accessible** — same.
+
+Each check emits a `pass`, `fail`, `warn`, or `unknown` result. On failure or warning, `sf doctor` outputs a remediation suggestion pointing back to the [DevHub Requirements](#devhub-requirements) section below.
+
+> **Note:** The diagnostics do not verify the claim-token validation rule, scratch-org limits, or the pool config file — those require elevated access or are relevant only to pool creators.
+
 ## Pool Configuration
 
 Pools are defined via JSON config files:
@@ -30,7 +50,8 @@ Pools are defined via JSON config files:
 ## DevHub Requirements
 
 Pool state is tracked via custom fields on the standard **`ScratchOrgInfo`** object in the DevHub.
-These must exist before using the plugin (SOQL against a missing field fails):
+These must exist before using the plugin (SOQL against a missing field fails).
+Run `sf doctor` to verify that these fields are present and accessible before running pool commands.
 
 | Field                       | Type                                                                        | Purpose                                                                          |
 | --------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
@@ -137,6 +158,7 @@ Or link the plugin to the Salesforce CLI:
 sf plugins link .
 sf plugins  # verify
 sf pool list
+sf doctor   # verify the diagnostics hook is registered and pool fields are accessible
 ```
 
 ## Local Test Environment Setup
@@ -290,6 +312,10 @@ In the DevHub org:
 - **@salesforce/core** — Auth, Config, Logger, SfError, Org
 - **@salesforce/sf-plugins-core** — SfCommand base class
 - **@oclif/core** — Underlying CLI framework (abstracted by sf-plugins-core)
+
+Dev-only:
+
+- **@salesforce/plugin-info** — Provides the `SfDoctor` type used by the diagnostics hook; not a runtime dependency.
 
 Bare-bones approach: avoid adding dependencies unless absolutely necessary.
 

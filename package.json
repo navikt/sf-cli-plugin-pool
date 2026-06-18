@@ -20,6 +20,7 @@
     "@salesforce/dev-config": "^4.3.3",
     "@salesforce/dev-scripts": "^11.0.4",
     "@salesforce/prettier-config": "^0.0.4",
+    "@salesforce/plugin-info": "^3.4.143",
     "@types/chai": "^5.2.3",
     "@types/mocha": "^10.0.10",
     "c8": "^11.0.0",
@@ -68,7 +69,10 @@
         "description": "Commands for managing scratch org pools."
       }
     },
-    "flexibleTaxonomy": true
+    "flexibleTaxonomy": true,
+    "hooks": {
+      "sf-doctor-@navikt/sf-cli-plugin-pool": "./lib/hooks/diagnostics"
+    }
   },
   "scripts": {
     "build": "wireit",
