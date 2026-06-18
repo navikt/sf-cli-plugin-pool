@@ -4,3 +4,4 @@ minimumReleaseAgeExclude:
 # Mitigates GHSA-hmw2-7cc7-3qxx (CRLF injection); fixed in form-data 4.0.6.
 overrides:
   form-data: '>=4.0.6'
+  serialize-javascript: '7.0.3'
