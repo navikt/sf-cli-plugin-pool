@@ -35,8 +35,8 @@ importers:
         specifier: ^5.3.25
         version: 5.3.25
       '@salesforce/cli-plugins-testkit':
-        specifier: ^5.3.59
-        version: 5.3.59(supports-color@8.1.1)
+        specifier: ^5.3.61
+        version: 5.3.61
       '@salesforce/dev-config':
         specifier: ^4.3.3
         version: 4.3.3
@@ -970,8 +970,8 @@ packages:
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
 
-  '@salesforce/cli-plugins-testkit@5.3.59':
-    resolution: {integrity: sha512-1bOSsuwZkIbbvQMCAVK2jxUnuarVtEQsGiluZjRTTYUKr15IgLFVZbxBPabve3FgCSKc+UDX2XB6OgeaqBJaIw==}
+  '@salesforce/cli-plugins-testkit@5.3.61':
+    resolution: {integrity: sha512-OOKTuV5aFJC539ZWlcVe715FAMtIDCQET+cJDj73Mn0xilCknN06XZy9k2w4M9LocRuErCzqRAwJMgXNO0vZlg==}
     engines: {node: '>=16.0.0'}
 
   '@salesforce/core@8.31.2':
@@ -6366,7 +6366,7 @@ snapshots:
 
   '@rtsao/scc@1.1.0': {}
 
-  '@salesforce/cli-plugins-testkit@5.3.59(supports-color@8.1.1)':
+  '@salesforce/cli-plugins-testkit@5.3.61':
     dependencies:
       '@salesforce/core': 8.31.2
       '@salesforce/kit': 3.2.6
