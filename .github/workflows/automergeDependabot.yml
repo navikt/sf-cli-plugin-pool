@@ -2,7 +2,7 @@ name: Automerge Dependabot PRs
 
 on:
   schedule:
-    - cron: "30 4 * * 1-5"
+    - cron: "30 5-15 * * 1-5"
   workflow_dispatch:
 permissions: {}
 concurrency:
