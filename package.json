@@ -12,8 +12,8 @@
     "@salesforce/sf-plugins-core": "^12.2.24"
   },
   "devDependencies": {
-    "@commitlint/cli": "^21.0.2",
-    "@commitlint/config-conventional": "^21.0.2",
+    "@commitlint/cli": "^21.1.0",
+    "@commitlint/config-conventional": "^21.1.0",
     "@cyclonedx/cdxgen": "12.6.0",
     "@oclif/plugin-command-snapshot": "^5.3.28",
     "@salesforce/cli-plugins-testkit": "^5.3.62",
@@ -32,11 +32,11 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.0.8",
     "mocha": "^11.7.6",
-    "oclif": "^4.23.20",
+    "oclif": "^4.23.21",
     "prettier": "3.8.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "wireit": "^0.14.12"
+    "wireit": "^0.14.13"
   },
   "engines": {
     "node": ">=18.0.0"
