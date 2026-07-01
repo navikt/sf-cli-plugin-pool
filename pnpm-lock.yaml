@@ -13,8 +13,8 @@ importers:
   .:
     dependencies:
       '@oclif/core':
-        specifier: ^4.11.10
-        version: 4.11.10
+        specifier: ^4.11.11
+        version: 4.11.11
       '@salesforce/core':
         specifier: ^8.31.2
         version: 8.31.2
@@ -924,8 +924,8 @@ packages:
     resolution: {integrity: sha512-OLUaoqBuyxeTqUvjA3FZFiXUfYC1alp3Sa99gW3EUDz3tZ3CbXDdcZ7qWKBzicrJleIgucoWamWH1saAmH/l2Q==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  '@oclif/core@4.11.10':
-    resolution: {integrity: sha512-kbzi5ZfWKYXZzUldAiJMoxVyXaBnMZqoIVDdHJs4DD7T9wg6ADWU5Ale+9XYfysScAt4Og9psyCEPCzIe10sEQ==}
+  '@oclif/core@4.11.11':
+    resolution: {integrity: sha512-LoGzrvkH9I8dwhxuLafcf90MAp+fYfAiAhpyixaVAWaclIgs+vXeMMQwBG90/wqjdygIKcFAqNnNJrfl3s3X8Q==}
     engines: {node: '>=18.0.0'}
 
   '@oclif/plugin-command-snapshot@5.3.28':
@@ -1537,8 +1537,8 @@ packages:
     resolution: {integrity: sha512-YClrbvTCXGe70pU2JiEiPLYXO9gQkyxYeKpJIQHVS/gOs6EWMQP2RYBwjFLNT322Ji8TOC3IMPfsYCedNpzKfA==}
     engines: {node: '>= 18'}
 
-  brace-expansion@5.0.6:
-    resolution: {integrity: sha512-kLpxurY4Z4r9sgMsyG0Z9uzsBlgiU/EFKhj/h91/8yHu0edo7XuixOIH3VcJ8kkxs6/jPzoI6U9Vj3WqbMQ94g==}
+  brace-expansion@5.0.7:
+    resolution: {integrity: sha512-7oFy703dxfY3/NLxC1fh2SUCQ0H9rmAY+5EpDVfXjUTTs+HEwR2nYaqLv+GWcTsumwxPfiz6CzCNkwXwBUwqCA==}
     engines: {node: 18 || 20 || >=22}
 
   braces@3.0.3:
@@ -6267,7 +6267,7 @@ snapshots:
     dependencies:
       which: 6.0.1
 
-  '@oclif/core@4.11.10':
+  '@oclif/core@4.11.11':
     dependencies:
       ansi-escapes: 4.3.2
       ansis: 3.17.0
@@ -6290,7 +6290,7 @@ snapshots:
 
   '@oclif/plugin-command-snapshot@5.3.28':
     dependencies:
-      '@oclif/core': 4.11.10
+      '@oclif/core': 4.11.11
       ansis: 3.17.0
       globby: 14.1.0
       just-diff: 5.2.0
@@ -6302,12 +6302,12 @@ snapshots:
 
   '@oclif/plugin-help@6.2.53':
     dependencies:
-      '@oclif/core': 4.11.10
+      '@oclif/core': 4.11.11
 
   '@oclif/plugin-not-found@3.2.88(@types/node@26.0.1)':
     dependencies:
       '@inquirer/prompts': 7.10.1(@types/node@26.0.1)
-      '@oclif/core': 4.11.10
+      '@oclif/core': 4.11.11
       ansis: 3.17.0
       fast-levenshtein: 3.0.0
     transitivePeerDependencies:
@@ -6315,7 +6315,7 @@ snapshots:
 
   '@oclif/plugin-warn-if-update-available@3.1.68(supports-color@8.1.1)':
     dependencies:
-      '@oclif/core': 4.11.10
+      '@oclif/core': 4.11.11
       ansis: 3.17.0
       debug: 4.4.3(supports-color@8.1.1)
       http-call: 5.3.0(supports-color@8.1.1)
@@ -6447,7 +6447,7 @@ snapshots:
     dependencies:
       '@inquirer/input': 2.3.0
       '@jsforce/jsforce-node': 3.10.17
-      '@oclif/core': 4.11.10
+      '@oclif/core': 4.11.11
       '@salesforce/core': 8.31.2
       '@salesforce/kit': 3.2.6
       '@salesforce/sf-plugins-core': 12.2.24(@types/node@26.0.1)
@@ -6473,7 +6473,7 @@ snapshots:
     dependencies:
       '@inquirer/confirm': 6.1.1(@types/node@26.0.1)
       '@inquirer/password': 5.1.1(@types/node@26.0.1)
-      '@oclif/core': 4.11.10
+      '@oclif/core': 4.11.11
       '@oclif/table': 0.5.9
       '@salesforce/core': 8.31.2
       '@salesforce/kit': 3.2.6
@@ -7071,7 +7071,7 @@ snapshots:
     dependencies:
       balanced-match: 3.0.1
 
-  brace-expansion@5.0.6:
+  brace-expansion@5.0.7:
     dependencies:
       balanced-match: 4.0.4
 
@@ -9312,7 +9312,7 @@ snapshots:
 
   minimatch@10.2.5:
     dependencies:
-      brace-expansion: 5.0.6
+      brace-expansion: 5.0.7
 
   minimatch@3.1.5:
     dependencies:
@@ -9583,7 +9583,7 @@ snapshots:
       '@inquirer/confirm': 3.2.0
       '@inquirer/input': 2.3.0
       '@inquirer/select': 2.5.0
-      '@oclif/core': 4.11.10
+      '@oclif/core': 4.11.11
       '@oclif/plugin-help': 6.2.53
       '@oclif/plugin-not-found': 3.2.88(@types/node@26.0.1)
       '@oclif/plugin-warn-if-update-available': 3.1.68(supports-color@8.1.1)
