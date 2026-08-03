@@ -12,15 +12,15 @@
     "@salesforce/sf-plugins-core": "^12.2.25"
   },
   "devDependencies": {
-    "@commitlint/cli": "^21.0.2",
-    "@commitlint/config-conventional": "^21.0.2",
-    "@cyclonedx/cdxgen": "12.6.0",
-    "@oclif/plugin-command-snapshot": "^5.3.28",
-    "@salesforce/cli-plugins-testkit": "^5.3.62",
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
+    "@cyclonedx/cdxgen": "12.8.2",
+    "@oclif/plugin-command-snapshot": "^5.3.33",
+    "@salesforce/cli-plugins-testkit": "^5.3.64",
     "@salesforce/dev-config": "^4.3.3",
     "@salesforce/dev-scripts": "^11.0.4",
     "@salesforce/prettier-config": "^0.0.4",
-    "@salesforce/plugin-info": "^3.4.144",
+    "@salesforce/plugin-info": "^3.4.155",
     "@types/chai": "^5.2.3",
     "@types/mocha": "^10.0.10",
     "c8": "^11.0.0",
@@ -30,13 +30,13 @@
     "@typescript-eslint/parser": "6.21.0",
     "eslint-plugin-sf-plugin": "^1.20.33",
     "husky": "^9.1.7",
-    "lint-staged": "^17.0.8",
+    "lint-staged": "^17.2.0",
     "mocha": "^11.7.6",
-    "oclif": "^4.23.20",
-    "prettier": "3.8.4",
+    "oclif": "^4.23.29",
+    "prettier": "3.9.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "wireit": "^0.14.12"
+    "wireit": "^0.14.13"
   },
   "engines": {
     "node": ">=18.0.0"
