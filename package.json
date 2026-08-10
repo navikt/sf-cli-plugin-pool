@@ -8,19 +8,19 @@
   "packageManager": "pnpm@11.7.0+sha512.19cc852c120c7125760f2443ee6be0ca5b40f9f50598de1a09a1f177503e010e57c23c77646e01e761de59bf874fb22a3398c33ab9691fc13eb946b6f0f4d620",
   "dependencies": {
     "@oclif/core": "^4.13.2",
-    "@salesforce/core": "^8.31.4",
-    "@salesforce/sf-plugins-core": "^12.2.25"
+    "@salesforce/core": "^9.1.1",
+    "@salesforce/sf-plugins-core": "^13.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.1",
     "@commitlint/config-conventional": "^21.2.0",
     "@cyclonedx/cdxgen": "12.8.2",
     "@oclif/plugin-command-snapshot": "^5.3.34",
-    "@salesforce/cli-plugins-testkit": "^5.3.64",
+    "@salesforce/cli-plugins-testkit": "^5.3.66",
     "@salesforce/dev-config": "^4.3.3",
     "@salesforce/dev-scripts": "^11.0.4",
     "@salesforce/prettier-config": "^0.0.4",
-    "@salesforce/plugin-info": "^4.0.1",
+    "@salesforce/plugin-info": "^4.0.5",
     "@types/chai": "^5.2.3",
     "@types/mocha": "^10.0.10",
     "c8": "^12.0.0",
