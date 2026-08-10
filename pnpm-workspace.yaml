@@ -2,6 +2,22 @@ minimumReleaseAgeExclude:
   - '@salesforce/plugin-info@3.4.143'
 overrides:
 
+  # Override transitive linkify-it to a patched release.
+  # Mitigates GHSA-v245-v573-v5vm (Inefficient Algorithmic Complexity); fixed in linkify-it 5.0.2.
+  linkify-it: '>=5.0.2'
+
+  # Override transitive uuid to a patched release.
+  # Mitigates GHSA-w5hq-g745-h8pq; fixed in uuid 11.1.1.
+  uuid: '>=11.1.1'
+
+  # Override transitive markdown-it to a patched release.
+  # Mitigates GHSA-6v5v-wf23-fmfq (Inefficient Algorithmic Complexity); fixed in markdown-it 14.2.0.
+  markdown-it: '>=14.2.0'
+
+  # Override transitive undici to a patched release.
+  # Mitigates GHSA-jr45-8vmc-qm54; fixed in undici 7.29.0.
+  undici: '>=7.29.0'
+
   # Override transitive minimatch to a patched release.
   # Mitigates GHSA-7r86-cg39-jmmj (Inefficient Algorithmic Complexity); fixed in minimatch 9.0.7.
   minimatch: '>=9.0.7'
