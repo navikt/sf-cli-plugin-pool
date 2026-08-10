@@ -32,8 +32,8 @@ importers:
         specifier: 12.8.2
         version: 12.8.2(supports-color@8.1.1)
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.3.33
-        version: 5.3.33
+        specifier: ^5.3.34
+        version: 5.3.34
       '@salesforce/cli-plugins-testkit':
         specifier: ^5.3.64
         version: 5.3.64(supports-color@8.1.1)
@@ -44,8 +44,8 @@ importers:
         specifier: ^11.0.4
         version: 11.0.4(supports-color@8.1.1)
       '@salesforce/plugin-info':
-        specifier: ^4.0.0
-        version: 4.0.0(@types/node@26.1.2)(supports-color@8.1.1)
+        specifier: ^4.0.1
+        version: 4.0.1(@types/node@26.1.2)(supports-color@8.1.1)
       '@salesforce/prettier-config':
         specifier: ^0.0.4
         version: 0.0.4
@@ -77,11 +77,11 @@ importers:
         specifier: ^9.1.7
         version: 9.1.7
       lint-staged:
-        specifier: ^17.2.0
-        version: 17.2.0
+        specifier: ^17.3.0
+        version: 17.3.0
       mocha:
-        specifier: ^11.7.6
-        version: 11.7.6
+        specifier: ^11.8.0
+        version: 11.8.0
       oclif:
         specifier: ^4.23.29
         version: 4.23.29(@types/node@26.1.2)(supports-color@8.1.1)
@@ -904,8 +904,8 @@ packages:
     resolution: {integrity: sha512-YWQs0JvESCliWopKtCZqPLgEB1e3oqR+KYecMReseYWbo7E73Rz2tFwQDFQtAp48VLMiAsiTPKKQaZAo+ghzLw==}
     engines: {node: '>=18.0.0'}
 
-  '@oclif/plugin-command-snapshot@5.3.33':
-    resolution: {integrity: sha512-Djtpaf6tO73cWMLXY+i7SZgfkVz3zRFZ1rwTKrAQZ55gN22zjHn0QXc181dtEGYcVb+laYJGHo/epvDntySi3g==}
+  '@oclif/plugin-command-snapshot@5.3.34':
+    resolution: {integrity: sha512-CGIzTASwghLeCL3bn2liBkAA9Ij5U3OE9+c83WEnCxjgbFYoDIsurYvTxeP68tSqVU4mA34H5HjOpS/lDehutQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -955,8 +955,8 @@ packages:
     resolution: {integrity: sha512-G/zgo9ygO+0l2x9gCOnp6BR7q2Rlt8MHDoj4DIpu2utsZznIcH7iNTEoKjul1BMKDPARuBGUp0Tyr0c8dLf32g==}
     engines: {node: '>=18.0.0'}
 
-  '@salesforce/core@9.1.0':
-    resolution: {integrity: sha512-ID9g4YH0yZBeWI0eKJv2IJRRN6ZuNjwpIOjEZm9a79Gzxa3IITsV4PCvD8q7JA3PKqiln57p8yJE458Kn5KW1g==}
+  '@salesforce/core@9.1.1':
+    resolution: {integrity: sha512-wFlJ2YCySJwKUpwolKCZ0YgiGHrUh43oV25j+mdikpAUM3nW+8n0WAyfVvb+Tl7pWIU3v1t0zNO3A0I5Nffi1A==}
     engines: {node: '>=22.0.0'}
 
   '@salesforce/dev-config@4.3.3':
@@ -973,8 +973,8 @@ packages:
     resolution: {integrity: sha512-VwxhSH/8PQ5YmPAdhmLaJGCgR0n/pOm8T2y+/odMFthd5SA0xsO/kTdaRLFnFQAxxNj1nYtNHRb+BoMuAatzew==}
     engines: {node: '>=22.0.0'}
 
-  '@salesforce/plugin-info@4.0.0':
-    resolution: {integrity: sha512-Aj074pdk7zUDgBws+me4K4ZLz2VW0NzuZ+7PPKb0Z7PaRY4NFlADXp+ZU4q+y7Xxja0HGqzH5ZRTzHemyDsmUA==}
+  '@salesforce/plugin-info@4.0.1':
+    resolution: {integrity: sha512-N65AXt+R2/8gVyMX+jo/uVqNepwhXZUhFTXnSXJSwgQbRsgKPEfLcuas3h56dA3cTHboHmlIQLDcMalMe2S+WA==}
     engines: {node: '>=22.0.0'}
 
   '@salesforce/prettier-config@0.0.3':
@@ -3049,8 +3049,8 @@ packages:
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
-  js-yaml@3.14.2:
-    resolution: {integrity: sha512-PMSmkqxr106Xa156c2M265Z+FTrPl+oxd/rgOQy2tijQeK5TxQ43psO1ZCwhVOSdnn+RzkzlRz/eY4BgJBYVpg==}
+  js-yaml@3.15.1:
+    resolution: {integrity: sha512-S99WuO3HlhO3XN41EtYUNl9zzXjoJx7QvmipxsJVxtCBT0YHEFy+iOJhjSvrmV12nYhWpZaM8lPHkJm0yUMbag==}
     hasBin: true
 
   js-yaml@4.1.1:
@@ -3185,8 +3185,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  lint-staged@17.2.0:
-    resolution: {integrity: sha512-FchGnFe4i4B1C/a35SPU9bNGPEHSC1+1iV0plLjzBmKVe9klZrlRfSgK6Cw4VeHyqOXbJUXP0vON61uRftNQ0A==}
+  lint-staged@17.3.0:
+    resolution: {integrity: sha512-woZS3vNe3UKqBaLPvbLOtKRY4tLANpWQhom12MGWqC8Mh1lCOO+WgSwmX2amjJAqTY9BkXYW87fCUH5H9Ph6xw==}
     engines: {node: '>=22.22.1'}
     hasBin: true
 
@@ -3467,8 +3467,8 @@ packages:
     engines: {node: '>= 14.0.0'}
     hasBin: true
 
-  mocha@11.7.6:
-    resolution: {integrity: sha512-nS9xOGbw2I3cjCpxwZAEJ9xK9lmJ08vEkQvLtz4du9ZrF9UrjRpeJGiIgl2Z+Qs++pmB4ecDe48Fwsh+j+j7xA==}
+  mocha@11.8.0:
+    resolution: {integrity: sha512-VyCeUdGN3A9lmCTTgG4yuvY9ixxaDk+xt2R/7/+1AP6EqNG+G9OKkzBwhVtVYoNX8YsxNSgAl8mOv3IAeOpFbw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     hasBin: true
 
@@ -4918,10 +4918,6 @@ packages:
     resolution: {integrity: sha512-Nt9ZJjXTv5R8MHbqby/wXQ6Gi0Bb3TcYZkR1bzuL4yB2OxWPkXknz513gEF0GoA6tn00UpbPvERW8rzCuWCA6w==}
     engines: {node: '>=10'}
 
-  yargs@17.7.2:
-    resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
-    engines: {node: '>=12'}
-
   yargs@17.7.3:
     resolution: {integrity: sha512-GZtjxm/J/4TSxuL3FNYjCmLktBTnIw/rVmKSIyKeYAZpmJB2ig9VauCC5xsa82GNKVKDAqpOn3KVzNt0zmrU0g==}
     engines: {node: '>=12'}
@@ -5902,7 +5898,7 @@ snapshots:
       camelcase: 5.3.1
       find-up: 4.1.0
       get-package-type: 0.1.0
-      js-yaml: 3.14.2
+      js-yaml: 3.15.1
       resolve-from: 5.0.0
 
   '@istanbuljs/schema@0.1.6': {}
@@ -6050,7 +6046,7 @@ snapshots:
       wordwrap: 1.0.0
       wrap-ansi: 7.0.0
 
-  '@oclif/plugin-command-snapshot@5.3.33':
+  '@oclif/plugin-command-snapshot@5.3.34':
     dependencies:
       '@oclif/core': 4.13.2
       ansis: 3.17.0
@@ -6159,7 +6155,7 @@ snapshots:
       ts-retry-promise: 0.8.1
       zod: 4.4.3
 
-  '@salesforce/core@9.1.0':
+  '@salesforce/core@9.1.1':
     dependencies:
       '@jsforce/jsforce-node': 3.10.19
       '@salesforce/kit': 4.0.0
@@ -6227,12 +6223,12 @@ snapshots:
     dependencies:
       '@salesforce/ts-types': 3.0.1
 
-  '@salesforce/plugin-info@4.0.0(@types/node@26.1.2)(supports-color@8.1.1)':
+  '@salesforce/plugin-info@4.0.1(@types/node@26.1.2)(supports-color@8.1.1)':
     dependencies:
       '@inquirer/input': 2.3.0
       '@jsforce/jsforce-node': 3.10.19
       '@oclif/core': 4.13.2
-      '@salesforce/core': 9.1.0
+      '@salesforce/core': 9.1.1
       '@salesforce/kit': 4.0.0
       '@salesforce/sf-plugins-core': 13.0.0(@types/node@26.1.2)
       got: 13.0.0
@@ -6276,7 +6272,7 @@ snapshots:
       '@inquirer/password': 5.1.1(@types/node@26.1.2)
       '@oclif/core': 4.13.2
       '@oclif/table': 0.5.9
-      '@salesforce/core': 9.1.0
+      '@salesforce/core': 9.1.1
       '@salesforce/kit': 4.0.0
       '@salesforce/ts-types': 3.0.1
       ansis: 3.17.0
@@ -6446,7 +6442,7 @@ snapshots:
 
   '@types/mute-stream@0.0.4':
     dependencies:
-      '@types/node': 26.1.2
+      '@types/node': 22.20.1
 
   '@types/node@18.19.130':
     dependencies:
@@ -6586,7 +6582,7 @@ snapshots:
       '@typescript-eslint/types': 6.21.0
       '@typescript-eslint/typescript-estree': 6.21.0(supports-color@8.1.1)(typescript@5.9.3)
       eslint: 8.57.1(supports-color@8.1.1)
-      semver: 7.8.5
+      semver: 7.8.4
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -7235,7 +7231,7 @@ snapshots:
   cosmiconfig@8.3.6(typescript@5.9.3):
     dependencies:
       import-fresh: 3.3.1
-      js-yaml: 4.1.1
+      js-yaml: 4.3.1
       parse-json: 5.2.0
       path-type: 4.0.0
     optionalDependencies:
@@ -8616,7 +8612,7 @@ snapshots:
 
   js-tokens@4.0.0: {}
 
-  js-yaml@3.14.2:
+  js-yaml@3.15.1:
     dependencies:
       argparse: 1.0.10
       esprima: 4.0.1
@@ -8758,7 +8754,7 @@ snapshots:
       - encoding
       - supports-color
 
-  lint-staged@17.2.0:
+  lint-staged@17.3.0:
     dependencies:
       picomatch: 4.0.5
       string-argv: 0.3.2
@@ -9027,7 +9023,7 @@ snapshots:
       find-up: 5.0.0
       glob: 8.1.0
       he: 1.2.0
-      js-yaml: 4.1.1
+      js-yaml: 4.3.1
       log-symbols: 4.1.0
       minimatch: 5.1.9
       ms: 2.1.3
@@ -9039,7 +9035,7 @@ snapshots:
       yargs-parser: 20.2.9
       yargs-unparser: 2.0.0
 
-  mocha@11.7.6:
+  mocha@11.8.0:
     dependencies:
       browser-stdout: 1.3.1
       chokidar: 4.0.3
@@ -9050,7 +9046,7 @@ snapshots:
       glob: 10.5.0
       he: 1.2.0
       is-path-inside: 3.0.3
-      js-yaml: 4.1.1
+      js-yaml: 4.3.1
       log-symbols: 4.1.0
       minimatch: 9.0.9
       ms: 2.1.3
@@ -9059,7 +9055,7 @@ snapshots:
       strip-json-comments: 3.1.1
       supports-color: 8.1.1
       workerpool: 9.3.4
-      yargs: 17.7.2
+      yargs: 17.7.3
       yargs-parser: 21.1.1
       yargs-unparser: 2.0.0
 
@@ -10702,16 +10698,6 @@ snapshots:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 20.2.9
-
-  yargs@17.7.2:
-    dependencies:
-      cliui: 8.0.1
-      escalade: 3.2.0
-      get-caller-file: 2.0.5
-      require-directory: 2.1.1
-      string-width: 4.2.3
-      y18n: 5.0.8
-      yargs-parser: 21.1.1
 
   yargs@17.7.3:
     dependencies:
