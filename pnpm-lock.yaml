@@ -19,8 +19,8 @@ importers:
         specifier: ^8.31.4
         version: 8.31.4
       '@salesforce/sf-plugins-core':
-        specifier: ^12.2.25
-        version: 12.2.25(@types/node@26.1.2)
+        specifier: ^13.0.0
+        version: 13.0.0(@types/node@26.1.2)
     devDependencies:
       '@commitlint/cli':
         specifier: ^21.2.1
@@ -982,10 +982,6 @@ packages:
 
   '@salesforce/prettier-config@0.0.4':
     resolution: {integrity: sha512-GBjR7f/jv7rcSrTvNgbkWvOykXg/PZqL7TztylKwaogWdrCbypJE8qEfBy9nILkICrwmDbQApOC8TqoO3bQKSw==}
-
-  '@salesforce/sf-plugins-core@12.2.25':
-    resolution: {integrity: sha512-/dHX8NFigyE9MRLq6ywdOFJHr3KiOyhtzydkL1t/dl8AU1IJotgW41esuXcAlsZHSnt5KYb5DUZeKLX7NhUKkw==}
-    engines: {node: '>=18.0.0'}
 
   '@salesforce/sf-plugins-core@13.0.0':
     resolution: {integrity: sha512-enKeAfswRyqWN6mcs0HkN+oMnJzUwJIs+Aea8U6NZsdvAdzVEZP4e7vHTPhIQ6esQeGAIf+miPJ8hOITCrDK/A==}
@@ -4837,8 +4833,8 @@ packages:
   write-file-atomic@3.0.3:
     resolution: {integrity: sha512-AvHcyZ5JnSfq3ioSyjrBkH9yW4m7Ayk8/9My/DD9onKeu/94fwrMocemO2QAJFAlnnDN+ZDS+ZjAR5ua1/PV/Q==}
 
-  ws@8.21.0:
-    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
+  ws@8.21.3:
+    resolution: {integrity: sha512-201TZ/kPWxoPr/OKWjquZR1SWKXcvxdH+e1xrx89b3YbmzLMFCLfnaG1HFIgWzJOEWZ7MvpK++odZufgYR50Rw==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -6247,24 +6243,6 @@ snapshots:
   '@salesforce/prettier-config@0.0.3': {}
 
   '@salesforce/prettier-config@0.0.4': {}
-
-  '@salesforce/sf-plugins-core@12.2.25(@types/node@26.1.2)':
-    dependencies:
-      '@inquirer/confirm': 6.1.1(@types/node@26.1.2)
-      '@inquirer/password': 5.1.1(@types/node@26.1.2)
-      '@oclif/core': 4.13.2
-      '@oclif/table': 0.5.9
-      '@salesforce/core': 8.31.4
-      '@salesforce/kit': 3.2.6
-      '@salesforce/ts-types': 2.0.12
-      ansis: 3.17.0
-      cli-progress: 3.12.0
-      terminal-link: 3.0.0
-    transitivePeerDependencies:
-      - '@types/node'
-      - bufferutil
-      - react-devtools-core
-      - utf-8-validate
 
   '@salesforce/sf-plugins-core@13.0.0(@types/node@26.1.2)':
     dependencies:
@@ -8354,7 +8332,7 @@ snapshots:
       type-fest: 4.41.0
       widest-line: 5.0.0
       wrap-ansi: 9.0.2
-      ws: 8.21.0
+      ws: 8.21.3
       yoga-wasm-web: 0.3.3
     optionalDependencies:
       '@types/react': 18.3.31
@@ -10626,7 +10604,7 @@ snapshots:
       signal-exit: 3.0.7
       typedarray-to-buffer: 3.1.5
 
-  ws@8.21.0: {}
+  ws@8.21.3: {}
 
   wsl-utils@0.1.0:
     dependencies:
