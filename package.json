@@ -35,7 +35,7 @@
     "oclif": "^4.23.29",
     "prettier": "3.9.6",
     "ts-node": "^10.9.2",
-    "typescript": "5.9.3",
+    "typescript": "7.0.2",
     "wireit": "^0.14.13"
   },
   "engines": {
