@@ -157,8 +157,8 @@ jobs:
           NODE
       - name: Summarize NUT decision
         run: |
-          echo "run_nuts=${STEPS_DETECT_OUTPUTS_RUN_NUTS}" >> "$GITHUB_STEP_SUMMARY"
-          echo "reason=${STEPS_DETECT_OUTPUTS_DECISION_REASON}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Run NUTs: ${STEPS_DETECT_OUTPUTS_RUN_NUTS}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Reason: ${STEPS_DETECT_OUTPUTS_DECISION_REASON}" >> "$GITHUB_STEP_SUMMARY"
         env:
           STEPS_DETECT_OUTPUTS_RUN_NUTS: ${{ steps.detect.outputs.run_nuts }}
           STEPS_DETECT_OUTPUTS_DECISION_REASON: ${{ steps.detect.outputs.decision_reason }}
