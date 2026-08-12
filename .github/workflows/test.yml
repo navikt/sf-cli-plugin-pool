@@ -284,10 +284,12 @@ jobs:
         run: pnpm run build
       - uses: navikt/sf-gha-install-sf-cli@86acd7148c91ca98a741259ec2ae6e8879b3e045
         with:
-          version: '2.127.2'
+          version: '2.147.7' #stable-rc with fix for https://github.com/forcedotcom/cli/issues/3515
       - name: Authenticate DevHub (JWT)
         shell: bash
         env:
+          SF_SCRATCH_SIGNUP_CONNECTED_APP: 'PlatformCLI' # Related to github issue: https://github.com/forcedotcom/cli/issues/3515
+          SF_SCRATCH_SIGNUP_CALLBACK_URL: 'http://localhost:1717/OauthRedirect' # Related to github issue: https://github.com/forcedotcom/cli/issues/3515
           TESTKIT_HUB_USERNAME: ${{ secrets.TESTKIT_HUB_USERNAME }}
           TESTKIT_JWT_CLIENT_ID: ${{ secrets.TESTKIT_JWT_CLIENT_ID }}
           TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }}
