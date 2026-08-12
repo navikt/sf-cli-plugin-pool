@@ -72,11 +72,11 @@ jobs:
 
           // Temporary bypass for all NUTs due to upstream Salesforce CLI / platform issue (C-1016).
           // Tracking: https://github.com/forcedotcom/cli/issues/3515
-          writeOutput('nuts_by_path', 'false');
-          writeOutput('nuts_by_runtime_deps', 'false');
-          writeOutput('run_nuts', 'false');
-          writeOutput('decision_reason', 'temporarily_disabled_c1016_upstream_cli_3515');
-          process.exit(0);
+          // writeOutput('nuts_by_path', 'false');
+          // writeOutput('nuts_by_runtime_deps', 'false');
+          // writeOutput('run_nuts', 'false');
+          // writeOutput('decision_reason', 'temporarily_disabled_c1016_upstream_cli_3515');
+          // process.exit(0);
 
           const eventName = process.env.GITHUB_EVENT_NAME;
 
@@ -218,6 +218,8 @@ jobs:
       - name: Authenticate DevHub (JWT)
         shell: bash
         env:
+          SF_SCRATCH_SIGNUP_CONNECTED_APP: 'PlatformCLI' # Related to github issue: https://github.com/forcedotcom/cli/issues/3515
+          SF_SCRATCH_SIGNUP_CALLBACK_URL: 'http://localhost:1717/OauthRedirect' # Related to github issue: https://github.com/forcedotcom/cli/issues/3515
           TESTKIT_HUB_USERNAME: ${{ secrets.TESTKIT_HUB_USERNAME }}
           TESTKIT_JWT_CLIENT_ID: ${{ secrets.TESTKIT_JWT_CLIENT_ID }}
           TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }}
