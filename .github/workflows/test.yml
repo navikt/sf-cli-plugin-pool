@@ -32,6 +32,10 @@ concurrency:
   group: tests-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  NODE_VERSION: '24'
+  SF_CLI_VERSION: '2.147.7' #stable-rc with fix for https://github.com/forcedotcom/cli/issues/3515
+
 jobs:
   detect-nuts-relevance:
     name: Detect NUT Relevance
@@ -50,7 +54,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 'lts/*'
+          node-version: ${{ env.NODE_VERSION }}
       - name: Detect NUT relevance
         id: detect
         env:
@@ -69,14 +73,6 @@ jobs:
           const writeOutput = (name, value) => {
             fs.appendFileSync(outputFile, `${name}=${value}\n`);
           };
-
-          // Temporary bypass for all NUTs due to upstream Salesforce CLI / platform issue (C-1016).
-          // Tracking: https://github.com/forcedotcom/cli/issues/3515
-          writeOutput('nuts_by_path', 'false');
-          writeOutput('nuts_by_runtime_deps', 'false');
-          writeOutput('run_nuts', 'false');
-          writeOutput('decision_reason', 'temporarily_disabled_c1016_upstream_cli_3515');
-          process.exit(0);
 
           const eventName = process.env.GITHUB_EVENT_NAME;
 
@@ -161,8 +157,8 @@ jobs:
           NODE
       - name: Summarize NUT decision
         run: |
-          echo "run_nuts=${STEPS_DETECT_OUTPUTS_RUN_NUTS}" >> "$GITHUB_STEP_SUMMARY"
-          echo "reason=${STEPS_DETECT_OUTPUTS_DECISION_REASON}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Run NUTs: ${STEPS_DETECT_OUTPUTS_RUN_NUTS}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Reason: ${STEPS_DETECT_OUTPUTS_DECISION_REASON}" >> "$GITHUB_STEP_SUMMARY"
         env:
           STEPS_DETECT_OUTPUTS_RUN_NUTS: ${{ steps.detect.outputs.run_nuts }}
           STEPS_DETECT_OUTPUTS_DECISION_REASON: ${{ steps.detect.outputs.decision_reason }}
@@ -183,7 +179,7 @@ jobs:
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 'lts/*'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -201,6 +197,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      SF_SCRATCH_SIGNUP_CONNECTED_APP: 'PlatformCLI' # Related to github issue: https://github.com/forcedotcom/cli/issues/3515
+      SF_SCRATCH_SIGNUP_CALLBACK_URL: 'http://localhost:1717/OauthRedirect' # Related to github issue: https://github.com/forcedotcom/cli/issues/3515
+      TESTKIT_HUB_USERNAME: ${{ secrets.TESTKIT_HUB_USERNAME }}
+      TESTKIT_JWT_CLIENT_ID: ${{ secrets.TESTKIT_JWT_CLIENT_ID }}
+      TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }}
+      TESTKIT_HUB_INSTANCE: ${{ secrets.TESTKIT_HUB_INSTANCE }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -208,26 +211,16 @@ jobs:
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 'lts/*'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - uses: navikt/sf-gha-install-sf-cli@86acd7148c91ca98a741259ec2ae6e8879b3e045
         with:
-          version: '2.127.2'
+          version: ${{ env.SF_CLI_VERSION }}
       - name: Authenticate DevHub (JWT)
         shell: bash
-        env:
-          TESTKIT_HUB_USERNAME: ${{ secrets.TESTKIT_HUB_USERNAME }}
-          TESTKIT_JWT_CLIENT_ID: ${{ secrets.TESTKIT_JWT_CLIENT_ID }}
-          TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }}
-          TESTKIT_HUB_INSTANCE: ${{ secrets.TESTKIT_HUB_INSTANCE }}
         run: |
-          : "${TESTKIT_HUB_USERNAME:?Missing TESTKIT_HUB_USERNAME secret}"
-          : "${TESTKIT_JWT_CLIENT_ID:?Missing TESTKIT_JWT_CLIENT_ID secret}"
-          : "${TESTKIT_JWT_KEY:?Missing TESTKIT_JWT_KEY secret}"
-          : "${TESTKIT_HUB_INSTANCE:?Missing TESTKIT_HUB_INSTANCE secret}"
-          
           sf org login jwt \
             --client-id "$TESTKIT_JWT_CLIENT_ID" \
             --jwt-key-file <(printf '%s' "$TESTKIT_JWT_KEY") \
@@ -259,6 +252,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      SF_SCRATCH_SIGNUP_CONNECTED_APP: 'PlatformCLI' # Related to github issue: https://github.com/forcedotcom/cli/issues/3515
+      SF_SCRATCH_SIGNUP_CALLBACK_URL: 'http://localhost:1717/OauthRedirect' # Related to github issue: https://github.com/forcedotcom/cli/issues/3515
+      TESTKIT_HUB_USERNAME: ${{ secrets.TESTKIT_HUB_USERNAME }} # From @salesforce/cli-plugins-testkit
+      TESTKIT_JWT_CLIENT_ID: ${{ secrets.TESTKIT_JWT_CLIENT_ID }} # From @salesforce/cli-plugins-testkit
+      TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }} # From @salesforce/cli-plugins-testkit
+      TESTKIT_HUB_INSTANCE: ${{ secrets.TESTKIT_HUB_INSTANCE }} # From @salesforce/cli-plugins-testkit
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -271,7 +271,7 @@ jobs:
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 'lts/*'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -279,20 +279,10 @@ jobs:
         run: pnpm run build
       - uses: navikt/sf-gha-install-sf-cli@86acd7148c91ca98a741259ec2ae6e8879b3e045
         with:
-          version: '2.127.2'
+          version: ${{ env.SF_CLI_VERSION }}
       - name: Authenticate DevHub (JWT)
         shell: bash
-        env:
-          TESTKIT_HUB_USERNAME: ${{ secrets.TESTKIT_HUB_USERNAME }}
-          TESTKIT_JWT_CLIENT_ID: ${{ secrets.TESTKIT_JWT_CLIENT_ID }}
-          TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }}
-          TESTKIT_HUB_INSTANCE: ${{ secrets.TESTKIT_HUB_INSTANCE }}
         run: |
-          : "${TESTKIT_HUB_USERNAME:?Missing TESTKIT_HUB_USERNAME secret}"
-          : "${TESTKIT_JWT_CLIENT_ID:?Missing TESTKIT_JWT_CLIENT_ID secret}"
-          : "${TESTKIT_JWT_KEY:?Missing TESTKIT_JWT_KEY secret}"
-          : "${TESTKIT_HUB_INSTANCE:?Missing TESTKIT_HUB_INSTANCE secret}"
-          
           sf org login jwt \
             --client-id "$TESTKIT_JWT_CLIENT_ID" \
             --jwt-key-file <(printf '%s' "$TESTKIT_JWT_KEY") \
@@ -302,10 +292,7 @@ jobs:
             --alias testdevhub
       - name: Preflight DevHub safety check
         shell: bash
-        env:
-          TESTKIT_HUB_USERNAME: ${{ secrets.TESTKIT_HUB_USERNAME }}
         run: |
-          : "${TESTKIT_HUB_USERNAME:?Missing TESTKIT_HUB_USERNAME secret}"
 
           # Safety check: fail fast if the active target-dev-hub is not the dedicated NUT alias/user.
           config_json="$(sf config get target-dev-hub --json)"
@@ -324,18 +311,8 @@ jobs:
             exit 1
           fi
       - name: Run NUT tests
-        run: |
-          : "${TESTKIT_HUB_USERNAME:?Missing TESTKIT_HUB_USERNAME secret}"
-          : "${TESTKIT_JWT_CLIENT_ID:?Missing TESTKIT_JWT_CLIENT_ID secret}"
-          : "${TESTKIT_JWT_KEY:?Missing TESTKIT_JWT_KEY secret}"
-          : "${TESTKIT_HUB_INSTANCE:?Missing TESTKIT_HUB_INSTANCE secret}"
-          
-          pnpm run test:nuts
-        env:
-          TESTKIT_HUB_USERNAME: ${{ secrets.TESTKIT_HUB_USERNAME }} # From @salesforce/cli-plugins-testkit
-          TESTKIT_JWT_CLIENT_ID: ${{ secrets.TESTKIT_JWT_CLIENT_ID }} # From @salesforce/cli-plugins-testkit
-          TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }} # From @salesforce/cli-plugins-testkit
-          TESTKIT_HUB_INSTANCE: ${{ secrets.TESTKIT_HUB_INSTANCE }} # From @salesforce/cli-plugins-testkit
+        shell: bash
+        run: pnpm run test:nuts
       - name: Logout from Dev Hub
         if: always()
         shell: bash
