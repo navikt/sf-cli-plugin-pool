@@ -38,8 +38,8 @@ importers:
         specifier: 12.8.2
         version: 12.8.2(supports-color@8.1.1)
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.3.34
-        version: 5.3.34
+        specifier: ^5.3.35
+        version: 5.3.35
       '@salesforce/cli-plugins-testkit':
         specifier: ^5.3.66
         version: 5.3.66(supports-color@8.1.1)
@@ -907,8 +907,8 @@ packages:
     resolution: {integrity: sha512-wBp2igI2KVwq2ZmpnfmGtOROo7aXZIr3OEtAS16g1wHFBqyEuswL+9K50NJWJvlpAmxd+4dVj/ycawXESU3wQQ==}
     engines: {node: '>=18.0.0'}
 
-  '@oclif/plugin-command-snapshot@5.3.34':
-    resolution: {integrity: sha512-CGIzTASwghLeCL3bn2liBkAA9Ij5U3OE9+c83WEnCxjgbFYoDIsurYvTxeP68tSqVU4mA34H5HjOpS/lDehutQ==}
+  '@oclif/plugin-command-snapshot@5.3.35':
+    resolution: {integrity: sha512-IIj6zISG1muLLSpPI560n6Q2F4njN+OFTP/PXp+sdGxrB0pT/NtuRQ6DXwo0fvOX2AA6aG7HMLNYRO5h5feGJg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -6011,7 +6011,7 @@ snapshots:
       wordwrap: 1.0.0
       wrap-ansi: 7.0.0
 
-  '@oclif/plugin-command-snapshot@5.3.34':
+  '@oclif/plugin-command-snapshot@5.3.35':
     dependencies:
       '@oclif/core': 4.13.3
       ansis: 3.17.0
