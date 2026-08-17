@@ -3,6 +3,14 @@
 A Salesforce CLI plugin for managing pools of pre-created scratch organizations.
 For file-specific conventions, see `.github/instructions/` (scoped by `applyTo` patterns).
 
+## Development Environment
+
+```bash
+# Download and install mise
+curl https://mise.run | sh
+mise install
+```
+
 ## Build, Test, and Lint
 
 ```bash
