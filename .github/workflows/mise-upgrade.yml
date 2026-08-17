@@ -12,22 +12,12 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  getToken:
-    runs-on: ubuntu-latest
-    permissions: {}
-    outputs:
-          token: ${{ steps.app-token.outputs.token }}
-    steps:
-      - uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
-        id: app-token
-        with:
-          client-id: ${{ vars.PLATFORM_TOKEN_APP_ID }}
-          private-key: ${{ secrets.PLATFORM_TOKEN_APP_PRIVATE_KEY }}
   update-mise-tools:
-    needs: getToken
-    uses: navikt/crm-workflows-base/.github/workflows/mise-tools-update.yml@9f0a692a3e63db3c892a38ed79222a0b61b02bde
     permissions:
       contents: write
       pull-requests: write
+    uses: navikt/crm-workflows-base/.github/workflows/mise-tools-update.yml@ad9ab419c6dfb0a41570f1f086149766767de7f5
+    with:
+      PLATFORM_TOKEN_APP_ID: ${{ vars.PLATFORM_TOKEN_APP_ID }}
     secrets:
-      token: ${{ needs.getToken.outputs.token }}
+      PLATFORM_TOKEN_APP_PRIVATE_KEY: ${{ secrets.PLATFORM_TOKEN_APP_PRIVATE_KEY }}
