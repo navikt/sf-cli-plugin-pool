@@ -16,7 +16,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    uses: navikt/crm-workflows-base/.github/workflows/mise-tools-update.yml@ad9ab419c6dfb0a41570f1f086149766767de7f5
+    uses: navikt/crm-workflows-base/.github/workflows/mise-tools-update.yml@637340812a134f1bbe715710fbcc28ab19e720cc
     with:
       PLATFORM_TOKEN_APP_ID: ${{ vars.PLATFORM_TOKEN_APP_ID }}
     secrets:
