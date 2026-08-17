@@ -12,6 +12,8 @@ on:
       - 'test/tsconfig.json'
       - 'package.json'
       - 'pnpm-lock.yaml'
+      - 'mise.toml'
+      - 'mise.lock'
       - '.github/workflows/test.yml'
   pull_request:
     paths:
@@ -24,6 +26,8 @@ on:
       - 'test/tsconfig.json'
       - 'package.json'
       - 'pnpm-lock.yaml'
+      - 'pnpm-lock.yaml'
+      - 'mise.toml'
       - '.github/workflows/test.yml'
   workflow_dispatch:
 
@@ -31,10 +35,6 @@ permissions: {}
 concurrency:
   group: tests-${{ github.ref }}
   cancel-in-progress: true
-
-env:
-  NODE_VERSION: '24'
-  SF_CLI_VERSION: '2.147.7' #stable-rc with fix for https://github.com/forcedotcom/cli/issues/3515
 
 jobs:
   detect-nuts-relevance:
@@ -52,9 +52,11 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+
+      - uses: jdx/mise-action@7e36c90d9ab29c415a2384db3006f3ec8a8cc654 # v4.2.4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          cache: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Detect NUT relevance
         id: detect
         env:
@@ -176,11 +178,24 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+
+      - uses: jdx/mise-action@7e36c90d9ab29c415a2384db3006f3ec8a8cc654 # v4.2.4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+            cache: true
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+      # - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+      # - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      #   with:
+      #     node-version: ${{ env.NODE_VERSION }}
+      #     cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Build
@@ -208,16 +223,20 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: jdx/mise-action@7e36c90d9ab29c415a2384db3006f3ec8a8cc654 # v4.2.4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - uses: navikt/sf-gha-install-sf-cli@86acd7148c91ca98a741259ec2ae6e8879b3e045
-        with:
-          version: ${{ env.SF_CLI_VERSION }}
       - name: Authenticate DevHub (JWT)
         shell: bash
         run: |
@@ -268,18 +287,22 @@ jobs:
         with:
           name: sfdx-project-json
           path: .
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: jdx/mise-action@7e36c90d9ab29c415a2384db3006f3ec8a8cc654 # v4.2.4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Build
         run: pnpm run build
-      - uses: navikt/sf-gha-install-sf-cli@86acd7148c91ca98a741259ec2ae6e8879b3e045
-        with:
-          version: ${{ env.SF_CLI_VERSION }}
       - name: Authenticate DevHub (JWT)
         shell: bash
         run: |

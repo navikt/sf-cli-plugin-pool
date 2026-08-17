@@ -1,5 +1,5 @@
-minimumReleaseAgeExclude:
-  - '@salesforce/plugin-info@3.4.143'
+# minimumReleaseAgeExclude:
+#  - '@salesforce/plugin-info@3.4.143'
 overrides:
 
   # Override transitive linkify-it to a patched release.
