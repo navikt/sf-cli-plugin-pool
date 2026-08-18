@@ -7,6 +7,7 @@ node = { version = "24", postinstall = "corepack enable" }
 experimental = true
 minimum_release_age = "3d"
 lockfile = true
+auto_install = true
 
 [env]
 _.path = ["{{config_root}}/node_modules/.bin"]
