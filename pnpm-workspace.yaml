@@ -1,5 +1,9 @@
-# minimumReleaseAgeExclude:
-#  - '@salesforce/plugin-info@3.4.143'
+allowBuilds:
+  unrs-resolver@1.12.2: true
+
+minimumReleaseAgeExclude:
+  - eslint-plugin-sf-plugin@3.0.0
+
 overrides:
 
   # Override transitive linkify-it to a patched release.
