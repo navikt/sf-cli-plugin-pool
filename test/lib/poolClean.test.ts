@@ -137,7 +137,6 @@ describe('poolClean', () => {
       const orgs = [makeOrg('org-1', 'pool', 'Available')];
       const deps: CleanPoolDeps = {
         deleteOrg: async () => {
-          // eslint-disable-next-line @typescript-eslint/no-throw-literal, no-throw-literal
           throw 'string error';
         },
       };
