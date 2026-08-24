@@ -72,7 +72,7 @@ another org.
 
 Create a validation rule (e.g. `Pool_claim_token_immutable`) with this error condition formula:
 
-```
+```text
 AND(
   NOT(ISBLANK(PRIORVALUE(Pool_claim_token__c))),
   NOT(ISBLANK(Pool_claim_token__c)),
@@ -114,6 +114,43 @@ A CycloneDX SBOM is generated for each build on the main branch:
 - **Availability:** Uploaded as a build artifact and included in package distributions
 - **Location in builds:** Download from the "sbom" workflow artifact on main builds
 - **Location in package:** Included in the distribution tarball under root directory
+
+## Releasing
+
+Releases are automated with [release-please](https://github.com/googleapis/release-please) and published to GitHub Packages. Versioning is driven entirely by [Conventional Commits](https://www.conventionalcommits.org/) (enforced by commitlint).
+
+### How it works
+
+1. **Every push to `main`** runs [.github/workflows/release-please.yml](.github/workflows/release-please.yml). It scans the conventional-commit history and maintains a **release PR** that bumps the version in `package.json`, updates `CHANGELOG.md`, and syncs `.release-please-manifest.json`.
+2. **Merging the release PR** makes release-please create the git tag and a **GitHub Release**.
+3. The published release triggers [.github/workflows/release.yml](.github/workflows/release.yml), which runs the tests and publishes the package to GitHub Packages (`@navikt` scope) via `prepack` (build + oclif manifest + SBOM).
+
+The release-please workflow authenticates with a **GitHub App token** (not the default `GITHUB_TOKEN`). This is required: releases created by `GITHUB_TOKEN` do not trigger other workflows, so the publish step would never run.
+
+### Version bumps
+
+| Commit type                          | Result            |
+| ------------------------------------ | ----------------- |
+| `fix:`                               | patch (x.y.**z**) |
+| `feat:`                              | minor (x.**y**.z) |
+| `feat!:` / `BREAKING CHANGE:` footer | major (**x**.y.z) |
+
+### State files
+
+- `.release-please-manifest.json` — the **source of truth** for the last released version. `0.0.0` means nothing has been released yet.
+- `release-please-config.json` — release configuration (`release-type: node`, changelog path).
+- `CHANGELOG.md` — generated and maintained by release-please on the first release.
+
+### Cutting the first `1.0.0` release
+
+From a `0.0.0` manifest, conventional commits alone would produce `0.1.0`. To force the first tagged release to be exactly `1.0.0`, land a commit with a `Release-As` footer on `main`:
+
+```bash
+git commit --allow-empty -m "chore: release 1.0.0" -m "Release-As: 1.0.0"
+git push
+```
+
+release-please will then open a release PR targeting `1.0.0`. Merge it to tag and publish. After that, versions follow the table above.
 
 ## Development
 
