@@ -40,6 +40,11 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --frozen-lockfile
       - run: pnpm run test
+      - name: Configure auth for GitHub Packages
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> "$HOME/.npmrc"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # prepack runs build, oclif manifest, and SBOM generation before the tarball is created.
       - run: pnpm publish --no-git-checks # zizmor: ignore[use-trusted-publishing] GitHub Packages does not support npm trusted publishing.
         env:
