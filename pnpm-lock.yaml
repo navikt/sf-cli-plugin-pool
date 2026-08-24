@@ -50,8 +50,8 @@ importers:
         specifier: ^13.0.2
         version: 13.0.2(@typescript-eslint/utils@8.67.0(eslint@10.8.1(jiti@2.6.1)(supports-color@8.1.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@10.8.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)
       '@salesforce/plugin-info':
-        specifier: ^4.0.6
-        version: 4.0.6(@types/node@26.1.2)(supports-color@8.1.1)
+        specifier: ^4.0.8
+        version: 4.0.8(@types/node@26.1.2)(supports-color@8.1.1)
       '@salesforce/prettier-config':
         specifier: ^0.0.4
         version: 0.0.4
@@ -896,6 +896,10 @@ packages:
     resolution: {integrity: sha512-k7i2Tntu1fLvkMtRcKDFU64/Fr2M692ECtbwIGX6hcOh5mj+jrMa1tlvcdwffxAMl+lPYCXnY2bjErxWmP84zA==}
     engines: {node: '>=22'}
 
+  '@jsforce/jsforce-node@3.10.22':
+    resolution: {integrity: sha512-4TLjnvTlBW59NmNSsRRV5dDEepQGfBKVD0WWQlJUJwkU0d5FFxo8GbfNmCOXkjjYAe1wv7SuvMzJKcLZHU6qyw==}
+    engines: {node: '>=22'}
+
   '@jsonjoy.com/base64@1.1.2':
     resolution: {integrity: sha512-q6XAnWQDIMA3+FTiOYajoYqySkO+JSat0ytXGSuRdq9uXE7o92gzuQwQM14xaCRlBLGq3v5miDGC4vkVTn54xA==}
     engines: {node: '>=10.0'}
@@ -1045,8 +1049,8 @@ packages:
     resolution: {integrity: sha512-VwxhSH/8PQ5YmPAdhmLaJGCgR0n/pOm8T2y+/odMFthd5SA0xsO/kTdaRLFnFQAxxNj1nYtNHRb+BoMuAatzew==}
     engines: {node: '>=22.0.0'}
 
-  '@salesforce/plugin-info@4.0.6':
-    resolution: {integrity: sha512-NF8pJaBIBX7InYjVmekb12wkAj5wUaASw/fLRU1JiNZXq3PJxDPZtLCVlAXBaNdWKaKc6Po0FXAojDMcdL+H5w==}
+  '@salesforce/plugin-info@4.0.8':
+    resolution: {integrity: sha512-4lu/oc/xa/F+ThbxRwHt04ectqeM2XhHqp1Vg7FF4bAeXQd/6YmBZvgHfjwF4ByB07ULIde4Hjg3llE7VOuHcw==}
     engines: {node: '>=22.0.0'}
 
   '@salesforce/prettier-config@0.0.4':
@@ -2091,8 +2095,8 @@ packages:
     resolution: {integrity: sha512-x1VCxdX4t+8wVfd1so/9w+vQ4vx7lKd2Qp5tDRutErwmR85OgmfX7RlLRMWafRMY7hbEiXIbudNrjOAPa/hL8Q==}
     engines: {node: '>=18'}
 
-  default-browser@5.5.0:
-    resolution: {integrity: sha512-H9LMLr5zwIbSxrmvikGuI/5KGhZ8E2zH3stkMgM5LpOWDutGM2JZaj460Udnf1a+946zc7YBgrqEWwbk7zHvGw==}
+  default-browser@5.5.1:
+    resolution: {integrity: sha512-m1pAzaJgZ/gssEqlOhJkPJp8Xly7QyW6xcrkUa2KKcDeDSEMP7X8xipU3snUcfisTQx0w1AGae+9UtJSfVnXGw==}
     engines: {node: '>=18'}
 
   default-require-extensions@3.0.1:
@@ -5882,6 +5886,18 @@ snapshots:
       undici: 8.10.0
       xml2js: 0.6.2
 
+  '@jsforce/jsforce-node@3.10.22':
+    dependencies:
+      '@sindresorhus/is': 4.6.0
+      base64url: 3.0.1
+      csv-parse: 5.6.0
+      csv-stringify: 6.8.3
+      faye: 1.4.1
+      form-data: 4.0.6
+      multistream: 3.1.0
+      undici: 8.10.0
+      xml2js: 0.6.2
+
   '@jsonjoy.com/base64@1.1.2(tslib@2.8.1)':
     dependencies:
       tslib: 2.8.1
@@ -6083,7 +6099,7 @@ snapshots:
 
   '@salesforce/core@8.32.6':
     dependencies:
-      '@jsforce/jsforce-node': 3.10.19
+      '@jsforce/jsforce-node': 3.10.22
       '@salesforce/kit': 3.2.6
       '@salesforce/ts-types': 2.0.12
       ajv: 8.20.0
@@ -6176,7 +6192,7 @@ snapshots:
     dependencies:
       '@salesforce/ts-types': 3.0.1
 
-  '@salesforce/plugin-info@4.0.6(@types/node@26.1.2)(supports-color@8.1.1)':
+  '@salesforce/plugin-info@4.0.8(@types/node@26.1.2)(supports-color@8.1.1)':
     dependencies:
       '@inquirer/input': 2.3.0
       '@jsforce/jsforce-node': 3.10.19
@@ -7237,7 +7253,7 @@ snapshots:
 
   default-browser-id@5.0.1: {}
 
-  default-browser@5.5.0:
+  default-browser@5.5.1:
     dependencies:
       bundle-name: 4.1.0
       default-browser-id: 5.0.1
@@ -8917,7 +8933,7 @@ snapshots:
 
   open@10.2.0:
     dependencies:
-      default-browser: 5.5.0
+      default-browser: 5.5.1
       define-lazy-prop: 3.0.0
       is-inside-container: 1.0.0
       wsl-utils: 0.1.0
