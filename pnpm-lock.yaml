@@ -35,8 +35,8 @@ importers:
         specifier: ^21.2.2
         version: 21.2.2
       '@cyclonedx/cdxgen':
-        specifier: 12.8.3
-        version: 12.8.3(supports-color@8.1.1)
+        specifier: 12.8.4
+        version: 12.8.4(supports-color@8.1.1)
       '@oclif/plugin-command-snapshot':
         specifier: ^5.3.35
         version: 5.3.35
@@ -51,7 +51,7 @@ importers:
         version: 13.0.2(@typescript-eslint/utils@8.67.0(eslint@10.8.1(jiti@2.6.1)(supports-color@8.1.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@10.8.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)
       '@salesforce/plugin-info':
         specifier: ^4.0.8
-        version: 4.0.8(@types/node@26.1.2)(supports-color@8.1.1)
+        version: 4.0.9(@types/node@26.1.2)
       '@salesforce/prettier-config':
         specifier: ^0.0.4
         version: 0.0.4
@@ -563,8 +563,8 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@cyclonedx/cdxgen@12.8.3':
-    resolution: {integrity: sha512-EfLTkLRjzfWGUdSngTV+yOl8VkNv+mkpC6J7IuuzSumB7FsZFPsPG4EHiGKqoZdeXjdJN1zloXSedw7cW6cF/w==}
+  '@cyclonedx/cdxgen@12.8.4':
+    resolution: {integrity: sha512-9EMER2beUSU7fvKgVaYOnYCFqAHrY3bQ7ERenh29/Edku0ctEXzYdov6vCmjmo/hSBH+JtvA7+j1U884MVYFOA==}
     engines: {node: ^20 || ^22 || ^24 || ^25 || ^26, pnpm: '>=10'}
     hasBin: true
 
@@ -892,10 +892,6 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
-  '@jsforce/jsforce-node@3.10.19':
-    resolution: {integrity: sha512-k7i2Tntu1fLvkMtRcKDFU64/Fr2M692ECtbwIGX6hcOh5mj+jrMa1tlvcdwffxAMl+lPYCXnY2bjErxWmP84zA==}
-    engines: {node: '>=22'}
-
   '@jsforce/jsforce-node@3.10.22':
     resolution: {integrity: sha512-4TLjnvTlBW59NmNSsRRV5dDEepQGfBKVD0WWQlJUJwkU0d5FFxo8GbfNmCOXkjjYAe1wv7SuvMzJKcLZHU6qyw==}
     engines: {node: '>=22'}
@@ -1053,8 +1049,8 @@ packages:
     resolution: {integrity: sha512-VwxhSH/8PQ5YmPAdhmLaJGCgR0n/pOm8T2y+/odMFthd5SA0xsO/kTdaRLFnFQAxxNj1nYtNHRb+BoMuAatzew==}
     engines: {node: '>=22.0.0'}
 
-  '@salesforce/plugin-info@4.0.8':
-    resolution: {integrity: sha512-4lu/oc/xa/F+ThbxRwHt04ectqeM2XhHqp1Vg7FF4bAeXQd/6YmBZvgHfjwF4ByB07ULIde4Hjg3llE7VOuHcw==}
+  '@salesforce/plugin-info@4.0.9':
+    resolution: {integrity: sha512-xNVPq6irNrv8bnSuXVqmwsUxfgNtC5PdAr1xavKo3K5euZMBaSw+UDtULVYgAbAz2lFJ2OPY+dqJ95YpP0KjwQ==}
     engines: {node: '>=22.0.0'}
 
   '@salesforce/prettier-config@0.0.4':
@@ -5492,7 +5488,7 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@cyclonedx/cdxgen@12.8.3(supports-color@8.1.1)':
+  '@cyclonedx/cdxgen@12.8.4(supports-color@8.1.1)':
     dependencies:
       '@babel/parser': 7.29.7
       '@babel/traverse': 7.29.7(supports-color@8.1.1)
@@ -5878,18 +5874,6 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@jsforce/jsforce-node@3.10.19':
-    dependencies:
-      '@sindresorhus/is': 4.6.0
-      base64url: 3.0.1
-      csv-parse: 5.6.0
-      csv-stringify: 6.8.3
-      faye: 1.4.1
-      form-data: 4.0.6
-      multistream: 3.1.0
-      undici: 8.10.0
-      xml2js: 0.6.2
-
   '@jsforce/jsforce-node@3.10.22':
     dependencies:
       '@sindresorhus/is': 4.6.0
@@ -6208,10 +6192,10 @@ snapshots:
     dependencies:
       '@salesforce/ts-types': 3.0.1
 
-  '@salesforce/plugin-info@4.0.8(@types/node@26.1.2)(supports-color@8.1.1)':
+  '@salesforce/plugin-info@4.0.9(@types/node@26.1.2)':
     dependencies:
       '@inquirer/input': 2.3.0
-      '@jsforce/jsforce-node': 3.10.19
+      '@jsforce/jsforce-node': 3.10.22
       '@oclif/core': 4.14.0
       '@salesforce/core': 9.1.4
       '@salesforce/kit': 4.0.0
@@ -6220,7 +6204,7 @@ snapshots:
       marked: 4.3.0
       marked-terminal: 4.2.0(marked@4.3.0)
       open: 10.2.0
-      proxy-agent: 6.5.0(supports-color@8.1.1)
+      proxy-agent: 6.5.0
       semver: 7.8.5
       which: 4.0.0
     transitivePeerDependencies:
@@ -6425,7 +6409,7 @@ snapshots:
 
   '@types/mute-stream@0.0.4':
     dependencies:
-      '@types/node': 22.20.1
+      '@types/node': 26.1.2
 
   '@types/node@18.19.130':
     dependencies:
@@ -7843,7 +7827,7 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
-  get-uri@6.0.5(supports-color@8.1.1):
+  get-uri@6.0.5:
     dependencies:
       basic-ftp: 5.3.1
       data-uri-to-buffer: 6.0.2
@@ -8993,12 +8977,12 @@ snapshots:
 
   p-try@2.2.0: {}
 
-  pac-proxy-agent@7.2.0(supports-color@8.1.1):
+  pac-proxy-agent@7.2.0:
     dependencies:
       '@tootallnate/quickjs-emscripten': 0.23.0
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
-      get-uri: 6.0.5(supports-color@8.1.1)
+      get-uri: 6.0.5
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
       pac-resolver: 7.0.1
@@ -9212,14 +9196,14 @@ snapshots:
 
   proto-list@1.2.4: {}
 
-  proxy-agent@6.5.0(supports-color@8.1.1):
+  proxy-agent@6.5.0:
     dependencies:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
       lru-cache: 7.18.3
-      pac-proxy-agent: 7.2.0(supports-color@8.1.1)
+      pac-proxy-agent: 7.2.0
       proxy-from-env: 1.1.0
       socks-proxy-agent: 8.0.5
     transitivePeerDependencies:
