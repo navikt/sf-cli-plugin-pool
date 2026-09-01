@@ -20,6 +20,7 @@ export default class PoolFetch extends SfCommand<PoolFetchResult> {
       required: true,
     }),
     'set-default': Flags.boolean({
+      char: 'd',
       summary: messages.getMessage('flags.set-default.summary'),
     }),
     alias: Flags.string({

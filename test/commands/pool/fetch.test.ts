@@ -145,6 +145,23 @@ describe('pool fetch', () => {
     expect(result.isDefault).to.be.true;
   });
 
+  it('sets default when -d is provided', async () => {
+    stubFetchFlow([
+      {
+        Id: '001',
+        Pool_allocation_status__c: 'available',
+        Pool_tag__c: 'devPool',
+        SignupUsername: 'scratch@example.com',
+        CreatedDate: '2025-01-01T00:00:00.000Z',
+        Sfdx_Auth_Url__c: 'force://PlatformCLI::token@test.salesforce.com',
+      },
+    ]);
+
+    const result = await PoolFetch.run(['--target-dev-hub', devHub.username, '--pool-tag', 'devPool', '-d']);
+
+    expect(result.isDefault).to.be.true;
+  });
+
   it('outputs human-readable messages when not --json', async () => {
     stubFetchFlow([
       {
