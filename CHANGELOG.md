@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/navikt/sf-cli-plugin-pool/compare/sf-cli-plugin-pool-v1.0.0...sf-cli-plugin-pool-v1.0.1) (2026-09-01)
+
+
+### Bug Fixes
+
+* downgrade @salesforce/cli version to 2.150.3 and update trust_policy_excludes ([4130af0](https://github.com/navikt/sf-cli-plugin-pool/commit/4130af022d715ea657bf1604594e1bba3c600de1))
+* update trust_policy_excludes to include fastq@1.20.2 ([38e3bd0](https://github.com/navikt/sf-cli-plugin-pool/commit/38e3bd010dd750f5cda244d1f5a5cfdebdfab1f4))
+
 ## 1.0.0 (2026-08-24)
 
 
