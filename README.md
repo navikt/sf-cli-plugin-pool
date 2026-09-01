@@ -2,6 +2,42 @@
 
 A Salesforce CLI plugin for managing pools of pre-created scratch organizations. This plugin enables efficient CI/CD workflows by maintaining ready-to-use scratch orgs that can be allocated on-demand, significantly reducing validation and testing time.
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Core Commands](#core-commands)
+- [Diagnostics](#diagnostics-sf-doctor)
+- [Pool Configuration](#pool-configuration)
+- [DevHub Requirements](#devhub-requirements)
+- [SBOM](#sbom-software-bill-of-materials)
+- [Releasing](#releasing)
+- [Development](#development)
+- [Local Test Environment Setup](#local-test-environment-setup)
+- [CI Setup](#ci-setup)
+- [Dependencies](#dependencies)
+- [Questions](#questions)
+
+## Installation
+
+The published plugin is available from GitHub Packages. You need access to the `navikt` GitHub organization and a GitHub personal access token with `read:packages` permission.
+
+Configure npm to use GitHub Packages for the `@navikt` scope. Packages outside that scope continue to be downloaded from the public npm registry:
+
+```bash
+npm config set registry https://registry.npmjs.org/
+npm config set @navikt:registry https://npm.pkg.github.com
+npm config set //npm.pkg.github.com/:_authToken '${GITHUB_TOKEN}'
+```
+
+Set `GITHUB_TOKEN` to your token in the shell before installing. npm expands the environment variable when it accesses the registry, so the token itself is not written to your npm configuration. Do not commit a real token to a configuration file.
+
+Install the plugin through the Salesforce CLI:
+
+```bash
+sf plugins install @navikt/sf-cli-plugin-pool
+sf plugins
+```
+
 ## Core Commands
 
 - **`sf pool prepare`** — Create and tag new scratch orgs to replenish pools (used by CI)
