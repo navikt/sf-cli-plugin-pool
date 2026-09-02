@@ -22,8 +22,8 @@ importers:
         specifier: ^4.13.5
         version: 4.14.0
       '@salesforce/core':
-        specifier: ^9.1.2
-        version: 9.1.4
+        specifier: ^9.1.7
+        version: 9.1.7
       '@salesforce/sf-plugins-core':
         specifier: ^13.0.0
         version: 13.0.3(@types/node@26.1.2)
@@ -51,7 +51,7 @@ importers:
         version: 13.0.2(@typescript-eslint/utils@8.67.0(eslint@10.8.1(jiti@2.6.1)(supports-color@8.1.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@10.8.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)
       '@salesforce/plugin-info':
         specifier: ^4.0.8
-        version: 4.0.9(@types/node@26.1.2)
+        version: 4.0.9(@types/node@26.1.2)(supports-color@8.1.1)
       '@salesforce/prettier-config':
         specifier: ^0.0.4
         version: 0.0.4
@@ -900,6 +900,10 @@ packages:
     resolution: {integrity: sha512-sepBNb9Bt0vSdXqZqq97p/EP8NJjjOnDQoRmiH2Lcm/nsznQsrsUttoNmNxfxrRubuJTIL9m4H1I7uOb8HrgRg==}
     engines: {node: '>=22'}
 
+  '@jsforce/jsforce-node@3.10.24':
+    resolution: {integrity: sha512-EejRrqFmn5No4lCiHYPlN5UFRCLo7gEoflNNisxca8AMZFzEO+sdj/aUHGzjzXf4a9K2cbXNZ+4eL4lkiIEsGw==}
+    engines: {node: '>=22'}
+
   '@jsonjoy.com/base64@1.1.2':
     resolution: {integrity: sha512-q6XAnWQDIMA3+FTiOYajoYqySkO+JSat0ytXGSuRdq9uXE7o92gzuQwQM14xaCRlBLGq3v5miDGC4vkVTn54xA==}
     engines: {node: '>=10.0'}
@@ -1031,8 +1035,8 @@ packages:
     resolution: {integrity: sha512-ZR973WoqCgi6cR58WhgokbHVZOaADNKHiuM1FAwS5pTLQnC91xYi04i2e/gpAX2AUf7Ya6zjbusYtZNpSyKKAQ==}
     engines: {node: '>=18.0.0'}
 
-  '@salesforce/core@9.1.4':
-    resolution: {integrity: sha512-S4VZ0xstYOAs5dwt7EDGkuFZA8rddy0wmuPTGjsIhgAPzuq3I5lKyBNwqXMMxdhBcWi+P4cXccHLpOYivgdrXQ==}
+  '@salesforce/core@9.1.7':
+    resolution: {integrity: sha512-6ecm8k3RQ5lLZ8ecv4kuY9ORpdZ5vceQO/QEDkEIfg+XbT3k10lMztX6/Q0lM6EmeNGT8xqwbdHaYvcKhCwyDQ==}
     engines: {node: '>=22.0.0'}
 
   '@salesforce/dev-config@4.3.3':
@@ -1066,6 +1070,10 @@ packages:
 
   '@salesforce/ts-types@3.0.1':
     resolution: {integrity: sha512-NWkveMYT2I3O7EAYwWHi6/ba2YUwp9MFi/zJzA+czK5MVqJfdD6FZbiQrTbALZNvFzgFSdq9BvHm6ygRmtROzw==}
+    engines: {node: '>=22.0.0'}
+
+  '@salesforce/ts-types@3.1.0':
+    resolution: {integrity: sha512-ynzIcFj6JVL3PcbxKlHfJ9dtGQUqZvND3APrfPjUPB63FeSN+HK12pYhpJV49wrjPiig0FYFFwhmSYq2OSQoRA==}
     engines: {node: '>=22.0.0'}
 
   '@shikijs/core@1.29.2':
@@ -1623,8 +1631,8 @@ packages:
     resolution: {integrity: sha512-ir1UPr3dkwexU7FdV8qBBbNDRUhMmIekYMFZfi+C/sLNnRESKPl23nB9b2pltqfOQNnGzsDdId90AEtG5tCx4A==}
     engines: {node: '>=6.0.0'}
 
-  baseline-browser-mapping@2.11.15:
-    resolution: {integrity: sha512-FwMjJJ7HnyZpWe+oWxegG0fezZyBZUagI5LZEoO3GCbtbKNwRfMH9Ue5d5v01PNePBy1QSfPSDTTeVL0Hb9EzA==}
+  baseline-browser-mapping@2.11.19:
+    resolution: {integrity: sha512-Grytf1xOxOEMTGRwx6rLGKkTabd4vMg3VrKdj/7joCmV0qgh4QwMMO6xh34YEXQqirAuUdgQGa5orJQQ+69RBw==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -1735,8 +1743,8 @@ packages:
     resolution: {integrity: sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==}
     engines: {node: '>=10'}
 
-  caniuse-lite@1.0.30001809:
-    resolution: {integrity: sha512-xxWVywk6a6Arlk+hymeycyn/VgqEfLDxupvhH/xiY5SJ/18kmi9o6MiO320DCUzypORHLtvh0I4i04tUhCNHNQ==}
+  caniuse-lite@1.0.30001810:
+    resolution: {integrity: sha512-TITQPUkaz+aVk5GL6NhOdwk1aEaNTSDPsGFWrTuhKGtjTF70jL/Oht2W4c6rXUe5fu7Ie19VIahAXHIIiWWNeg==}
 
   capital-case@1.0.4:
     resolution: {integrity: sha512-ds37W8CytHgwnhGGTi88pcPyR15qoNkOpYwmMMfnWqqWgESapLqvDx6huFjQ5vqWSn2Z06173XNA7LtMOeUh1A==}
@@ -2193,8 +2201,8 @@ packages:
     engines: {node: '>=0.12.18'}
     hasBin: true
 
-  electron-to-chromium@1.5.411:
-    resolution: {integrity: sha512-gglkxzokjHfawpGxq75XdBV2/l3BAPzrsMs70qgaZdTW5rpV1tC4MdgJVP9fN126bODA4ZJQkn1wryEzJyQXIg==}
+  electron-to-chromium@1.5.415:
+    resolution: {integrity: sha512-958V+Kbhtgz+SxXeEVKBjrlKRBIDAYvUJfwhjxMZ5S6ut9jAl7l9ZKBkBrvjyjZE36PabLUo2L8kEeV5O4vgJg==}
 
   emoji-regex-xs@1.0.0:
     resolution: {integrity: sha512-LRlerrMYoIDrT6jgpeZ2YYl/L8EulRTt5hQcYjy5AInh7HWXKimpqx68aknBFpGL2+/IcogTcaydJEgaTmOpDg==}
@@ -4388,11 +4396,11 @@ packages:
     resolution: {integrity: sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==}
     engines: {node: '>=12.0.0'}
 
-  tldts-core@7.4.10:
-    resolution: {integrity: sha512-KnQjp53ZekKgm/r3l+u8kJGGzYgrWdP8+Mql7a4vijh2WE0IrZWspQj/TpTxDho/YxO+AnOZnIjQcCD+q6iJsw==}
+  tldts-core@7.4.11:
+    resolution: {integrity: sha512-CW3WN2rIIE/Of21mulhgnGOwoDyEFNygyIBOONSdyAuSATgMMUCpLeUlB+E8sAwA5xRV9hYPl+kyZ9citHCaKg==}
 
-  tldts@7.4.10:
-    resolution: {integrity: sha512-GgouD1B+sWwvkaEq8vXC15DjQitxbvs12oIXELpconwm+Tg3zfcEv4jgzq3vtKverDXsg3VI8aRgNL2Nra0Iog==}
+  tldts@7.4.11:
+    resolution: {integrity: sha512-aBiNayCfTQxuIJBm06M+xR14cYaYlDlSXZbgsnKzKNxDKUVq7KFwTjwBSsb7m9Y5xO8WfPnBc63WaYFMTGlvqw==}
     hasBin: true
 
   to-regex-range@5.0.1:
@@ -4845,6 +4853,9 @@ packages:
 
   zod@4.4.3:
     resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
+
+  zod@4.5.4:
+    resolution: {integrity: sha512-sC95tT5iHHH9gtpj6A81kh+NEaRAUFN+qlUPDUbRfOMvNf5QCBqsb3WgvnpVtK5Y+4UfA6KqufotuTvMGiTlsA==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -5898,6 +5909,18 @@ snapshots:
       undici: 8.10.0
       xml2js: 0.6.2
 
+  '@jsforce/jsforce-node@3.10.24':
+    dependencies:
+      '@sindresorhus/is': 4.6.0
+      base64url: 3.0.1
+      csv-parse: 5.6.0
+      csv-stringify: 6.8.3
+      faye: 1.4.1
+      form-data: 4.0.6
+      multistream: 3.1.0
+      undici: 8.10.0
+      xml2js: 0.6.2
+
   '@jsonjoy.com/base64@1.1.2(tslib@2.8.1)':
     dependencies:
       tslib: 2.8.1
@@ -6099,7 +6122,7 @@ snapshots:
 
   '@salesforce/core@8.32.6':
     dependencies:
-      '@jsforce/jsforce-node': 3.10.23
+      '@jsforce/jsforce-node': 3.10.24
       '@salesforce/kit': 3.2.6
       '@salesforce/ts-types': 2.0.12
       ajv: 8.20.0
@@ -6117,13 +6140,13 @@ snapshots:
       proper-lockfile: 4.1.2
       semver: 7.8.5
       ts-retry-promise: 0.8.1
-      zod: 4.4.3
+      zod: 4.5.4
 
-  '@salesforce/core@9.1.4':
+  '@salesforce/core@9.1.7':
     dependencies:
-      '@jsforce/jsforce-node': 3.10.22
+      '@jsforce/jsforce-node': 3.10.23
       '@salesforce/kit': 4.0.0
-      '@salesforce/ts-types': 3.0.1
+      '@salesforce/ts-types': 3.1.0
       ajv: 8.20.0
       change-case: 4.1.2
       fast-levenshtein: 3.0.0
@@ -6190,21 +6213,21 @@ snapshots:
 
   '@salesforce/kit@4.0.0':
     dependencies:
-      '@salesforce/ts-types': 3.0.1
+      '@salesforce/ts-types': 3.1.0
 
-  '@salesforce/plugin-info@4.0.9(@types/node@26.1.2)':
+  '@salesforce/plugin-info@4.0.9(@types/node@26.1.2)(supports-color@8.1.1)':
     dependencies:
       '@inquirer/input': 2.3.0
       '@jsforce/jsforce-node': 3.10.22
       '@oclif/core': 4.14.0
-      '@salesforce/core': 9.1.4
+      '@salesforce/core': 9.1.7
       '@salesforce/kit': 4.0.0
       '@salesforce/sf-plugins-core': 13.0.3(@types/node@26.1.2)
       got: 13.0.0
       marked: 4.3.0
       marked-terminal: 4.2.0(marked@4.3.0)
       open: 10.2.0
-      proxy-agent: 6.5.0
+      proxy-agent: 6.5.0(supports-color@8.1.1)
       semver: 7.8.5
       which: 4.0.0
     transitivePeerDependencies:
@@ -6222,7 +6245,7 @@ snapshots:
       '@inquirer/password': 5.1.2(@types/node@26.1.2)
       '@oclif/core': 4.14.0
       '@oclif/table': 0.5.9
-      '@salesforce/core': 9.1.4
+      '@salesforce/core': 9.1.7
       '@salesforce/kit': 4.0.0
       '@salesforce/ts-types': 3.0.1
       ansis: 3.17.0
@@ -6237,6 +6260,8 @@ snapshots:
   '@salesforce/ts-types@2.0.12': {}
 
   '@salesforce/ts-types@3.0.1': {}
+
+  '@salesforce/ts-types@3.1.0': {}
 
   '@shikijs/core@1.29.2':
     dependencies:
@@ -6746,7 +6771,7 @@ snapshots:
 
   base64url@3.0.1: {}
 
-  baseline-browser-mapping@2.11.15: {}
+  baseline-browser-mapping@2.11.19: {}
 
   basic-ftp@5.3.1: {}
 
@@ -6787,9 +6812,9 @@ snapshots:
 
   browserslist@4.28.8:
     dependencies:
-      baseline-browser-mapping: 2.11.15
-      caniuse-lite: 1.0.30001809
-      electron-to-chromium: 1.5.411
+      baseline-browser-mapping: 2.11.19
+      caniuse-lite: 1.0.30001810
+      electron-to-chromium: 1.5.415
       node-releases: 2.0.53
       update-browserslist-db: 1.3.1(browserslist@4.28.8)
 
@@ -6872,7 +6897,7 @@ snapshots:
 
   camelcase@6.3.0: {}
 
-  caniuse-lite@1.0.30001809: {}
+  caniuse-lite@1.0.30001810: {}
 
   capital-case@1.0.4:
     dependencies:
@@ -7341,7 +7366,7 @@ snapshots:
 
   ejs@6.0.1: {}
 
-  electron-to-chromium@1.5.411: {}
+  electron-to-chromium@1.5.415: {}
 
   emoji-regex-xs@1.0.0: {}
 
@@ -7827,7 +7852,7 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
-  get-uri@6.0.5:
+  get-uri@6.0.5(supports-color@8.1.1):
     dependencies:
       basic-ftp: 5.3.1
       data-uri-to-buffer: 6.0.2
@@ -8977,12 +9002,12 @@ snapshots:
 
   p-try@2.2.0: {}
 
-  pac-proxy-agent@7.2.0:
+  pac-proxy-agent@7.2.0(supports-color@8.1.1):
     dependencies:
       '@tootallnate/quickjs-emscripten': 0.23.0
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
-      get-uri: 6.0.5
+      get-uri: 6.0.5(supports-color@8.1.1)
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
       pac-resolver: 7.0.1
@@ -9196,14 +9221,14 @@ snapshots:
 
   proto-list@1.2.4: {}
 
-  proxy-agent@6.5.0:
+  proxy-agent@6.5.0(supports-color@8.1.1):
     dependencies:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
       lru-cache: 7.18.3
-      pac-proxy-agent: 7.2.0
+      pac-proxy-agent: 7.2.0(supports-color@8.1.1)
       proxy-from-env: 1.1.0
       socks-proxy-agent: 8.0.5
     transitivePeerDependencies:
@@ -9746,11 +9771,11 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.5)
       picomatch: 4.0.5
 
-  tldts-core@7.4.10: {}
+  tldts-core@7.4.11: {}
 
-  tldts@7.4.10:
+  tldts@7.4.11:
     dependencies:
-      tldts-core: 7.4.10
+      tldts-core: 7.4.11
 
   to-regex-range@5.0.1:
     dependencies:
@@ -9766,7 +9791,7 @@ snapshots:
 
   tough-cookie@6.0.2:
     dependencies:
-      tldts: 7.4.10
+      tldts: 7.4.11
 
   tr46@0.0.3: {}
 
@@ -10241,5 +10266,7 @@ snapshots:
   yoga-wasm-web@0.3.3: {}
 
   zod@4.4.3: {}
+
+  zod@4.5.4: {}
 
   zwitch@2.0.4: {}
