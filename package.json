@@ -1,7 +1,7 @@
 {
   "name": "@navikt/sf-cli-plugin-pool",
   "description": "A plugin for scratch org pooling.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "repository": "navikt/sf-cli-plugin-pool",
   "bugs": "https://github.com/navikt/sf-cli-plugin-pool/issues",
   "homepage": "https://github.com/navikt/sf-cli-plugin-pool#readme",

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/navikt/sf-cli-plugin-pool/compare/sf-cli-plugin-pool-v1.0.1...sf-cli-plugin-pool-v1.0.2) (2026-09-03)
+
+
+### Bug Fixes
+
+* **pool:** update org handling and queries for cleaner structure ([54b33b4](https://github.com/navikt/sf-cli-plugin-pool/commit/54b33b4ec2c763d02a65e30a3971c44827d23b97))
+
 ## [1.0.1](https://github.com/navikt/sf-cli-plugin-pool/compare/sf-cli-plugin-pool-v1.0.0...sf-cli-plugin-pool-v1.0.1) (2026-09-01)
 
 
