@@ -1,4 +1,4 @@
-import { Logger, Org, SfError } from '@salesforce/core';
+import { Connection, Logger, Org, SfError } from '@salesforce/core';
 import { ScratchOrgInfoRow } from '../types/scratch-org-info.js';
 
 const logger = Logger.childFromRoot('orgCleanup');
@@ -19,5 +19,17 @@ export async function deleteOrg(org: ScratchOrgInfoRow): Promise<void> {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new SfError(`Failed to delete scratch org ${org.Id}. ${message}`, 'OrgDeleteError');
+  }
+}
+
+export async function deleteActiveScratchOrg(connection: Connection, activeScratchOrgId: string): Promise<void> {
+  logger.debug('Deleting active scratch org', { activeScratchOrgId });
+
+  try {
+    await connection.delete('ActiveScratchOrg', activeScratchOrgId);
+    logger.debug('Active scratch org deleted', { activeScratchOrgId });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new SfError(`Failed to delete active scratch org ${activeScratchOrgId}. ${message}`, 'OrgDeleteError');
   }
 }

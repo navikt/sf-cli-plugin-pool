@@ -1,12 +1,12 @@
-import { Logger } from '@salesforce/core';
-import { ScratchOrgInfoRow } from '../types/scratch-org-info.js';
+import { Connection, Logger } from '@salesforce/core';
+import { CleanableOrgRow } from '../types/scratch-org-info.js';
 import { PoolCleanOrgResult, PoolCleanResult } from '../types/pool-clean.js';
-import { deleteOrg as defaultDeleteOrg } from './orgCleanup.js';
+import { deleteActiveScratchOrg as defaultDeleteOrg } from './orgCleanup.js';
 
 const logger = Logger.childFromRoot('poolClean');
 
 export type CleanPoolDeps = {
-  deleteOrg: (org: ScratchOrgInfoRow) => Promise<void>;
+  deleteOrg: (connection: Connection, activeScratchOrgId: string) => Promise<void>;
 };
 
 const defaultDeps: CleanPoolDeps = {
@@ -14,9 +14,10 @@ const defaultDeps: CleanPoolDeps = {
 };
 
 export async function cleanPoolOrgs(
-  orgs: ScratchOrgInfoRow[],
+  connection: Connection,
+  orgs: CleanableOrgRow[],
   deps: CleanPoolDeps = defaultDeps,
-  onProgress?: (message: string) => void
+  onProgress?: (message: string) => void,
 ): Promise<PoolCleanResult> {
   const results: PoolCleanOrgResult[] = [];
   let deleted = 0;
@@ -24,28 +25,33 @@ export async function cleanPoolOrgs(
 
   /* eslint-disable no-await-in-loop */
   for (const org of orgs) {
-    const poolTag = org.Pool_tag__c ?? 'undefined';
-    const status = org.Pool_allocation_status__c;
+    const scratchOrgInfo = org.ScratchOrgInfo;
+    const poolTag = scratchOrgInfo.Pool_tag__c ?? 'undefined';
+    const status = scratchOrgInfo.Pool_allocation_status__c;
 
     try {
-      onProgress?.(`Deleting scratch org ${org.Id} (pool: ${poolTag}, status: ${status})...`);
-      await deps.deleteOrg(org);
-      logger.debug('Scratch org deleted', { orgId: org.Id, poolTag });
-      onProgress?.(`Deleted scratch org ${org.Id}.`);
+      onProgress?.(`Deleting scratch org ${scratchOrgInfo.Id} (pool: ${poolTag}, status: ${status})...`);
+      await deps.deleteOrg(connection, org.Id);
+      logger.debug('Scratch org deleted', { orgId: scratchOrgInfo.Id, activeScratchOrgId: org.Id, poolTag });
+      onProgress?.(`Deleted scratch org ${scratchOrgInfo.Id}.`);
       deleted++;
       results.push({
-        scratchOrgId: org.Id,
+        scratchOrgId: scratchOrgInfo.Id,
         poolTag,
         status,
         deletionResult: 'deleted',
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      logger.warn('Failed to delete scratch org', { orgId: org.Id, error: message });
-      onProgress?.(`Failed to delete scratch org ${org.Id}: ${message}`);
+      logger.warn('Failed to delete scratch org', {
+        orgId: scratchOrgInfo.Id,
+        activeScratchOrgId: org.Id,
+        error: message,
+      });
+      onProgress?.(`Failed to delete scratch org ${scratchOrgInfo.Id}: ${message}`);
       failed++;
       results.push({
-        scratchOrgId: org.Id,
+        scratchOrgId: scratchOrgInfo.Id,
         poolTag,
         status,
         deletionResult: 'failed',

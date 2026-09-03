@@ -1,5 +1,5 @@
 import { Connection, Logger, SfError } from '@salesforce/core';
-import { ScratchOrgInfoRow } from '../types/scratch-org-info.js';
+import { CleanableOrgRow, ScratchOrgInfoRow } from '../types/scratch-org-info.js';
 
 const logger = Logger.childFromRoot('poolQuery');
 
@@ -54,16 +54,16 @@ export function buildStatusFilter(statuses: string[]): string {
 export async function queryPoolOrgsForClean(
   connection: Connection,
   tags: string[] = [],
-  statuses: string[] = []
-): Promise<ScratchOrgInfoRow[]> {
+  statuses: string[] = [],
+): Promise<CleanableOrgRow[]> {
   const tagFilter = buildTagFilter(tags);
   const statusFilter = buildStatusFilter(statuses);
-  const query = `SELECT Id, Pool_allocation_status__c, Pool_tag__c, SignupUsername FROM ScratchOrgInfo WHERE Pool_tag__c ${tagFilter} AND Pool_allocation_status__c ${statusFilter} AND Status = 'Active'`;
+  const query = `SELECT Id, ScratchOrgInfo.Id, ScratchOrgInfo.Pool_allocation_status__c, ScratchOrgInfo.Pool_tag__c FROM ActiveScratchOrg WHERE ScratchOrgInfo.Pool_tag__c ${tagFilter} AND ScratchOrgInfo.Pool_allocation_status__c ${statusFilter} AND ScratchOrgInfo.Status = 'Active'`;
 
   logger.debug('Querying pool orgs for clean', { query });
 
   try {
-    const result = await connection.query<ScratchOrgInfoRow>(query);
+    const result = await connection.query<CleanableOrgRow>(query);
     return result.records;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

@@ -1,6 +1,5 @@
 import { TestContext, MockTestOrgData } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
-import { Org } from '@salesforce/core';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import PoolClean from '../../../src/commands/pool/clean.js';
 
@@ -38,34 +37,30 @@ describe('pool clean', () => {
 
   function fakeCleanRequests(
     records: OrgRecord[],
-    deleteResults?: Map<string, { success: boolean; error?: string }>
+    deleteResults?: Map<string, { success: boolean; error?: string }>,
   ): void {
     $$.fakeConnectionRequest = (request: unknown) => {
       const req = request as { method?: string; url?: string };
       if (req.url?.includes('/query')) {
-        return Promise.resolve({ totalSize: records.length, done: true, records });
+        return Promise.resolve({
+          totalSize: records.length,
+          done: true,
+          records: records.map((record) => ({
+            Id: `active-${record.Id}`,
+            ScratchOrgInfo: record,
+          })),
+        });
+      }
+      if (req.method === 'DELETE' && req.url?.includes('/sobjects/ActiveScratchOrg/')) {
+        const record = records.find(({ Id }) => req.url?.endsWith(`active-${Id}`));
+        const result = deleteResults?.get(record?.Id ?? '');
+        if (result && !result.success) {
+          return Promise.reject(new Error(result.error ?? 'Delete failed'));
+        }
+        return Promise.resolve({ id: record?.Id, success: true, errors: [] });
       }
       return Promise.resolve({});
     };
-
-    const originalCreate = Org.create.bind(Org);
-    $$.SANDBOX.stub(Org, 'create').callsFake(async (opts: unknown) => {
-      const options = opts as { aliasOrUsername?: string };
-      const matchesRecord =
-        options.aliasOrUsername && records.some((r) => r.SignupUsername === options.aliasOrUsername);
-      if (matchesRecord) {
-        const orgId = records.find((r) => r.SignupUsername === options.aliasOrUsername)?.Id;
-        const result = deleteResults?.get(orgId ?? '');
-        return {
-          delete: async () => {
-            if (result && !result.success) {
-              throw new Error(result.error ?? 'Delete failed');
-            }
-          },
-        } as unknown as Org;
-      }
-      return originalCreate(opts as Parameters<typeof Org.create>[0]);
-    });
   }
 
   it('returns empty result when no orgs found', async () => {

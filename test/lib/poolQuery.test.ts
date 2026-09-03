@@ -8,7 +8,7 @@ import {
   queryPoolOrgs,
   queryPoolOrgsForClean,
 } from '../../src/lib/poolQuery.js';
-import { ScratchOrgInfoRow } from '../../src/types/scratch-org-info.js';
+import { CleanableOrgRow, ScratchOrgInfoRow } from '../../src/types/scratch-org-info.js';
 
 describe('poolQuery', () => {
   const $$ = new TestContext();
@@ -253,7 +253,7 @@ describe('poolQuery', () => {
       expect(queryArg).to.include('Pool_tag__c != null');
       expect(queryArg).to.include("Status = 'Active'");
       expect(queryArg).to.include(
-        'SELECT Id, Pool_allocation_status__c, Pool_tag__c, SignupUsername FROM ScratchOrgInfo'
+        'SELECT Id, Pool_allocation_status__c, Pool_tag__c, SignupUsername FROM ScratchOrgInfo',
       );
     });
 
@@ -328,9 +328,15 @@ describe('poolQuery', () => {
   // ---------------------------------------------------------------------------
   describe('queryPoolOrgsForClean', () => {
     it('returns records from the connection query', async () => {
-      const expectedRecords: ScratchOrgInfoRow[] = [
-        { Id: '001', Pool_allocation_status__c: 'failed', Pool_tag__c: 'pool1' },
-        { Id: '002', Pool_allocation_status__c: 'Available', Pool_tag__c: 'pool1' },
+      const expectedRecords: CleanableOrgRow[] = [
+        {
+          Id: 'active-001',
+          ScratchOrgInfo: { Id: '001', Pool_allocation_status__c: 'failed', Pool_tag__c: 'pool1' },
+        },
+        {
+          Id: 'active-002',
+          ScratchOrgInfo: { Id: '002', Pool_allocation_status__c: 'Available', Pool_tag__c: 'pool1' },
+        },
       ];
 
       const fakeConnection = {
@@ -354,9 +360,11 @@ describe('poolQuery', () => {
       await queryPoolOrgsForClean(fakeConnection as unknown as Connection, [], ['failed']);
 
       const queryArg = fakeConnection.query.firstCall.args[0] as string;
-      expect(queryArg).to.include("Pool_allocation_status__c IN ('failed')");
-      expect(queryArg).to.include('Pool_tag__c != null');
-      expect(queryArg).to.include("Status = 'Active'");
+      expect(queryArg).to.include('FROM ActiveScratchOrg');
+      expect(queryArg).to.include('ScratchOrgInfo.Id');
+      expect(queryArg).to.include("ScratchOrgInfo.Pool_allocation_status__c IN ('failed')");
+      expect(queryArg).to.include('ScratchOrgInfo.Pool_tag__c != null');
+      expect(queryArg).to.include("ScratchOrgInfo.Status = 'Active'");
     });
 
     it('constructs SOQL with both tag and status filters', async () => {
@@ -367,9 +375,9 @@ describe('poolQuery', () => {
       await queryPoolOrgsForClean(fakeConnection as unknown as Connection, ['myPool'], ['failed', 'Available']);
 
       const queryArg = fakeConnection.query.firstCall.args[0] as string;
-      expect(queryArg).to.include("Pool_tag__c IN ('myPool')");
-      expect(queryArg).to.include("Pool_allocation_status__c IN ('failed', 'Available')");
-      expect(queryArg).to.include("Status = 'Active'");
+      expect(queryArg).to.include("ScratchOrgInfo.Pool_tag__c IN ('myPool')");
+      expect(queryArg).to.include("ScratchOrgInfo.Pool_allocation_status__c IN ('failed', 'Available')");
+      expect(queryArg).to.include("ScratchOrgInfo.Status = 'Active'");
     });
 
     it('uses != null for both filters when no tags or statuses given', async () => {
@@ -380,8 +388,8 @@ describe('poolQuery', () => {
       await queryPoolOrgsForClean(fakeConnection as unknown as Connection);
 
       const queryArg = fakeConnection.query.firstCall.args[0] as string;
-      expect(queryArg).to.include('Pool_tag__c != null');
-      expect(queryArg).to.include('Pool_allocation_status__c != null');
+      expect(queryArg).to.include('ScratchOrgInfo.Pool_tag__c != null');
+      expect(queryArg).to.include('ScratchOrgInfo.Pool_allocation_status__c != null');
     });
 
     it('returns empty array when no records match', async () => {

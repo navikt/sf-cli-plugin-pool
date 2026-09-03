@@ -79,9 +79,9 @@ export default class PoolClean extends SfCommand<PoolCleanResult> {
       this.log(messages.getMessage('info.found-orgs', [String(orgs.length)]));
     }
 
-    const hasAssigned = orgs.some((o) => o.Pool_allocation_status__c === IN_USE_STATUS);
+    const hasAssigned = orgs.some((o) => o.ScratchOrgInfo.Pool_allocation_status__c === IN_USE_STATUS);
     if (hasAssigned && !flags['no-prompt']) {
-      const assignedCount = orgs.filter((o) => o.Pool_allocation_status__c === IN_USE_STATUS).length;
+      const assignedCount = orgs.filter((o) => o.ScratchOrgInfo.Pool_allocation_status__c === IN_USE_STATUS).length;
       const confirmed = await this.confirm({
         message: messages.getMessage('prompt.confirm-in-use', [String(assignedCount)]),
       });
@@ -94,7 +94,7 @@ export default class PoolClean extends SfCommand<PoolCleanResult> {
     }
 
     const logProgress = this.jsonEnabled() ? undefined : (msg: string): void => this.log(msg);
-    const result = await cleanPoolOrgs(orgs, undefined, logProgress);
+    const result = await cleanPoolOrgs(connection, orgs, undefined, logProgress);
 
     if (!this.jsonEnabled()) {
       this.styledHeader(messages.getMessage('info.summary-header'));

@@ -8,6 +8,11 @@ export type ScratchOrgInfoRow = {
   Pool_claim_token__c?: string | null;
 };
 
+export type CleanableOrgRow = {
+  Id: string;
+  ScratchOrgInfo: Pick<ScratchOrgInfoRow, 'Id' | 'Pool_allocation_status__c' | 'Pool_tag__c'>;
+};
+
 /**
  * A pool org candidate queried from `ActiveScratchOrg`, traversing up to its parent
  * `ScratchOrgInfo`. `Id` is the `ActiveScratchOrg` record Id (used to transfer its

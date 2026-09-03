@@ -1,7 +1,7 @@
 import { TestContext, MockTestOrgData } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
-import { Org, SfError } from '@salesforce/core';
-import { deleteOrg } from '../../src/lib/orgCleanup.js';
+import { Connection, Org, SfError } from '@salesforce/core';
+import { deleteActiveScratchOrg, deleteOrg } from '../../src/lib/orgCleanup.js';
 
 describe('orgCleanup', () => {
   const $$ = new TestContext();
@@ -86,6 +86,33 @@ describe('orgCleanup', () => {
       } catch (err) {
         expect(err).to.be.instanceOf(SfError);
         expect((err as SfError).name).to.equal('OrgDeleteError');
+      }
+    });
+  });
+
+  describe('deleteActiveScratchOrg', () => {
+    it('deletes the ActiveScratchOrg record through the DevHub connection', async () => {
+      const deleteStub = $$.SANDBOX.stub().resolves({ id: 'active-001', success: true, errors: [] });
+      const connection = { delete: deleteStub } as unknown as Connection;
+
+      await deleteActiveScratchOrg(connection, 'active-001');
+
+      expect(deleteStub.calledOnceWith('ActiveScratchOrg', 'active-001')).to.be.true;
+    });
+
+    it('throws OrgDeleteError when ActiveScratchOrg deletion fails', async () => {
+      const connection = {
+        delete: $$.SANDBOX.stub().rejects(new Error('Insufficient permissions')),
+      } as unknown as Connection;
+
+      try {
+        await deleteActiveScratchOrg(connection, 'active-001');
+        expect.fail('Expected OrgDeleteError to be thrown');
+      } catch (err) {
+        expect(err).to.be.instanceOf(SfError);
+        expect((err as SfError).name).to.equal('OrgDeleteError');
+        expect((err as SfError).message).to.include('active-001');
+        expect((err as SfError).message).to.include('Insufficient permissions');
       }
     });
   });
