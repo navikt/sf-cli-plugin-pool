@@ -6,6 +6,10 @@ minimumReleaseAgeExclude:
 
 overrides:
 
+  # Override transitive fast-uri to a patched release.
+  # Mitigates GHSA-jqff-g426-hqxp; fixed in fast-uri 3.1.6.
+  fast-uri: '>=3.1.6'
+
   # Override transitive linkify-it to a patched release.
   # Mitigates GHSA-v245-v573-v5vm (Inefficient Algorithmic Complexity); fixed in linkify-it 5.0.2.
   linkify-it: '>=5.0.2'
