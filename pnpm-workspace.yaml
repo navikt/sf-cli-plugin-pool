@@ -6,6 +6,10 @@ minimumReleaseAgeExclude:
 
 overrides:
 
+  # Override transitive csv-parse to a patched release.
+  # Mitigates CVE-2026-85063; fixed in csv-parse 7.0.2.
+  csv-parse: '>=7.0.2'
+
   # Override transitive fast-uri to a patched release.
   # Mitigates GHSA-jqff-g426-hqxp; fixed in fast-uri 3.1.6.
   fast-uri: '>=3.1.6'
