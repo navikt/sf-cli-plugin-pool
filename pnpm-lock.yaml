@@ -22,7 +22,7 @@ importers:
     dependencies:
       '@oclif/core':
         specifier: ^5.0.0
-        version: 5.1.0
+        version: 5.1.2
       '@salesforce/core':
         specifier: ^9.1.7
         version: 9.2.0
@@ -999,8 +999,8 @@ packages:
     resolution: {integrity: sha512-OLUaoqBuyxeTqUvjA3FZFiXUfYC1alp3Sa99gW3EUDz3tZ3CbXDdcZ7qWKBzicrJleIgucoWamWH1saAmH/l2Q==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  '@oclif/core@5.1.0':
-    resolution: {integrity: sha512-eFZxFabcVz5ceoo6s+Ix87me7ZPDpsxgOplmHvxC2jjYGNQ/oLWIZ8QBSS4ouItV/B5rqKnKNBa30teoHxSVsQ==}
+  '@oclif/core@5.1.2':
+    resolution: {integrity: sha512-vgbWWFKjjsf7oAbJONFPnDkVNeqmy70DTBUjsprW/HRiTrXe8sMlFc0ih8GjpU+dn+m6V2ksaZjBV9HgnsmWVg==}
     engines: {node: '>=22.0.0'}
 
   '@oclif/plugin-command-snapshot@6.0.1':
@@ -6068,7 +6068,7 @@ snapshots:
     dependencies:
       which: 6.0.1
 
-  '@oclif/core@5.1.0':
+  '@oclif/core@5.1.2':
     dependencies:
       ansi-escapes: 4.3.2
       ansis: 3.17.0
@@ -6091,7 +6091,7 @@ snapshots:
 
   '@oclif/plugin-command-snapshot@6.0.1':
     dependencies:
-      '@oclif/core': 5.1.0
+      '@oclif/core': 5.1.2
       ansis: 3.17.0
       globby: 14.1.0
       just-diff: 5.2.0
@@ -6103,12 +6103,12 @@ snapshots:
 
   '@oclif/plugin-help@7.0.0':
     dependencies:
-      '@oclif/core': 5.1.0
+      '@oclif/core': 5.1.2
 
   '@oclif/plugin-not-found@4.0.0(@types/node@26.1.2)':
     dependencies:
       '@inquirer/prompts': 7.10.1(@types/node@26.1.2)
-      '@oclif/core': 5.1.0
+      '@oclif/core': 5.1.2
       ansis: 3.17.0
       fast-levenshtein: 3.0.0
     transitivePeerDependencies:
@@ -6116,7 +6116,7 @@ snapshots:
 
   '@oclif/plugin-warn-if-update-available@4.0.0(supports-color@8.1.1)':
     dependencies:
-      '@oclif/core': 5.1.0
+      '@oclif/core': 5.1.2
       ansis: 3.17.0
       debug: 4.4.3(supports-color@8.1.1)
       http-call: 5.3.0(supports-color@8.1.1)
@@ -6273,7 +6273,7 @@ snapshots:
     dependencies:
       '@inquirer/prompts': 7.10.1(@types/node@26.1.2)
       '@jsforce/jsforce-node': 3.10.24
-      '@oclif/core': 5.1.0
+      '@oclif/core': 5.1.2
       '@salesforce/core': 9.2.0
       '@salesforce/kit': 4.0.0
       '@salesforce/sf-plugins-core': 13.0.4(@types/node@26.1.2)
@@ -6297,7 +6297,7 @@ snapshots:
     dependencies:
       '@inquirer/confirm': 6.3.2(@types/node@26.1.2)
       '@inquirer/password': 5.2.2(@types/node@26.1.2)
-      '@oclif/core': 5.1.0
+      '@oclif/core': 5.1.2
       '@oclif/table': 1.0.1
       '@salesforce/core': 9.2.0
       '@salesforce/kit': 4.0.0
@@ -9129,7 +9129,7 @@ snapshots:
       '@inquirer/confirm': 3.2.0
       '@inquirer/input': 2.3.0
       '@inquirer/select': 2.5.0
-      '@oclif/core': 5.1.0
+      '@oclif/core': 5.1.2
       '@oclif/plugin-help': 7.0.0
       '@oclif/plugin-not-found': 4.0.0(@types/node@26.1.2)
       '@oclif/plugin-warn-if-update-available': 4.0.0(supports-color@8.1.1)
