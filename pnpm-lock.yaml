@@ -28,7 +28,7 @@ importers:
         version: 9.3.0
       '@salesforce/sf-plugins-core':
         specifier: ^13.0.0
-        version: 13.0.4(@types/node@26.6.4)
+        version: 13.0.5(@types/node@26.6.4)
     devDependencies:
       '@commitlint/cli':
         specifier: ^21.2.2
@@ -111,8 +111,8 @@ importers:
 
 packages:
 
-  '@alcalzone/ansi-tokenize@0.3.0':
-    resolution: {integrity: sha512-p+CMKJ93HFmLkjXKlXiVGlMQEuRb6H0MokBSwUsX+S6BRX8eV5naFZpQJFfJHjRZY0Hmnqy1/r6UWl3x+19zYA==}
+  '@alcalzone/ansi-tokenize@0.3.1':
+    resolution: {integrity: sha512-cUD0PT0YX+rImRhfn7BfMRduP/tX/Zqt/N0dHlAyn2RlcJssCb5KsCJkhln61eh9vuJDkH8wKn3L8zJzzWXPFg==}
     engines: {node: '>=18'}
 
   '@appthreat/atom-common@1.1.0':
@@ -665,8 +665,8 @@ packages:
     resolution: {integrity: sha512-S8qNSZiYzFd0wAcyG5AXCvUHC5Sr7xpZ9wZ2py9XR88jUz8wooStVx5M6dRzczbBWjic9NP7+rY0Xi7qqK/aMQ==}
     engines: {node: '>=18'}
 
-  '@inquirer/ansi@2.0.8':
-    resolution: {integrity: sha512-WpQM+Ti6Z40EFwwt+uL2p4UabT+W179zHp6HhLVOzfbwnVn05IPO/eXIZXGNqcT1jbQ15SujNLzQ39k4QPPxBQ==}
+  '@inquirer/ansi@2.0.9':
+    resolution: {integrity: sha512-0Ywt3S8tqM6TWUcsRlBFQ1x+X3/o8kktX0ZiKAnByYb9GFDknnOhse1PVtfiD2BXPI8ar+BWx9PV9R0lQIcygw==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^20.17.0'}
 
   '@inquirer/checkbox@4.3.2':
@@ -691,8 +691,8 @@ packages:
       '@types/node':
         optional: true
 
-  '@inquirer/confirm@6.3.2':
-    resolution: {integrity: sha512-Xvr/0HggjddPtGppuqVmxhTw+Hr8PvsZ/k0HmOEaAqQEt80OITNkFWnsdNmyT0/eM4Ab+iJLx2R8rctlEyfSVg==}
+  '@inquirer/confirm@6.3.3':
+    resolution: {integrity: sha512-ImOBgpl/sJTFp8naeSkNu4S0Sf8F8pxv3/CUx+LoBAdQvCVqFz6rSB2A/oZYsJge3+yphbEDxEkfaRNYq1OU0A==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^20.17.0'}
     peerDependencies:
       '@types/node': '>=18'
@@ -709,8 +709,8 @@ packages:
       '@types/node':
         optional: true
 
-  '@inquirer/core@12.0.3':
-    resolution: {integrity: sha512-wsSy0sznmXwkty+2PzZwx00Cazc/E0r0B7mAzdGROz2Ct+DFZXaK7WDjGZvgjRldxH5ZhFVfF2lgkYrqgOw2KA==}
+  '@inquirer/core@12.0.4':
+    resolution: {integrity: sha512-M5fB67y7jPObI45vhD82RskWwCSm0scOvenV/I6K8tIi2gfr9DXqQqJ+iw+Wi6SgapikdOiJibYzz1gW47fsDg==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^20.17.0'}
     peerDependencies:
       '@types/node': '>=18'
@@ -788,8 +788,8 @@ packages:
       '@types/node':
         optional: true
 
-  '@inquirer/password@5.2.2':
-    resolution: {integrity: sha512-W9zYdyzogK+6110mqwaSJWCBu2yA5Q/OfnGSjjZB1bNpHlmUozXxTl0+QOZBNeVd6Qo81/qT75gW05gLAtITxw==}
+  '@inquirer/password@5.2.3':
+    resolution: {integrity: sha512-1Uo2qfI2K3wXbfunMpvwAzoZPIUf5iEETwDGqRVbswoorXGqYQJ/bfIJFeLj+pxjq+e2UFPNOmx+fsIl4Urigw==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^20.17.0'}
     peerDependencies:
       '@types/node': '>=18'
@@ -854,8 +854,8 @@ packages:
       '@types/node':
         optional: true
 
-  '@inquirer/type@4.1.1':
-    resolution: {integrity: sha512-yJoHYrMnxIsJZCY+0Vb66Dy3he3kL3e2wOBKhoSwWWAzZAY82emlxwgprCtp6yRixvNRNq9ztfRWQYPNr3Go7A==}
+  '@inquirer/type@4.2.0':
+    resolution: {integrity: sha512-2rnHX8RPo4glJYqnFc/v3nQeIhDcjyRRyaT7MGcfL/8xv/8K03SXYoA2tX06WVSKywWOE/ncbG3dtuzLjR5TCQ==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^20.17.0'}
     peerDependencies:
       '@types/node': '>=18'
@@ -1017,8 +1017,8 @@ packages:
     resolution: {integrity: sha512-zX0iNZT5JiHXdzQ7ORQCRAqwydG119LZDf6Pet+5HEeONHJu/byWAA99n2HLTOZmWMwJ65bLSp3ZajOHtJaSkw==}
     engines: {node: '>=22.0.0'}
 
-  '@oclif/table@1.0.1':
-    resolution: {integrity: sha512-Owo2j2tXfHBNuAiqmgwIADUZwyVG5LrXJMwrEt9/8m4KhI6tqAxBtvj8YlrNALhGCc/FDKOtVGc7FkJSVMeoHQ==}
+  '@oclif/table@1.0.2':
+    resolution: {integrity: sha512-oOPIbyJYlV84jMWK7h2w4+4ZAXraDz2GzGD4tNmNSvHK0+peui2joZvu/TyU1r+7XeLQUf8Np4xPVkgYeZMyOA==}
     engines: {node: '>=22.0.0'}
 
   '@pinojs/redact@0.4.0':
@@ -1062,10 +1062,6 @@ packages:
   '@salesforce/kit@3.2.6':
     resolution: {integrity: sha512-O8S4LWerHa9Zosqh+IoQjgLtpxMOfObRxaRnUdRV4MLtFUi+bQxQiyFvve6eEaBaMP1b1xVDQpvSvQ+PXEDGFQ==}
 
-  '@salesforce/kit@4.0.0':
-    resolution: {integrity: sha512-VwxhSH/8PQ5YmPAdhmLaJGCgR0n/pOm8T2y+/odMFthd5SA0xsO/kTdaRLFnFQAxxNj1nYtNHRb+BoMuAatzew==}
-    engines: {node: '>=22.0.0'}
-
   '@salesforce/kit@4.0.1':
     resolution: {integrity: sha512-gEqWxNsouii5bFRpmLGOO93ndiL0Ds3UOuu2JLTfyZGgezQxg8wEUnnYzV2trZsrlptvarj94AfiQvWI5WkjAw==}
     engines: {node: '>=22.0.0'}
@@ -1077,17 +1073,13 @@ packages:
   '@salesforce/prettier-config@0.0.4':
     resolution: {integrity: sha512-GBjR7f/jv7rcSrTvNgbkWvOykXg/PZqL7TztylKwaogWdrCbypJE8qEfBy9nILkICrwmDbQApOC8TqoO3bQKSw==}
 
-  '@salesforce/sf-plugins-core@13.0.4':
-    resolution: {integrity: sha512-AChjRg6dx2/njPjvGTa+leY4i1oBfQb6pIgLaP0EXVNKA1aByAzLZIhcnMS0Z2mr38vFzD4IySBMcYg3fupunA==}
+  '@salesforce/sf-plugins-core@13.0.5':
+    resolution: {integrity: sha512-jBgsz99Jgmg565gE+FmimQt9mTverxzZowN7dwoyEvCAv7b6MghpYK/qM6Z2mIdXpg2+Q9yxdAqC9vDReYTIgQ==}
     engines: {node: '>=22.0.0'}
 
   '@salesforce/ts-types@2.0.12':
     resolution: {integrity: sha512-BIJyduJC18Kc8z+arUm5AZ9VkPRyw1KKAm+Tk+9LT99eOzhNilyfKzhZ4t+tG2lIGgnJpmytZfVDZ0e2kFul8g==}
     engines: {node: '>=18.0.0'}
-
-  '@salesforce/ts-types@3.2.0':
-    resolution: {integrity: sha512-3xdKt4nlthDC8nCHVWpVDwM5mmPlk8kDyJ1E3dWMk7FLRdQqhLgaHZgS+AMqcowWiKUC1l1d5YIhGhQM7dw3Bw==}
-    engines: {node: '>=22.0.0'}
 
   '@salesforce/ts-types@3.2.1':
     resolution: {integrity: sha512-yVuXM7esC4LGEfS4Zh0wHJmDG2gzGWJM1JCFjM3kx5KfAfHP6zmhUn7XUMaKoaaQ5nF4F6WFEW1kblgpDk54mA==}
@@ -1593,8 +1585,8 @@ packages:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
     engines: {node: '>=8'}
 
-  ansi-regex@6.3.0:
-    resolution: {integrity: sha512-WpDfL7NO6j7tH88IDBNVdUJxDh9nmCteAVW9dsep846XdwF4naCBK+/tGLX3KJgcpgMRXCFlTM2hKGoK9FsdrQ==}
+  ansi-regex@6.4.0:
+    resolution: {integrity: sha512-KzTVk2tCWAHtYrvvvaP8bJKJq2pVinhLcGEQdtLIYPbmNGNyYe8QwNaTUYQp2J7/vIsUKt5QCqAfUkYyG9DkOw==}
     engines: {node: '>=12'}
 
   ansi-styles@4.3.0:
@@ -4190,8 +4182,8 @@ packages:
     resolution: {integrity: sha512-FC+lgizVPfie0kkhqUScwRu1O/lF6NOgJmlCgK+/LYxDCTk8sGelYaHDhFcDN+Sn3Cv+3VSa4Byeo+IMCzpMgQ==}
     engines: {node: '>=12'}
 
-  slice-ansi@9.0.0:
-    resolution: {integrity: sha512-SO/3iYL5S3W57LLEniscOGPZgOqZUPCx6d3dB+52B80yJ0XstzsC/eV8gnA4tM3MHDrKz+OCFSLNjswdSC+/bA==}
+  slice-ansi@9.0.1:
+    resolution: {integrity: sha512-aBY19bn/XA+hKOKX0qL7Z0UfdBsbQvc9hn993U8ALUjzxCvDcuZqLoRXjGJrUARWAlwMnsRVD9sw2AFNOYvalA==}
     engines: {node: '>=22'}
 
   smart-buffer@4.2.0:
@@ -4530,8 +4522,8 @@ packages:
     resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
     engines: {node: '>=16'}
 
-  type-fest@5.9.0:
-    resolution: {integrity: sha512-yANm3Jr3GiJ1qgJlxGAVxTOIcEOk1rhQHamlXtnrCK7EHP4HeM9OGxtMg/W7HFdrVzw/ZWJKGVIJusVH85sLtw==}
+  type-fest@5.10.0:
+    resolution: {integrity: sha512-NoSdpq/WEiAg5sjmBkmV/hfxv6HJH4NqPNrqjtSO5CwRmpsDfaf4begxW34KdJykH/l1yHtwBWQkCRdoXO8mPA==}
     engines: {node: '>=20'}
 
   type-is@2.1.0:
@@ -4753,8 +4745,8 @@ packages:
   write-file-atomic@3.0.3:
     resolution: {integrity: sha512-AvHcyZ5JnSfq3ioSyjrBkH9yW4m7Ayk8/9My/DD9onKeu/94fwrMocemO2QAJFAlnnDN+ZDS+ZjAR5ua1/PV/Q==}
 
-  ws@8.21.3:
-    resolution: {integrity: sha512-201TZ/kPWxoPr/OKWjquZR1SWKXcvxdH+e1xrx89b3YbmzLMFCLfnaG1HFIgWzJOEWZ7MvpK++odZufgYR50Rw==}
+  ws@8.22.0:
+    resolution: {integrity: sha512-Ydggc987+RO0AnWtZ/7Wq9FtNvcrL1b/RO0ud9mWjUPgDrsAAwQSF51sm2hm1XofbU/4jkpGEsLFsZZxU+1DOg==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -4867,7 +4859,7 @@ packages:
 
 snapshots:
 
-  '@alcalzone/ansi-tokenize@0.3.0':
+  '@alcalzone/ansi-tokenize@0.3.1':
     dependencies:
       ansi-styles: 6.2.3
       is-fullwidth-code-point: 5.1.0
@@ -5663,7 +5655,7 @@ snapshots:
 
   '@inquirer/ansi@1.0.2': {}
 
-  '@inquirer/ansi@2.0.8': {}
+  '@inquirer/ansi@2.0.9': {}
 
   '@inquirer/checkbox@4.3.2(@types/node@26.6.4)':
     dependencies:
@@ -5687,10 +5679,10 @@ snapshots:
     optionalDependencies:
       '@types/node': 26.6.4
 
-  '@inquirer/confirm@6.3.2(@types/node@26.6.4)':
+  '@inquirer/confirm@6.3.3(@types/node@26.6.4)':
     dependencies:
-      '@inquirer/core': 12.0.3(@types/node@26.6.4)
-      '@inquirer/type': 4.1.1(@types/node@26.6.4)
+      '@inquirer/core': 12.0.4(@types/node@26.6.4)
+      '@inquirer/type': 4.2.0(@types/node@26.6.4)
     optionalDependencies:
       '@types/node': 26.6.4
 
@@ -5707,11 +5699,11 @@ snapshots:
     optionalDependencies:
       '@types/node': 26.6.4
 
-  '@inquirer/core@12.0.3(@types/node@26.6.4)':
+  '@inquirer/core@12.0.4(@types/node@26.6.4)':
     dependencies:
-      '@inquirer/ansi': 2.0.8
+      '@inquirer/ansi': 2.0.9
       '@inquirer/figures': 2.0.9
-      '@inquirer/type': 4.1.1(@types/node@26.6.4)
+      '@inquirer/type': 4.2.0(@types/node@26.6.4)
       cli-width: 4.1.0
       fast-wrap-ansi: 0.2.2
       mute-stream: 3.0.0
@@ -5788,11 +5780,11 @@ snapshots:
     optionalDependencies:
       '@types/node': 26.6.4
 
-  '@inquirer/password@5.2.2(@types/node@26.6.4)':
+  '@inquirer/password@5.2.3(@types/node@26.6.4)':
     dependencies:
-      '@inquirer/ansi': 2.0.8
-      '@inquirer/core': 12.0.3(@types/node@26.6.4)
-      '@inquirer/type': 4.1.1(@types/node@26.6.4)
+      '@inquirer/ansi': 2.0.9
+      '@inquirer/core': 12.0.4(@types/node@26.6.4)
+      '@inquirer/type': 4.2.0(@types/node@26.6.4)
     optionalDependencies:
       '@types/node': 26.6.4
 
@@ -5858,7 +5850,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 26.6.4
 
-  '@inquirer/type@4.1.1(@types/node@26.6.4)':
+  '@inquirer/type@4.2.0(@types/node@26.6.4)':
     optionalDependencies:
       '@types/node': 26.6.4
 
@@ -6083,7 +6075,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@oclif/table@1.0.1':
+  '@oclif/table@1.0.2':
     dependencies:
       '@types/react': 19.3.0
       change-case: 5.4.4
@@ -6223,10 +6215,6 @@ snapshots:
     dependencies:
       '@salesforce/ts-types': 2.0.12
 
-  '@salesforce/kit@4.0.0':
-    dependencies:
-      '@salesforce/ts-types': 3.2.1
-
   '@salesforce/kit@4.0.1':
     dependencies:
       '@salesforce/ts-types': 3.2.1
@@ -6238,7 +6226,7 @@ snapshots:
       '@oclif/core': 5.1.2
       '@salesforce/core': 9.3.0
       '@salesforce/kit': 4.0.1
-      '@salesforce/sf-plugins-core': 13.0.4(@types/node@26.6.4)
+      '@salesforce/sf-plugins-core': 13.0.5(@types/node@26.6.4)
       got: 13.0.0
       marked: 4.3.0
       marked-terminal: 4.2.0(marked@4.3.0)
@@ -6255,15 +6243,15 @@ snapshots:
 
   '@salesforce/prettier-config@0.0.4': {}
 
-  '@salesforce/sf-plugins-core@13.0.4(@types/node@26.6.4)':
+  '@salesforce/sf-plugins-core@13.0.5(@types/node@26.6.4)':
     dependencies:
-      '@inquirer/confirm': 6.3.2(@types/node@26.6.4)
-      '@inquirer/password': 5.2.2(@types/node@26.6.4)
+      '@inquirer/confirm': 6.3.3(@types/node@26.6.4)
+      '@inquirer/password': 5.2.3(@types/node@26.6.4)
       '@oclif/core': 5.1.2
-      '@oclif/table': 1.0.1
+      '@oclif/table': 1.0.2
       '@salesforce/core': 9.3.0
-      '@salesforce/kit': 4.0.0
-      '@salesforce/ts-types': 3.2.0
+      '@salesforce/kit': 4.0.1
+      '@salesforce/ts-types': 3.2.1
       ansis: 3.17.0
       cli-progress: 3.12.0
       terminal-link: 3.0.0
@@ -6274,8 +6262,6 @@ snapshots:
       - utf-8-validate
 
   '@salesforce/ts-types@2.0.12': {}
-
-  '@salesforce/ts-types@3.2.0': {}
 
   '@salesforce/ts-types@3.2.1': {}
 
@@ -6870,7 +6856,7 @@ snapshots:
 
   ansi-regex@5.0.1: {}
 
-  ansi-regex@6.3.0: {}
+  ansi-regex@6.4.0: {}
 
   ansi-styles@4.3.0:
     dependencies:
@@ -7196,7 +7182,7 @@ snapshots:
 
   cli-truncate@6.1.1:
     dependencies:
-      slice-ansi: 9.0.0
+      slice-ansi: 9.0.1
       string-width: 8.3.0
 
   cli-width@4.1.0: {}
@@ -8311,7 +8297,7 @@ snapshots:
 
   ink@7.1.1(@types/react@19.3.0)(react@19.3.0):
     dependencies:
-      '@alcalzone/ansi-tokenize': 0.3.0
+      '@alcalzone/ansi-tokenize': 0.3.1
       ansi-escapes: 7.3.0
       ansi-styles: 6.2.3
       auto-bind: 5.0.1
@@ -8328,14 +8314,14 @@ snapshots:
       react-reconciler: 0.33.0(react@19.3.0)
       scheduler: 0.27.0
       signal-exit: 3.0.7
-      slice-ansi: 9.0.0
+      slice-ansi: 9.0.1
       stack-utils: 2.0.6
       string-width: 8.3.0
       terminal-size: 4.0.1
-      type-fest: 5.9.0
+      type-fest: 5.10.0
       widest-line: 6.0.0
       wrap-ansi: 10.0.2
-      ws: 8.21.3
+      ws: 8.22.0
       yoga-layout: 3.2.1
     optionalDependencies:
       '@types/react': 19.3.0
@@ -9656,7 +9642,7 @@ snapshots:
       ansi-styles: 6.2.3
       is-fullwidth-code-point: 4.0.0
 
-  slice-ansi@9.0.0:
+  slice-ansi@9.0.1:
     dependencies:
       ansi-styles: 6.2.3
       is-fullwidth-code-point: 5.1.0
@@ -9797,7 +9783,7 @@ snapshots:
 
   strip-ansi@7.2.0:
     dependencies:
-      ansi-regex: 6.3.0
+      ansi-regex: 6.4.0
 
   strip-bom@4.0.0: {}
 
@@ -10025,7 +10011,7 @@ snapshots:
 
   type-fest@4.41.0: {}
 
-  type-fest@5.9.0:
+  type-fest@5.10.0:
     dependencies:
       tagged-tag: 1.0.0
 
@@ -10271,7 +10257,7 @@ snapshots:
       signal-exit: 3.0.7
       typedarray-to-buffer: 3.1.5
 
-  ws@8.21.3: {}
+  ws@8.22.0: {}
 
   wsl-utils@0.1.0:
     dependencies:
