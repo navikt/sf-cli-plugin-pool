@@ -25,7 +25,7 @@ importers:
         version: 5.1.2
       '@salesforce/core':
         specifier: ^9.1.7
-        version: 9.3.0
+        version: 9.3.2
       '@salesforce/sf-plugins-core':
         specifier: ^13.0.0
         version: 13.0.5(@types/node@26.6.4)
@@ -50,7 +50,7 @@ importers:
         version: 4.3.3
       '@salesforce/dev-scripts':
         specifier: ^15.0.0
-        version: 15.0.0(@typescript-eslint/utils@8.71.0(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))
+        version: 15.0.0(@typescript-eslint/utils@8.71.0(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)
       '@salesforce/plugin-info':
         specifier: ^4.0.8
         version: 4.0.11(@types/node@26.6.4)(supports-color@8.1.1)
@@ -908,6 +908,10 @@ packages:
     resolution: {integrity: sha512-7co65eD9X7asPVqQimM6eXFBiEN8zADp/dh75XVlr1GEpuTQNGNsUjAPJ7BA1eca2Ject6WqIn1qpjYXjAJ/6Q==}
     engines: {node: '>=22'}
 
+  '@jsforce/jsforce-node@3.10.28':
+    resolution: {integrity: sha512-4YvxzbRhyvGuaaY46CUSR4JvXngp+aGR44Wnvh5Ho0xJEoPZqVIKLxkV5037gpPxBfrLF4YOcnA5U2TGMizs2Q==}
+    engines: {node: '>=22'}
+
   '@jsonjoy.com/base64@1.1.2':
     resolution: {integrity: sha512-q6XAnWQDIMA3+FTiOYajoYqySkO+JSat0ytXGSuRdq9uXE7o92gzuQwQM14xaCRlBLGq3v5miDGC4vkVTn54xA==}
     engines: {node: '>=10.0'}
@@ -1048,8 +1052,8 @@ packages:
     resolution: {integrity: sha512-ZR973WoqCgi6cR58WhgokbHVZOaADNKHiuM1FAwS5pTLQnC91xYi04i2e/gpAX2AUf7Ya6zjbusYtZNpSyKKAQ==}
     engines: {node: '>=18.0.0'}
 
-  '@salesforce/core@9.3.0':
-    resolution: {integrity: sha512-ouDf96KpZHdm81LUKVbPMFBKvyPpmW8+37nhSsYBUL1PSQ+98PJTUxzcuQekglgYBuqiaoETBclz75NYJfdEOw==}
+  '@salesforce/core@9.3.2':
+    resolution: {integrity: sha512-K9t6otT27v899XOVtTA11LTuzGvYl9LZjrPv7XerCIAs3IEiro7mZJg7Dd1VvJ7sR/4cwGyawP4K8P9FiYLnmg==}
     engines: {node: '>=22.0.0'}
 
   '@salesforce/dev-config@4.3.3':
@@ -4044,6 +4048,11 @@ packages:
     engines: {node: '>= 0.4'}
     hasBin: true
 
+  resolve@1.22.13:
+    resolution: {integrity: sha512-Dj/cW9zBV2aRj6XzCxuGIs3ESZKv02jixne3q6jFZYZ3/Tg09gHHviSMDL4kObh9pqSahdRHEnDoaP2gn8YLhA==}
+    engines: {node: '>= 0.4'}
+    hasBin: true
+
   responselike@3.0.0:
     resolution: {integrity: sha512-40yHxbNcl2+rzXvZuVkrYohathsSJlMTXKryG5y8uciHv1+xDLHQpgjG64JUO9nrEq2jGLH6IZ8BcZyw3wrweg==}
     engines: {node: '>=14.16'}
@@ -4420,11 +4429,11 @@ packages:
     resolution: {integrity: sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==}
     engines: {node: '>=12.0.0'}
 
-  tldts-core@7.4.16:
-    resolution: {integrity: sha512-MDolfaSJtlSK5Y0A1xl3277ekubZwobpBjugknDizI9O5Rm60a1m8k4ICK+MRsCDzPygT81mp3BBf5RKDlFRfA==}
+  tldts-core@7.4.18:
+    resolution: {integrity: sha512-KI2PKvCmvQI/xD6ypPqkU0i7oxNXR/O58RLRaHR4svsgVUQ2JE/XC8BtMbG6PSehD27I8sZJRcC1ASnCy6lp3g==}
 
-  tldts@7.4.16:
-    resolution: {integrity: sha512-QwBER5KMR86IIjpIiO7H/Z3IMJPsZ1A6RKPAqzTTgOyUQUSt9FdnKcqhTaJmkY6HVrgouZHZR0ncK5QxvmnQeg==}
+  tldts@7.4.18:
+    resolution: {integrity: sha512-somxA8xKAUzlAxl0TX/jMSYIbRNFIVGnI96pVGJPeMc5BsHmfVXn6mOJT6U++ELnl04eGfzpfcEuZe8WiASkXg==}
     hasBin: true
 
   to-regex-range@5.0.1:
@@ -5930,6 +5939,19 @@ snapshots:
       undici: 8.11.2
       xml2js: 0.6.2
 
+  '@jsforce/jsforce-node@3.10.28':
+    dependencies:
+      '@sindresorhus/is': 4.6.0
+      base64url: 3.0.1
+      cross-spawn: 7.0.6
+      csv-parse: 7.0.3
+      csv-stringify: 6.9.0
+      faye: 1.4.3
+      form-data: 4.0.6
+      multistream: 3.1.0
+      undici: 8.11.2
+      xml2js: 0.6.2
+
   '@jsonjoy.com/base64@1.1.2(tslib@2.8.1)':
     dependencies:
       tslib: 2.8.1
@@ -6124,7 +6146,7 @@ snapshots:
 
   '@salesforce/cli-plugins-testkit@5.3.67(supports-color@8.1.1)':
     dependencies:
-      '@salesforce/core': 9.3.0
+      '@salesforce/core': 9.3.2
       '@salesforce/kit': 4.0.1
       '@salesforce/ts-types': 3.2.1
       '@types/shelljs': 0.10.0
@@ -6139,7 +6161,7 @@ snapshots:
 
   '@salesforce/core@8.32.6':
     dependencies:
-      '@jsforce/jsforce-node': 3.10.27
+      '@jsforce/jsforce-node': 3.10.28
       '@salesforce/kit': 3.2.6
       '@salesforce/ts-types': 2.0.12
       ajv: 8.20.0
@@ -6159,9 +6181,9 @@ snapshots:
       ts-retry-promise: 0.8.1
       zod: 4.6.5
 
-  '@salesforce/core@9.3.0':
+  '@salesforce/core@9.3.2':
     dependencies:
-      '@jsforce/jsforce-node': 3.10.27
+      '@jsforce/jsforce-node': 3.10.28
       '@salesforce/kit': 4.0.1
       '@salesforce/ts-types': 3.2.1
       ajv: 8.20.0
@@ -6183,7 +6205,7 @@ snapshots:
 
   '@salesforce/dev-config@4.3.3': {}
 
-  '@salesforce/dev-scripts@15.0.0(@typescript-eslint/utils@8.71.0(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))':
+  '@salesforce/dev-scripts@15.0.0(@typescript-eslint/utils@8.71.0(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
       '@commitlint/cli': 17.8.1
       '@commitlint/config-conventional': 17.8.1
@@ -6204,7 +6226,7 @@ snapshots:
       husky: 7.0.4
       linkinator: 6.3.0
       mocha: 10.8.2
-      nyc: 17.1.0
+      nyc: 17.1.0(supports-color@8.1.1)
       prettier: 2.8.8
       pretty-quick: 3.3.1(prettier@2.8.8)
       shelljs: 0.10.0
@@ -6237,7 +6259,7 @@ snapshots:
       '@inquirer/prompts': 7.10.1(@types/node@26.6.4)
       '@jsforce/jsforce-node': 3.10.27
       '@oclif/core': 5.1.2
-      '@salesforce/core': 9.3.0
+      '@salesforce/core': 9.3.2
       '@salesforce/kit': 4.0.1
       '@salesforce/sf-plugins-core': 13.0.5(@types/node@26.6.4)
       got: 13.0.0
@@ -6262,7 +6284,7 @@ snapshots:
       '@inquirer/password': 5.2.3(@types/node@26.6.4)
       '@oclif/core': 5.1.2
       '@oclif/table': 1.0.2
-      '@salesforce/core': 9.3.0
+      '@salesforce/core': 9.3.2
       '@salesforce/kit': 4.0.1
       '@salesforce/ts-types': 3.2.1
       ansis: 3.17.0
@@ -7669,7 +7691,7 @@ snapshots:
     dependencies:
       debug: 3.2.7
       is-core-module: 2.17.0
-      resolve: 1.22.12
+      resolve: 1.22.13
     transitivePeerDependencies:
       - supports-color
     optional: true
@@ -8466,7 +8488,7 @@ snapshots:
       make-dir: 4.0.0
       supports-color: 7.2.0
 
-  istanbul-lib-source-maps@4.0.1:
+  istanbul-lib-source-maps@4.0.1(supports-color@8.1.1):
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
       istanbul-lib-coverage: 3.2.2
@@ -9010,7 +9032,7 @@ snapshots:
     dependencies:
       boolbase: 1.0.0
 
-  nyc@17.1.0:
+  nyc@17.1.0(supports-color@8.1.1):
     dependencies:
       '@istanbuljs/load-nyc-config': 1.1.0
       '@istanbuljs/schema': 0.1.6
@@ -9027,7 +9049,7 @@ snapshots:
       istanbul-lib-instrument: 6.0.3
       istanbul-lib-processinfo: 2.0.3
       istanbul-lib-report: 3.0.1
-      istanbul-lib-source-maps: 4.0.1
+      istanbul-lib-source-maps: 4.0.1(supports-color@8.1.1)
       istanbul-reports: 3.2.0
       make-dir: 3.1.0
       node-preload: 0.2.1
@@ -9523,6 +9545,14 @@ snapshots:
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
+  resolve@1.22.13:
+    dependencies:
+      es-errors: 1.3.0
+      is-core-module: 2.17.0
+      path-parse: 1.0.7
+      supports-preserve-symlinks-flag: 1.0.0
+    optional: true
+
   responselike@3.0.0:
     dependencies:
       lowercase-keys: 3.0.0
@@ -9899,11 +9929,11 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.7)
       picomatch: 4.0.7
 
-  tldts-core@7.4.16: {}
+  tldts-core@7.4.18: {}
 
-  tldts@7.4.16:
+  tldts@7.4.18:
     dependencies:
-      tldts-core: 7.4.16
+      tldts-core: 7.4.18
 
   to-regex-range@5.0.1:
     dependencies:
@@ -9919,7 +9949,7 @@ snapshots:
 
   tough-cookie@6.0.2:
     dependencies:
-      tldts: 7.4.16
+      tldts: 7.4.18
 
   tr46@0.0.3: {}
 
