@@ -22,13 +22,13 @@ importers:
     dependencies:
       '@oclif/core':
         specifier: ^5.0.0
-        version: 5.1.2
+        version: 5.1.3
       '@salesforce/core':
         specifier: ^9.1.7
-        version: 9.3.2
+        version: 9.3.4
       '@salesforce/sf-plugins-core':
         specifier: ^13.0.0
-        version: 13.0.5(@types/node@26.6.4)
+        version: 13.0.6(@types/node@26.6.4)
     devDependencies:
       '@commitlint/cli':
         specifier: ^21.2.2
@@ -65,10 +65,10 @@ importers:
         version: 10.0.10
       '@typescript-eslint/eslint-plugin':
         specifier: 8.71.1
-        version: 8.71.1(@typescript-eslint/parser@8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(typescript@5.9.3))(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
+        version: 8.71.1(@typescript-eslint/parser@8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3))(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
       '@typescript-eslint/parser':
         specifier: 8.71.1
-        version: 8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(typescript@5.9.3)
+        version: 8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
       c8:
         specifier: ^12.0.0
         version: 12.0.0
@@ -908,6 +908,10 @@ packages:
     resolution: {integrity: sha512-4YvxzbRhyvGuaaY46CUSR4JvXngp+aGR44Wnvh5Ho0xJEoPZqVIKLxkV5037gpPxBfrLF4YOcnA5U2TGMizs2Q==}
     engines: {node: '>=22'}
 
+  '@jsforce/jsforce-node@3.10.29':
+    resolution: {integrity: sha512-N3TRPYGSrhEQuAJbxvOo/L4Zz12fhBG8og99SaYER2+3tVw8HeXcf7NlNCn56jbhPIaj8iHpQK+AE+xW1s3KNQ==}
+    engines: {node: '>=22'}
+
   '@jsonjoy.com/base64@1.1.2':
     resolution: {integrity: sha512-q6XAnWQDIMA3+FTiOYajoYqySkO+JSat0ytXGSuRdq9uXE7o92gzuQwQM14xaCRlBLGq3v5miDGC4vkVTn54xA==}
     engines: {node: '>=10.0'}
@@ -996,8 +1000,8 @@ packages:
     resolution: {integrity: sha512-OLUaoqBuyxeTqUvjA3FZFiXUfYC1alp3Sa99gW3EUDz3tZ3CbXDdcZ7qWKBzicrJleIgucoWamWH1saAmH/l2Q==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  '@oclif/core@5.1.2':
-    resolution: {integrity: sha512-vgbWWFKjjsf7oAbJONFPnDkVNeqmy70DTBUjsprW/HRiTrXe8sMlFc0ih8GjpU+dn+m6V2ksaZjBV9HgnsmWVg==}
+  '@oclif/core@5.1.3':
+    resolution: {integrity: sha512-sEEH98k4vVsw48sWPWFkYwdgBiS26j7bsCtx6LVj3SwCg201C6Lxm3MTYfbNfD8mfOhzB2a4IibWF9auge8zVg==}
     engines: {node: '>=22.0.0'}
 
   '@oclif/plugin-command-snapshot@6.0.2':
@@ -1048,8 +1052,8 @@ packages:
     resolution: {integrity: sha512-ZR973WoqCgi6cR58WhgokbHVZOaADNKHiuM1FAwS5pTLQnC91xYi04i2e/gpAX2AUf7Ya6zjbusYtZNpSyKKAQ==}
     engines: {node: '>=18.0.0'}
 
-  '@salesforce/core@9.3.2':
-    resolution: {integrity: sha512-K9t6otT27v899XOVtTA11LTuzGvYl9LZjrPv7XerCIAs3IEiro7mZJg7Dd1VvJ7sR/4cwGyawP4K8P9FiYLnmg==}
+  '@salesforce/core@9.3.4':
+    resolution: {integrity: sha512-ZAZ8MFLnxzlc0GWhz8H5UNXHW7t4LUx1WfgbIaXjVoD3zC4Pts5f7BlO2o6SglGKfrV1WRAdoPok68qzTwCVFw==}
     engines: {node: '>=22.0.0'}
 
   '@salesforce/dev-config@4.3.3':
@@ -1073,8 +1077,8 @@ packages:
   '@salesforce/prettier-config@0.0.4':
     resolution: {integrity: sha512-GBjR7f/jv7rcSrTvNgbkWvOykXg/PZqL7TztylKwaogWdrCbypJE8qEfBy9nILkICrwmDbQApOC8TqoO3bQKSw==}
 
-  '@salesforce/sf-plugins-core@13.0.5':
-    resolution: {integrity: sha512-jBgsz99Jgmg565gE+FmimQt9mTverxzZowN7dwoyEvCAv7b6MghpYK/qM6Z2mIdXpg2+Q9yxdAqC9vDReYTIgQ==}
+  '@salesforce/sf-plugins-core@13.0.6':
+    resolution: {integrity: sha512-RY1AaPBWWhWlyjUJKFJ9JjOw32IDyvj2e64wDAyJic81XKLnp1iysEy7Jf6ujo5e3ob2908UrlxqLue8pBqaWw==}
     engines: {node: '>=22.0.0'}
 
   '@salesforce/ts-types@2.0.12':
@@ -4004,8 +4008,8 @@ packages:
     resolution: {integrity: sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==}
     engines: {node: '>= 6'}
 
-  readable-stream@4.7.0:
-    resolution: {integrity: sha512-oIGGmcpTLwPga8Bn6/Z75SVaH1z5dUut2ibSyAMVhmUggWpmDn2dapB0n7f8nwaSiRtepAsfJyfXIO5DCVAODg==}
+  readable-stream@4.8.0:
+    resolution: {integrity: sha512-2jhTTU3Eilp/2DMT71gbcoqC35eQHasMJH0RHkYxwlxIv3+FR6Y5xAFZIwEGLxKkjZYEFlsiMNIdwUqjK2lLHQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
   readdirp@3.6.0:
@@ -5969,6 +5973,19 @@ snapshots:
       undici: 8.11.2
       xml2js: 0.6.2
 
+  '@jsforce/jsforce-node@3.10.29':
+    dependencies:
+      '@sindresorhus/is': 4.6.0
+      base64url: 3.0.1
+      cross-spawn: 7.0.6
+      csv-parse: 7.0.3
+      csv-stringify: 6.9.0
+      faye: 1.4.3
+      form-data: 4.0.6
+      multistream: 3.1.0
+      undici: 8.11.2
+      xml2js: 0.6.2
+
   '@jsonjoy.com/base64@1.1.2(tslib@2.8.1)':
     dependencies:
       tslib: 2.8.1
@@ -6070,7 +6087,7 @@ snapshots:
     dependencies:
       which: 6.0.1
 
-  '@oclif/core@5.1.2':
+  '@oclif/core@5.1.3':
     dependencies:
       ansi-escapes: 4.3.2
       ansis: 3.17.0
@@ -6093,7 +6110,7 @@ snapshots:
 
   '@oclif/plugin-command-snapshot@6.0.2':
     dependencies:
-      '@oclif/core': 5.1.2
+      '@oclif/core': 5.1.3
       ansis: 3.17.0
       globby: 14.1.0
       just-diff: 5.2.0
@@ -6105,12 +6122,12 @@ snapshots:
 
   '@oclif/plugin-help@7.0.2':
     dependencies:
-      '@oclif/core': 5.1.2
+      '@oclif/core': 5.1.3
 
   '@oclif/plugin-not-found@4.0.2(@types/node@26.6.4)':
     dependencies:
       '@inquirer/prompts': 7.10.1(@types/node@26.6.4)
-      '@oclif/core': 5.1.2
+      '@oclif/core': 5.1.3
       ansis: 3.17.0
       fast-levenshtein: 3.0.0
     transitivePeerDependencies:
@@ -6118,7 +6135,7 @@ snapshots:
 
   '@oclif/plugin-warn-if-update-available@4.0.1(supports-color@8.1.1)':
     dependencies:
-      '@oclif/core': 5.1.2
+      '@oclif/core': 5.1.3
       ansis: 3.17.0
       debug: 4.4.3(supports-color@8.1.1)
       http-call: 5.3.0(supports-color@8.1.1)
@@ -6163,7 +6180,7 @@ snapshots:
 
   '@salesforce/cli-plugins-testkit@5.3.68(supports-color@8.1.1)':
     dependencies:
-      '@salesforce/core': 9.3.2
+      '@salesforce/core': 9.3.4
       '@salesforce/kit': 4.0.1
       '@salesforce/ts-types': 3.2.1
       '@types/shelljs': 0.10.0
@@ -6178,7 +6195,7 @@ snapshots:
 
   '@salesforce/core@8.32.6':
     dependencies:
-      '@jsforce/jsforce-node': 3.10.28
+      '@jsforce/jsforce-node': 3.10.29
       '@salesforce/kit': 3.2.6
       '@salesforce/ts-types': 2.0.12
       ajv: 8.20.0
@@ -6198,9 +6215,9 @@ snapshots:
       ts-retry-promise: 0.8.1
       zod: 4.6.5
 
-  '@salesforce/core@9.3.2':
+  '@salesforce/core@9.3.4':
     dependencies:
-      '@jsforce/jsforce-node': 3.10.28
+      '@jsforce/jsforce-node': 3.10.29
       '@salesforce/kit': 4.0.1
       '@salesforce/ts-types': 3.2.1
       ajv: 8.20.0
@@ -6275,10 +6292,10 @@ snapshots:
     dependencies:
       '@inquirer/prompts': 7.10.1(@types/node@26.6.4)
       '@jsforce/jsforce-node': 3.10.28
-      '@oclif/core': 5.1.2
-      '@salesforce/core': 9.3.2
+      '@oclif/core': 5.1.3
+      '@salesforce/core': 9.3.4
       '@salesforce/kit': 4.0.1
-      '@salesforce/sf-plugins-core': 13.0.5(@types/node@26.6.4)
+      '@salesforce/sf-plugins-core': 13.0.6(@types/node@26.6.4)
       got: 13.0.0
       marked: 4.3.0
       marked-terminal: 4.2.0(marked@4.3.0)
@@ -6295,13 +6312,13 @@ snapshots:
 
   '@salesforce/prettier-config@0.0.4': {}
 
-  '@salesforce/sf-plugins-core@13.0.5(@types/node@26.6.4)':
+  '@salesforce/sf-plugins-core@13.0.6(@types/node@26.6.4)':
     dependencies:
       '@inquirer/confirm': 6.3.3(@types/node@26.6.4)
       '@inquirer/password': 5.2.3(@types/node@26.6.4)
-      '@oclif/core': 5.1.2
+      '@oclif/core': 5.1.3
       '@oclif/table': 1.0.2
-      '@salesforce/core': 9.3.2
+      '@salesforce/core': 9.3.4
       '@salesforce/kit': 4.0.1
       '@salesforce/ts-types': 3.2.1
       ansis: 3.17.0
@@ -6538,10 +6555,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/eslint-plugin@8.71.1(@typescript-eslint/parser@8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(typescript@5.9.3))(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)':
+  '@typescript-eslint/eslint-plugin@8.71.1(@typescript-eslint/parser@8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3))(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
-      '@typescript-eslint/parser': 8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(typescript@5.9.3)
+      '@typescript-eslint/parser': 8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
       '@typescript-eslint/scope-manager': 8.71.1
       '@typescript-eslint/type-utils': 8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
       '@typescript-eslint/utils': 8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(typescript@5.9.3)
@@ -6578,11 +6595,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(typescript@5.9.3)':
+  '@typescript-eslint/parser@8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.71.1
       '@typescript-eslint/types': 8.71.1
-      '@typescript-eslint/typescript-estree': 8.71.1(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 8.71.1(supports-color@8.1.1)(typescript@5.9.3)
       '@typescript-eslint/visitor-keys': 8.71.1
       debug: 4.4.3(supports-color@8.1.1)
       eslint: 10.12.0(jiti@2.6.1)(supports-color@8.1.1)
@@ -6617,7 +6634,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/project-service@8.71.1(typescript@5.9.3)':
+  '@typescript-eslint/project-service@8.71.1(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.71.1(typescript@5.9.3)
       '@typescript-eslint/types': 8.71.1
@@ -6688,7 +6705,7 @@ snapshots:
   '@typescript-eslint/type-utils@8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/types': 8.71.1
-      '@typescript-eslint/typescript-estree': 8.71.1(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 8.71.1(supports-color@8.1.1)(typescript@5.9.3)
       '@typescript-eslint/utils': 8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))(typescript@5.9.3)
       debug: 4.4.3(supports-color@8.1.1)
       eslint: 10.12.0(jiti@2.6.1)(supports-color@8.1.1)
@@ -6748,9 +6765,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/typescript-estree@8.71.1(typescript@5.9.3)':
+  '@typescript-eslint/typescript-estree@8.71.1(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/project-service': 8.71.1(typescript@5.9.3)
+      '@typescript-eslint/project-service': 8.71.1(supports-color@8.1.1)(typescript@5.9.3)
       '@typescript-eslint/tsconfig-utils': 8.71.1(typescript@5.9.3)
       '@typescript-eslint/types': 8.71.1
       '@typescript-eslint/visitor-keys': 8.71.1
@@ -6801,7 +6818,7 @@ snapshots:
       '@eslint-community/eslint-utils': 4.10.1(eslint@10.12.0(jiti@2.6.1)(supports-color@8.1.1))
       '@typescript-eslint/scope-manager': 8.71.1
       '@typescript-eslint/types': 8.71.1
-      '@typescript-eslint/typescript-estree': 8.71.1(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 8.71.1(supports-color@8.1.1)(typescript@5.9.3)
       eslint: 10.12.0(jiti@2.6.1)(supports-color@8.1.1)
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -9146,7 +9163,7 @@ snapshots:
       '@inquirer/confirm': 3.2.0
       '@inquirer/input': 2.3.0
       '@inquirer/select': 2.5.0
-      '@oclif/core': 5.1.2
+      '@oclif/core': 5.1.3
       '@oclif/plugin-help': 7.0.2
       '@oclif/plugin-not-found': 4.0.2(@types/node@26.6.4)
       '@oclif/plugin-warn-if-update-available': 4.0.1(supports-color@8.1.1)
@@ -9369,7 +9386,7 @@ snapshots:
 
   pino-abstract-transport@1.2.0:
     dependencies:
-      readable-stream: 4.7.0
+      readable-stream: 4.8.0
       split2: 4.2.0
 
   pino-abstract-transport@2.0.0:
@@ -9388,7 +9405,7 @@ snapshots:
       on-exit-leak-free: 2.1.2
       pino-abstract-transport: 2.0.0
       pump: 3.0.4
-      readable-stream: 4.7.0
+      readable-stream: 4.8.0
       secure-json-parse: 2.7.0
       sonic-boom: 4.2.1
       strip-json-comments: 3.1.1
@@ -9547,7 +9564,7 @@ snapshots:
       string_decoder: 1.3.0
       util-deprecate: 1.0.2
 
-  readable-stream@4.7.0:
+  readable-stream@4.8.0:
     dependencies:
       abort-controller: 3.0.0
       buffer: 6.0.3
