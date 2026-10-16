@@ -41,10 +41,10 @@ importers:
         version: 12.8.5(supports-color@8.1.1)
       '@oclif/plugin-command-snapshot':
         specifier: ^6.0.0
-        version: 6.0.2
+        version: 6.0.3
       '@salesforce/cli-plugins-testkit':
         specifier: ^5.3.66
-        version: 5.3.68(supports-color@8.1.1)
+        version: 5.3.69(supports-color@8.1.1)
       '@salesforce/dev-config':
         specifier: ^4.3.3
         version: 4.3.3
@@ -95,7 +95,7 @@ importers:
         version: 12.0.3
       oclif:
         specifier: ^6.0.0
-        version: 6.0.2(@types/node@26.6.4)(supports-color@8.1.1)
+        version: 6.0.4(@types/node@26.6.4)
       prettier:
         specifier: 3.9.9
         version: 3.9.9
@@ -132,12 +132,12 @@ packages:
     resolution: {integrity: sha512-x12Q17KYlJAd3nKf8LV5LV0vt8sh8/6YfQLGPtrGnQf/tW4jqxPGq5GPpuVitpQYM3eUR4XB7CbxZf751NMbLw==}
     engines: {node: '>=20.0.0'}
 
-  '@aws-sdk/client-cloudfront@3.1141.0':
-    resolution: {integrity: sha512-OTjl/BYPxjzR78/NUT2looGwh+CSzT08F27FvUlfMgDNaWGMwTJaSBhz478D2rq5k3Bd6flFkZmLl3pCReRymw==}
+  '@aws-sdk/client-cloudfront@3.1148.0':
+    resolution: {integrity: sha512-BJqzhTX6G5L/cEx+LmxEZYwbq2J4vuQkB7aN2ftLZISPLojvM9ciffBMTs26+1Pt4hSFwlAowNdeYSCuyQhCEg==}
     engines: {node: '>=20.0.0'}
 
-  '@aws-sdk/client-s3@3.1141.0':
-    resolution: {integrity: sha512-uOVH37xGLenAdJkCPCin/JJG2PgWrFcSsDnQ9+C9Zq8N9Oalo5ol4xmn5fG28iWAlA/b/9boQZgHbMh+UsIhcg==}
+  '@aws-sdk/client-s3@3.1148.0':
+    resolution: {integrity: sha512-d2AcfJCZTi4w5zJZD7H/XeVRgJy1vOD5EfO1Y3pKAwfp8pWz2dyJ8Q3vOJFbRiTIQF7c4mB+aptNUyCE4i4kqw==}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/core@3.978.1':
@@ -1004,8 +1004,8 @@ packages:
     resolution: {integrity: sha512-sEEH98k4vVsw48sWPWFkYwdgBiS26j7bsCtx6LVj3SwCg201C6Lxm3MTYfbNfD8mfOhzB2a4IibWF9auge8zVg==}
     engines: {node: '>=22.0.0'}
 
-  '@oclif/plugin-command-snapshot@6.0.2':
-    resolution: {integrity: sha512-BFlO7UhgiUpvEr8/nMAgQ9GJzcnS118QeDmK8wlcoa/GK+S79A7l2U+stj9k8T0IoMcDL9ov400k1U9DrWlqrQ==}
+  '@oclif/plugin-command-snapshot@6.0.3':
+    resolution: {integrity: sha512-bwxjMrRjcEbDD0fRWgdyWrHnlsoys2bR4FKqYt5iZ8j99RJSLwIfC/yC2vTmBh6VVT4JYY2U53SgmhteLzAXpA==}
     engines: {node: '>=22.0.0'}
     hasBin: true
 
@@ -1044,8 +1044,8 @@ packages:
     resolution: {integrity: sha512-//0sR/cow/s4ICQaYoAobOl4aU8cjU6x/V24V7XkKotb9+O+3zySIYp146vpaobYHnxa4pZX8NkV54Z5AwbDKA==}
     engines: {node: '>=12'}
 
-  '@salesforce/cli-plugins-testkit@5.3.68':
-    resolution: {integrity: sha512-77MKVY6EWmy5bUWp7HtMEBmxmedIc0KKL7OiOESK5ndtkk5VQe9YFqrVAhvsyTSXt7E2uEXwGgiaKWGms1E/2Q==}
+  '@salesforce/cli-plugins-testkit@5.3.69':
+    resolution: {integrity: sha512-O5WMcT2oHezYRWQtawZZRhLUB5ZInxEkAFXaNPTxqkLzf1qdPf4pYoBOOuIooKupDVxoaGLSMogMin5Q6gm1Gw==}
     engines: {node: '>=16.0.0'}
 
   '@salesforce/core@8.32.6':
@@ -1152,8 +1152,8 @@ packages:
       Deprecated: no longer maintained and no longer used by Sinon packages. See
         https://github.com/sinonjs/nise/issues/243 for replacement details.
 
-  '@smithy/core@3.35.0':
-    resolution: {integrity: sha512-zRMhfkByhT2snNdr1si24vJitU6Cr9ix2MikUfWmkAgp4jrNP0GcKSP5YvwQ+TlI8AZXER5QOGJn3JsVtSD9/A==}
+  '@smithy/core@3.35.2':
+    resolution: {integrity: sha512-ejTukBuP/Pg3t9N8Ux+0zKsXeHWm7p6W3HbXFOyltKasSxZwCFmvTut7kBdZSCF3m9y1bXXyVu6p2xuMFcsTyQ==}
     engines: {node: '>=18.0.0'}
 
   '@smithy/credential-provider-imds@4.5.2':
@@ -3661,8 +3661,8 @@ packages:
     resolution: {integrity: sha512-XrsrhT5sybtKI6wakr2SPOlGZWWYbUXZ7a0jT8/QOeAPau+1X/bSegNe5YR75oJmEZQbKningirmGOEJCIk61Q==}
     engines: {node: '>=12.20.0'}
 
-  oclif@6.0.2:
-    resolution: {integrity: sha512-y0UuI6AEb8yjms2TPBHBInCDXoFwOiZ2EitGxv5pascylvowQbZSRd3ViOs2ZBXAJD9X5DlnHP8gppc0umkb/Q==}
+  oclif@6.0.4:
+    resolution: {integrity: sha512-oIuG5kCgwfaBfkt3ieP17tqLtty2V2a5PXi767vP+bzRAskLwKwYH2g9HYpJXqaY3nZStSuvoB16bZN9yTADFw==}
     engines: {node: '>=22.0.0'}
     hasBin: true
 
@@ -4939,22 +4939,22 @@ snapshots:
     dependencies:
       '@aws-sdk/core': 3.978.1
       '@aws-sdk/types': 3.974.6
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/types': 4.19.0
       tslib: 2.8.1
 
-  '@aws-sdk/client-cloudfront@3.1141.0':
+  '@aws-sdk/client-cloudfront@3.1148.0':
     dependencies:
       '@aws-sdk/core': 3.978.1
       '@aws-sdk/credential-provider-node': 3.972.84
       '@aws-sdk/types': 3.974.6
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/fetch-http-handler': 5.8.0
       '@smithy/node-http-handler': 4.12.1
       '@smithy/types': 4.19.0
       tslib: 2.8.1
 
-  '@aws-sdk/client-s3@3.1141.0':
+  '@aws-sdk/client-s3@3.1148.0':
     dependencies:
       '@aws-sdk/checksums': 3.1001.1
       '@aws-sdk/core': 3.978.1
@@ -4962,7 +4962,7 @@ snapshots:
       '@aws-sdk/middleware-sdk-s3': 3.972.77
       '@aws-sdk/signature-v4-multi-region': 3.996.47
       '@aws-sdk/types': 3.974.6
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/fetch-http-handler': 5.8.0
       '@smithy/node-http-handler': 4.12.1
       '@smithy/types': 4.19.0
@@ -4973,7 +4973,7 @@ snapshots:
       '@aws-sdk/types': 3.974.6
       '@aws-sdk/xml-builder': 3.972.41
       '@aws/lambda-invoke-store': 0.3.0
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/signature-v4': 5.7.4
       '@smithy/types': 4.19.0
       bowser: 2.14.1
@@ -4983,7 +4983,7 @@ snapshots:
     dependencies:
       '@aws-sdk/core': 3.978.1
       '@aws-sdk/types': 3.974.6
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/types': 4.19.0
       tslib: 2.8.1
 
@@ -4991,7 +4991,7 @@ snapshots:
     dependencies:
       '@aws-sdk/core': 3.978.1
       '@aws-sdk/types': 3.974.6
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/fetch-http-handler': 5.8.0
       '@smithy/node-http-handler': 4.12.1
       '@smithy/types': 4.19.0
@@ -5008,7 +5008,7 @@ snapshots:
       '@aws-sdk/credential-provider-web-identity': 3.972.78
       '@aws-sdk/nested-clients': 3.997.46
       '@aws-sdk/types': 3.974.6
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/credential-provider-imds': 4.5.2
       '@smithy/types': 4.19.0
       tslib: 2.8.1
@@ -5018,7 +5018,7 @@ snapshots:
       '@aws-sdk/core': 3.978.1
       '@aws-sdk/nested-clients': 3.997.46
       '@aws-sdk/types': 3.974.6
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/types': 4.19.0
       tslib: 2.8.1
 
@@ -5031,7 +5031,7 @@ snapshots:
       '@aws-sdk/credential-provider-sso': 3.973.16
       '@aws-sdk/credential-provider-web-identity': 3.972.78
       '@aws-sdk/types': 3.974.6
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/credential-provider-imds': 4.5.2
       '@smithy/types': 4.19.0
       tslib: 2.8.1
@@ -5040,7 +5040,7 @@ snapshots:
     dependencies:
       '@aws-sdk/core': 3.978.1
       '@aws-sdk/types': 3.974.6
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/types': 4.19.0
       tslib: 2.8.1
 
@@ -5050,7 +5050,7 @@ snapshots:
       '@aws-sdk/nested-clients': 3.997.46
       '@aws-sdk/token-providers': 3.1138.0
       '@aws-sdk/types': 3.974.6
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/types': 4.19.0
       tslib: 2.8.1
 
@@ -5059,7 +5059,7 @@ snapshots:
       '@aws-sdk/core': 3.978.1
       '@aws-sdk/nested-clients': 3.997.46
       '@aws-sdk/types': 3.974.6
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/types': 4.19.0
       tslib: 2.8.1
 
@@ -5068,7 +5068,7 @@ snapshots:
       '@aws-sdk/core': 3.978.1
       '@aws-sdk/signature-v4-multi-region': 3.996.47
       '@aws-sdk/types': 3.974.6
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/types': 4.19.0
       tslib: 2.8.1
 
@@ -5077,7 +5077,7 @@ snapshots:
       '@aws-sdk/core': 3.978.1
       '@aws-sdk/signature-v4-multi-region': 3.996.47
       '@aws-sdk/types': 3.974.6
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/fetch-http-handler': 5.8.0
       '@smithy/node-http-handler': 4.12.1
       '@smithy/types': 4.19.0
@@ -5095,7 +5095,7 @@ snapshots:
       '@aws-sdk/core': 3.978.1
       '@aws-sdk/nested-clients': 3.997.46
       '@aws-sdk/types': 3.974.6
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/types': 4.19.0
       tslib: 2.8.1
 
@@ -6108,7 +6108,7 @@ snapshots:
       wrap-ansi: 7.0.0
       wsl-utils: 0.4.0
 
-  '@oclif/plugin-command-snapshot@6.0.2':
+  '@oclif/plugin-command-snapshot@6.0.3':
     dependencies:
       '@oclif/core': 5.1.3
       ansis: 3.17.0
@@ -6133,12 +6133,12 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@oclif/plugin-warn-if-update-available@4.0.1(supports-color@8.1.1)':
+  '@oclif/plugin-warn-if-update-available@4.0.1':
     dependencies:
       '@oclif/core': 5.1.3
       ansis: 3.17.0
       debug: 4.4.3(supports-color@8.1.1)
-      http-call: 5.3.0(supports-color@8.1.1)
+      http-call: 5.3.0
       lodash: 4.18.1
       registry-auth-token: 5.1.1
     transitivePeerDependencies:
@@ -6178,7 +6178,7 @@ snapshots:
       '@pnpm/network.ca-file': 1.0.2
       config-chain: 1.1.13
 
-  '@salesforce/cli-plugins-testkit@5.3.68(supports-color@8.1.1)':
+  '@salesforce/cli-plugins-testkit@5.3.69(supports-color@8.1.1)':
     dependencies:
       '@salesforce/core': 9.3.4
       '@salesforce/kit': 4.0.1
@@ -6397,32 +6397,32 @@ snapshots:
 
   '@sinonjs/text-encoding@0.7.3': {}
 
-  '@smithy/core@3.35.0':
+  '@smithy/core@3.35.2':
     dependencies:
       '@smithy/types': 4.19.0
       tslib: 2.8.1
 
   '@smithy/credential-provider-imds@4.5.2':
     dependencies:
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/types': 4.19.0
       tslib: 2.8.1
 
   '@smithy/fetch-http-handler@5.8.0':
     dependencies:
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/types': 4.19.0
       tslib: 2.8.1
 
   '@smithy/node-http-handler@4.12.1':
     dependencies:
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/types': 4.19.0
       tslib: 2.8.1
 
   '@smithy/signature-v4@5.7.4':
     dependencies:
-      '@smithy/core': 3.35.0
+      '@smithy/core': 3.35.2
       '@smithy/types': 4.19.0
       tslib: 2.8.1
 
@@ -8330,7 +8330,7 @@ snapshots:
 
   http-cache-semantics@4.3.0: {}
 
-  http-call@5.3.0(supports-color@8.1.1):
+  http-call@5.3.0:
     dependencies:
       content-type: 1.0.5
       debug: 4.4.3(supports-color@8.1.1)
@@ -9156,17 +9156,17 @@ snapshots:
 
   obug@2.2.1: {}
 
-  oclif@6.0.2(@types/node@26.6.4)(supports-color@8.1.1):
+  oclif@6.0.4(@types/node@26.6.4):
     dependencies:
-      '@aws-sdk/client-cloudfront': 3.1141.0
-      '@aws-sdk/client-s3': 3.1141.0
+      '@aws-sdk/client-cloudfront': 3.1148.0
+      '@aws-sdk/client-s3': 3.1148.0
       '@inquirer/confirm': 3.2.0
       '@inquirer/input': 2.3.0
       '@inquirer/select': 2.5.0
       '@oclif/core': 5.1.3
       '@oclif/plugin-help': 7.0.2
       '@oclif/plugin-not-found': 4.0.2(@types/node@26.6.4)
-      '@oclif/plugin-warn-if-update-available': 4.0.1(supports-color@8.1.1)
+      '@oclif/plugin-warn-if-update-available': 4.0.1
       ansis: 3.17.0
       async-retry: 1.3.3
       change-case: 4.1.2
