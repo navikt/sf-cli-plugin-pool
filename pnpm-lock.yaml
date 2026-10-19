@@ -22,13 +22,13 @@ importers:
     dependencies:
       '@oclif/core':
         specifier: ^5.0.0
-        version: 5.1.3
+        version: 5.1.7
       '@salesforce/core':
         specifier: ^9.1.7
-        version: 9.3.4
+        version: 9.3.6
       '@salesforce/sf-plugins-core':
         specifier: ^13.0.0
-        version: 13.0.6(@types/node@26.6.4)
+        version: 13.0.7(@types/node@26.6.4)
     devDependencies:
       '@commitlint/cli':
         specifier: ^21.2.2
@@ -95,7 +95,7 @@ importers:
         version: 12.0.3
       oclif:
         specifier: ^6.0.0
-        version: 6.0.4(@types/node@26.6.4)
+        version: 6.0.4(@types/node@26.6.4)(supports-color@8.1.1)
       prettier:
         specifier: 3.9.9
         version: 3.9.9
@@ -1000,8 +1000,8 @@ packages:
     resolution: {integrity: sha512-OLUaoqBuyxeTqUvjA3FZFiXUfYC1alp3Sa99gW3EUDz3tZ3CbXDdcZ7qWKBzicrJleIgucoWamWH1saAmH/l2Q==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  '@oclif/core@5.1.3':
-    resolution: {integrity: sha512-sEEH98k4vVsw48sWPWFkYwdgBiS26j7bsCtx6LVj3SwCg201C6Lxm3MTYfbNfD8mfOhzB2a4IibWF9auge8zVg==}
+  '@oclif/core@5.1.7':
+    resolution: {integrity: sha512-70BOI+dbtg3dsk8oevulaIsJLXkQzhjmg9CZQ0sI+uSmBg1iLYqlv/QDAzbtOvLZEVHXXvCyU/5uW9k9VB+ljQ==}
     engines: {node: '>=22.0.0'}
 
   '@oclif/plugin-command-snapshot@6.0.3':
@@ -1021,8 +1021,8 @@ packages:
     resolution: {integrity: sha512-zX0iNZT5JiHXdzQ7ORQCRAqwydG119LZDf6Pet+5HEeONHJu/byWAA99n2HLTOZmWMwJ65bLSp3ZajOHtJaSkw==}
     engines: {node: '>=22.0.0'}
 
-  '@oclif/table@1.0.2':
-    resolution: {integrity: sha512-oOPIbyJYlV84jMWK7h2w4+4ZAXraDz2GzGD4tNmNSvHK0+peui2joZvu/TyU1r+7XeLQUf8Np4xPVkgYeZMyOA==}
+  '@oclif/table@1.0.5':
+    resolution: {integrity: sha512-6+czHxLf6sEFob8e0h+4bXCpG3LqoMOb7u8rRxc/XM0vGNHnodp/pHPOz6kzVvzjebHevX21bnuVB0vr1JeVHQ==}
     engines: {node: '>=22.0.0'}
 
   '@pinojs/redact@0.4.0':
@@ -1052,8 +1052,8 @@ packages:
     resolution: {integrity: sha512-ZR973WoqCgi6cR58WhgokbHVZOaADNKHiuM1FAwS5pTLQnC91xYi04i2e/gpAX2AUf7Ya6zjbusYtZNpSyKKAQ==}
     engines: {node: '>=18.0.0'}
 
-  '@salesforce/core@9.3.4':
-    resolution: {integrity: sha512-ZAZ8MFLnxzlc0GWhz8H5UNXHW7t4LUx1WfgbIaXjVoD3zC4Pts5f7BlO2o6SglGKfrV1WRAdoPok68qzTwCVFw==}
+  '@salesforce/core@9.3.6':
+    resolution: {integrity: sha512-2LuJVv8b4Yf3o8hKXQXZHfhP8LpyKQL5YRncPzVvE1AwLvbwabzLHc2NrELt2t+vpXiD3UURbP8KVMDjJn1KaA==}
     engines: {node: '>=22.0.0'}
 
   '@salesforce/dev-config@4.3.3':
@@ -1077,8 +1077,8 @@ packages:
   '@salesforce/prettier-config@0.0.4':
     resolution: {integrity: sha512-GBjR7f/jv7rcSrTvNgbkWvOykXg/PZqL7TztylKwaogWdrCbypJE8qEfBy9nILkICrwmDbQApOC8TqoO3bQKSw==}
 
-  '@salesforce/sf-plugins-core@13.0.6':
-    resolution: {integrity: sha512-RY1AaPBWWhWlyjUJKFJ9JjOw32IDyvj2e64wDAyJic81XKLnp1iysEy7Jf6ujo5e3ob2908UrlxqLue8pBqaWw==}
+  '@salesforce/sf-plugins-core@13.0.7':
+    resolution: {integrity: sha512-nfVYno70TORUITGAMhGo0eD62M7LxTiD5TnpnRLOuG6ygt0TVz60NWX6eJRvmxOkHKqAK5hWjPOZXAYqV8JZUg==}
     engines: {node: '>=22.0.0'}
 
   '@salesforce/ts-types@2.0.12':
@@ -1087,6 +1087,10 @@ packages:
 
   '@salesforce/ts-types@3.2.1':
     resolution: {integrity: sha512-yVuXM7esC4LGEfS4Zh0wHJmDG2gzGWJM1JCFjM3kx5KfAfHP6zmhUn7XUMaKoaaQ5nF4F6WFEW1kblgpDk54mA==}
+    engines: {node: '>=22.0.0'}
+
+  '@salesforce/ts-types@3.2.2':
+    resolution: {integrity: sha512-3t+/+CzdL2RSOPUvakbg7ICKgu+y5r+lBKYjcVa5TzeLkAnWad8TH98qgurndLZLXHVyW3rA4AM0oTpH+TZZVA==}
     engines: {node: '>=22.0.0'}
 
   '@shikijs/engine-oniguruma@3.23.0':
@@ -3918,8 +3922,8 @@ packages:
     resolution: {integrity: sha512-JOnOPQ/8TZgjs1JIH/m9ni7FfimjNa/PRx7y/Wb5qdItsnhO0jE4AT7fC0HjC28DUQWDr50dwSYZLdRMlqDq3Q==}
     engines: {node: '>=8'}
 
-  process-warning@5.1.0:
-    resolution: {integrity: sha512-jQSaVHsPgtyw60e1rQ/A+/ArPEj/S8pS/vFnyGa/gYFXrKk/6RuDkoqVDQ5NI5MmS01698ltlAk0NoDBNLujRw==}
+  process-warning@5.1.1:
+    resolution: {integrity: sha512-oCkNVj4OKnKEcocVBcDfiIugN1/cE6rgfT3nCtzeqZPA8+rIxMaQ0xXzIkGP8Gj2qUaP1UR7uhJ1VD8lUCpzCg==}
 
   process@0.11.10:
     resolution: {integrity: sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==}
@@ -4909,8 +4913,8 @@ packages:
   yoga-layout@3.2.1:
     resolution: {integrity: sha512-0LPOt3AxKqMdFBZA3HBAt/t/8vIKq7VaQYbuA8WxCgung+p9TVyKRYdpvCb80HcdTN2NkbIKbhNwKUfm3tQywQ==}
 
-  zod@4.6.5:
-    resolution: {integrity: sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==}
+  zod@4.6.6:
+    resolution: {integrity: sha512-4UmzQUF5fxvfcYHlbjBmejU+w+hbDnWFx4aS8kBx7nPBHcO2SqPbpAG8snbdg+Xse4pRefR98hgjFgIMCI/UhA==}
 
 snapshots:
 
@@ -6087,7 +6091,7 @@ snapshots:
     dependencies:
       which: 6.0.1
 
-  '@oclif/core@5.1.3':
+  '@oclif/core@5.1.7':
     dependencies:
       ansi-escapes: 4.3.2
       ansis: 3.17.0
@@ -6110,7 +6114,7 @@ snapshots:
 
   '@oclif/plugin-command-snapshot@6.0.3':
     dependencies:
-      '@oclif/core': 5.1.3
+      '@oclif/core': 5.1.7
       ansis: 3.17.0
       globby: 14.1.0
       just-diff: 5.2.0
@@ -6122,29 +6126,29 @@ snapshots:
 
   '@oclif/plugin-help@7.0.2':
     dependencies:
-      '@oclif/core': 5.1.3
+      '@oclif/core': 5.1.7
 
   '@oclif/plugin-not-found@4.0.2(@types/node@26.6.4)':
     dependencies:
       '@inquirer/prompts': 7.10.1(@types/node@26.6.4)
-      '@oclif/core': 5.1.3
+      '@oclif/core': 5.1.7
       ansis: 3.17.0
       fast-levenshtein: 3.0.0
     transitivePeerDependencies:
       - '@types/node'
 
-  '@oclif/plugin-warn-if-update-available@4.0.1':
+  '@oclif/plugin-warn-if-update-available@4.0.1(supports-color@8.1.1)':
     dependencies:
-      '@oclif/core': 5.1.3
+      '@oclif/core': 5.1.7
       ansis: 3.17.0
       debug: 4.4.3(supports-color@8.1.1)
-      http-call: 5.3.0
+      http-call: 5.3.0(supports-color@8.1.1)
       lodash: 4.18.1
       registry-auth-token: 5.1.1
     transitivePeerDependencies:
       - supports-color
 
-  '@oclif/table@1.0.2':
+  '@oclif/table@1.0.5':
     dependencies:
       '@types/react': 19.3.0
       change-case: 5.4.4
@@ -6180,7 +6184,7 @@ snapshots:
 
   '@salesforce/cli-plugins-testkit@5.3.69(supports-color@8.1.1)':
     dependencies:
-      '@salesforce/core': 9.3.4
+      '@salesforce/core': 9.3.6
       '@salesforce/kit': 4.0.1
       '@salesforce/ts-types': 3.2.1
       '@types/shelljs': 0.10.0
@@ -6213,13 +6217,13 @@ snapshots:
       proper-lockfile: 4.1.2
       semver: 7.8.5
       ts-retry-promise: 0.8.1
-      zod: 4.6.5
+      zod: 4.6.6
 
-  '@salesforce/core@9.3.4':
+  '@salesforce/core@9.3.6':
     dependencies:
       '@jsforce/jsforce-node': 3.10.29
       '@salesforce/kit': 4.0.1
-      '@salesforce/ts-types': 3.2.1
+      '@salesforce/ts-types': 3.2.2
       ajv: 8.20.0
       change-case: 4.1.2
       fast-levenshtein: 3.0.0
@@ -6235,7 +6239,7 @@ snapshots:
       proper-lockfile: 4.1.2
       semver: 7.8.5
       ts-retry-promise: 0.8.1
-      zod: 4.6.5
+      zod: 4.6.6
 
   '@salesforce/dev-config@4.3.3': {}
 
@@ -6292,10 +6296,10 @@ snapshots:
     dependencies:
       '@inquirer/prompts': 7.10.1(@types/node@26.6.4)
       '@jsforce/jsforce-node': 3.10.28
-      '@oclif/core': 5.1.3
-      '@salesforce/core': 9.3.4
+      '@oclif/core': 5.1.7
+      '@salesforce/core': 9.3.6
       '@salesforce/kit': 4.0.1
-      '@salesforce/sf-plugins-core': 13.0.6(@types/node@26.6.4)
+      '@salesforce/sf-plugins-core': 13.0.7(@types/node@26.6.4)
       got: 13.0.0
       marked: 4.3.0
       marked-terminal: 4.2.0(marked@4.3.0)
@@ -6312,15 +6316,15 @@ snapshots:
 
   '@salesforce/prettier-config@0.0.4': {}
 
-  '@salesforce/sf-plugins-core@13.0.6(@types/node@26.6.4)':
+  '@salesforce/sf-plugins-core@13.0.7(@types/node@26.6.4)':
     dependencies:
       '@inquirer/confirm': 6.3.3(@types/node@26.6.4)
       '@inquirer/password': 5.2.3(@types/node@26.6.4)
-      '@oclif/core': 5.1.3
-      '@oclif/table': 1.0.2
-      '@salesforce/core': 9.3.4
+      '@oclif/core': 5.1.7
+      '@oclif/table': 1.0.5
+      '@salesforce/core': 9.3.6
       '@salesforce/kit': 4.0.1
-      '@salesforce/ts-types': 3.2.1
+      '@salesforce/ts-types': 3.2.2
       ansis: 3.17.0
       cli-progress: 3.12.0
       terminal-link: 3.0.0
@@ -6333,6 +6337,8 @@ snapshots:
   '@salesforce/ts-types@2.0.12': {}
 
   '@salesforce/ts-types@3.2.1': {}
+
+  '@salesforce/ts-types@3.2.2': {}
 
   '@shikijs/engine-oniguruma@3.23.0':
     dependencies:
@@ -8330,7 +8336,7 @@ snapshots:
 
   http-cache-semantics@4.3.0: {}
 
-  http-call@5.3.0:
+  http-call@5.3.0(supports-color@8.1.1):
     dependencies:
       content-type: 1.0.5
       debug: 4.4.3(supports-color@8.1.1)
@@ -9156,17 +9162,17 @@ snapshots:
 
   obug@2.2.1: {}
 
-  oclif@6.0.4(@types/node@26.6.4):
+  oclif@6.0.4(@types/node@26.6.4)(supports-color@8.1.1):
     dependencies:
       '@aws-sdk/client-cloudfront': 3.1148.0
       '@aws-sdk/client-s3': 3.1148.0
       '@inquirer/confirm': 3.2.0
       '@inquirer/input': 2.3.0
       '@inquirer/select': 2.5.0
-      '@oclif/core': 5.1.3
+      '@oclif/core': 5.1.7
       '@oclif/plugin-help': 7.0.2
       '@oclif/plugin-not-found': 4.0.2(@types/node@26.6.4)
-      '@oclif/plugin-warn-if-update-available': 4.0.1
+      '@oclif/plugin-warn-if-update-available': 4.0.1(supports-color@8.1.1)
       ansis: 3.17.0
       async-retry: 1.3.3
       change-case: 4.1.2
@@ -9419,7 +9425,7 @@ snapshots:
       on-exit-leak-free: 2.1.2
       pino-abstract-transport: 2.0.0
       pino-std-serializers: 7.1.0
-      process-warning: 5.1.0
+      process-warning: 5.1.1
       quick-format-unescaped: 4.0.4
       real-require: 0.2.0
       safe-stable-stringify: 2.5.0
@@ -9459,7 +9465,7 @@ snapshots:
     dependencies:
       fromentries: 1.3.2
 
-  process-warning@5.1.0: {}
+  process-warning@5.1.1: {}
 
   process@0.11.10: {}
 
@@ -10511,4 +10517,4 @@ snapshots:
 
   yoga-layout@3.2.1: {}
 
-  zod@4.6.5: {}
+  zod@4.6.6: {}
