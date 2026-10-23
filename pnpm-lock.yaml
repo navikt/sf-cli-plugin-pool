@@ -38,7 +38,7 @@ importers:
         version: 21.2.3
       '@cyclonedx/cdxgen':
         specifier: 12.8.6
-        version: 12.8.6
+        version: 12.8.6(supports-color@8.1.1)
       '@oclif/plugin-command-snapshot':
         specifier: ^6.0.0
         version: 6.0.5
@@ -55,8 +55,8 @@ importers:
         specifier: ^4.0.8
         version: 4.0.16(@types/node@26.6.5)(supports-color@8.1.1)
       '@salesforce/prettier-config':
-        specifier: ^0.0.4
-        version: 0.0.4
+        specifier: ^0.0.5
+        version: 0.0.5
       '@types/chai':
         specifier: ^5.2.3
         version: 5.2.3
@@ -1072,6 +1072,9 @@ packages:
 
   '@salesforce/prettier-config@0.0.4':
     resolution: {integrity: sha512-GBjR7f/jv7rcSrTvNgbkWvOykXg/PZqL7TztylKwaogWdrCbypJE8qEfBy9nILkICrwmDbQApOC8TqoO3bQKSw==}
+
+  '@salesforce/prettier-config@0.0.5':
+    resolution: {integrity: sha512-inVWAPcL0Ryv8Dfyvm3eYB6lUl8zgEEFHMsTgshcLL+Vx396UAcuU8MsGOSnDD7dQ7pBNjfRVojF+312E9Q7mw==}
 
   '@salesforce/sf-plugins-core@13.0.7':
     resolution: {integrity: sha512-nfVYno70TORUITGAMhGo0eD62M7LxTiD5TnpnRLOuG6ygt0TVz60NWX6eJRvmxOkHKqAK5hWjPOZXAYqV8JZUg==}
@@ -5203,7 +5206,7 @@ snapshots:
       '@babel/parser': 8.0.7
       '@babel/types': 8.0.6
 
-  '@babel/traverse@7.29.8':
+  '@babel/traverse@7.29.8(supports-color@8.1.1)':
     dependencies:
       '@babel/code-frame': 7.29.7
       '@babel/generator': 7.29.8
@@ -5555,10 +5558,10 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@cyclonedx/cdxgen@12.8.6':
+  '@cyclonedx/cdxgen@12.8.6(supports-color@8.1.1)':
     dependencies:
       '@babel/parser': 7.29.9
-      '@babel/traverse': 7.29.8
+      '@babel/traverse': 7.29.8(supports-color@8.1.1)
       '@iarna/toml': 2.2.5
       '@isaacs/string-locale-compare': 1.1.0
       '@npmcli/fs': 5.0.0
@@ -5604,7 +5607,7 @@ snapshots:
       '@cdxgen/cdxgen-plugins-bin-windows-amd64': 2.5.1
       '@cdxgen/cdxgen-plugins-bin-windows-arm64': 2.5.1
       '@cdxgen/safer-exec': 0.15.0
-      body-parser: 2.3.0
+      body-parser: 2.3.0(supports-color@8.1.1)
       compression: 1.8.2
       connect: 3.7.0
       jsonata: 2.2.2
@@ -6294,6 +6297,8 @@ snapshots:
       - utf-8-validate
 
   '@salesforce/prettier-config@0.0.4': {}
+
+  '@salesforce/prettier-config@0.0.5': {}
 
   '@salesforce/sf-plugins-core@13.0.7(@types/node@26.6.5)':
     dependencies:
@@ -7028,7 +7033,7 @@ snapshots:
 
   binary-extensions@2.3.0: {}
 
-  body-parser@2.3.0:
+  body-parser@2.3.0(supports-color@8.1.1):
     dependencies:
       bytes: 3.1.2
       content-type: 2.1.0
