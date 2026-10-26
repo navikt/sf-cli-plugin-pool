@@ -25,7 +25,7 @@ importers:
         version: 5.1.8
       '@salesforce/core':
         specifier: ^9.1.7
-        version: 9.3.6
+        version: 9.4.0
       '@salesforce/sf-plugins-core':
         specifier: ^13.0.0
         version: 13.0.7(@types/node@26.6.5)
@@ -38,7 +38,7 @@ importers:
         version: 21.2.3
       '@cyclonedx/cdxgen':
         specifier: 12.8.6
-        version: 12.8.6
+        version: 12.8.6(supports-color@8.1.1)
       '@oclif/plugin-command-snapshot':
         specifier: ^6.0.0
         version: 6.0.5
@@ -908,6 +908,10 @@ packages:
     resolution: {integrity: sha512-N3TRPYGSrhEQuAJbxvOo/L4Zz12fhBG8og99SaYER2+3tVw8HeXcf7NlNCn56jbhPIaj8iHpQK+AE+xW1s3KNQ==}
     engines: {node: '>=22'}
 
+  '@jsforce/jsforce-node@3.12.0':
+    resolution: {integrity: sha512-c13YUjHhXg7+oTK4g1loStb/psJ0Xy5TP6mQbtRgr4R5mOe9AmPcmHBSbxsn90Enep3J4/omt20AvMkhhtDFSw==}
+    engines: {node: '>=22'}
+
   '@jsonjoy.com/base64@1.1.2':
     resolution: {integrity: sha512-q6XAnWQDIMA3+FTiOYajoYqySkO+JSat0ytXGSuRdq9uXE7o92gzuQwQM14xaCRlBLGq3v5miDGC4vkVTn54xA==}
     engines: {node: '>=10.0'}
@@ -1048,8 +1052,8 @@ packages:
     resolution: {integrity: sha512-ZR973WoqCgi6cR58WhgokbHVZOaADNKHiuM1FAwS5pTLQnC91xYi04i2e/gpAX2AUf7Ya6zjbusYtZNpSyKKAQ==}
     engines: {node: '>=18.0.0'}
 
-  '@salesforce/core@9.3.6':
-    resolution: {integrity: sha512-2LuJVv8b4Yf3o8hKXQXZHfhP8LpyKQL5YRncPzVvE1AwLvbwabzLHc2NrELt2t+vpXiD3UURbP8KVMDjJn1KaA==}
+  '@salesforce/core@9.4.0':
+    resolution: {integrity: sha512-KkIvdJ6hafOctC6yxY2XLKJguXHAve3VCvHM0yJA2FxBjEQnqV0nMc0qppFSybSsSI5biJvf6HYOpzFtCsHLYQ==}
     engines: {node: '>=22.0.0'}
 
   '@salesforce/dev-config@4.3.3':
@@ -4625,6 +4629,10 @@ packages:
     resolution: {integrity: sha512-usz3OVQBeh1LxNn0DzU0voLXMgn5CU/WUdpBsY6Ti5afNao+vTkmn4H/NxoXolc10cOqe2+YIG0Hspq2rsl64w==}
     engines: {node: '>=22.19.0'}
 
+  undici@8.12.2:
+    resolution: {integrity: sha512-XtuDWVdqTLr3NAxm2ly9/hU6kUsJOgGh1RASzMBbsw6aWCOaQzHdW+QQDfdERjfJ2V5vL5pRPa4RetO9UfivDg==}
+    engines: {node: '>=22.19.0'}
+
   unicorn-magic@0.3.0:
     resolution: {integrity: sha512-+QBBXBCvifc56fsbuxZQ6Sic3wqqc3WWaqxs58gvJrcOuN83HGTCwz3oS5phzU9LthRNE9VrJCFCLUgHeeFnfA==}
     engines: {node: '>=18'}
@@ -4905,8 +4913,8 @@ packages:
   yoga-layout@3.2.1:
     resolution: {integrity: sha512-0LPOt3AxKqMdFBZA3HBAt/t/8vIKq7VaQYbuA8WxCgung+p9TVyKRYdpvCb80HcdTN2NkbIKbhNwKUfm3tQywQ==}
 
-  zod@4.6.6:
-    resolution: {integrity: sha512-4UmzQUF5fxvfcYHlbjBmejU+w+hbDnWFx4aS8kBx7nPBHcO2SqPbpAG8snbdg+Xse4pRefR98hgjFgIMCI/UhA==}
+  zod@4.6.7:
+    resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
 snapshots:
 
@@ -5203,7 +5211,7 @@ snapshots:
       '@babel/parser': 8.0.7
       '@babel/types': 8.0.6
 
-  '@babel/traverse@7.29.8':
+  '@babel/traverse@7.29.8(supports-color@8.1.1)':
     dependencies:
       '@babel/code-frame': 7.29.7
       '@babel/generator': 7.29.8
@@ -5555,10 +5563,10 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@cyclonedx/cdxgen@12.8.6':
+  '@cyclonedx/cdxgen@12.8.6(supports-color@8.1.1)':
     dependencies:
       '@babel/parser': 7.29.9
-      '@babel/traverse': 7.29.8
+      '@babel/traverse': 7.29.8(supports-color@8.1.1)
       '@iarna/toml': 2.2.5
       '@isaacs/string-locale-compare': 1.1.0
       '@npmcli/fs': 5.0.0
@@ -5604,7 +5612,7 @@ snapshots:
       '@cdxgen/cdxgen-plugins-bin-windows-amd64': 2.5.1
       '@cdxgen/cdxgen-plugins-bin-windows-arm64': 2.5.1
       '@cdxgen/safer-exec': 0.15.0
-      body-parser: 2.3.0
+      body-parser: 2.3.0(supports-color@8.1.1)
       compression: 1.8.2
       connect: 3.7.0
       jsonata: 2.2.2
@@ -5969,6 +5977,19 @@ snapshots:
       undici: 8.12.1
       xml2js: 0.6.2
 
+  '@jsforce/jsforce-node@3.12.0':
+    dependencies:
+      '@sindresorhus/is': 4.6.0
+      base64url: 3.0.1
+      cross-spawn: 7.0.6
+      csv-parse: 7.0.3
+      csv-stringify: 6.9.0
+      faye: 1.4.3
+      form-data: 4.0.6
+      multistream: 3.1.0
+      undici: 8.12.2
+      xml2js: 0.6.2
+
   '@jsonjoy.com/base64@1.1.2(tslib@2.8.1)':
     dependencies:
       tslib: 2.8.1
@@ -6163,7 +6184,7 @@ snapshots:
 
   '@salesforce/cli-plugins-testkit@5.3.75(supports-color@8.1.1)':
     dependencies:
-      '@salesforce/core': 9.3.6
+      '@salesforce/core': 9.4.0
       '@salesforce/kit': 4.0.1
       '@salesforce/ts-types': 3.2.2
       '@types/shelljs': 0.10.0
@@ -6178,7 +6199,7 @@ snapshots:
 
   '@salesforce/core@8.32.6':
     dependencies:
-      '@jsforce/jsforce-node': 3.10.29
+      '@jsforce/jsforce-node': 3.12.0
       '@salesforce/kit': 3.2.6
       '@salesforce/ts-types': 2.0.12
       ajv: 8.20.0
@@ -6196,11 +6217,11 @@ snapshots:
       proper-lockfile: 4.1.2
       semver: 7.8.5
       ts-retry-promise: 0.8.1
-      zod: 4.6.6
+      zod: 4.6.7
 
-  '@salesforce/core@9.3.6':
+  '@salesforce/core@9.4.0':
     dependencies:
-      '@jsforce/jsforce-node': 3.10.29
+      '@jsforce/jsforce-node': 3.12.0
       '@salesforce/kit': 4.0.1
       '@salesforce/ts-types': 3.2.2
       ajv: 8.20.0
@@ -6218,7 +6239,7 @@ snapshots:
       proper-lockfile: 4.1.2
       semver: 7.8.5
       ts-retry-promise: 0.8.1
-      zod: 4.6.6
+      zod: 4.6.7
 
   '@salesforce/dev-config@4.3.3': {}
 
@@ -6276,7 +6297,7 @@ snapshots:
       '@inquirer/prompts': 7.10.1(@types/node@26.6.5)
       '@jsforce/jsforce-node': 3.10.29
       '@oclif/core': 5.1.8
-      '@salesforce/core': 9.3.6
+      '@salesforce/core': 9.4.0
       '@salesforce/kit': 4.0.1
       '@salesforce/sf-plugins-core': 13.0.7(@types/node@26.6.5)
       got: 13.0.0
@@ -6301,7 +6322,7 @@ snapshots:
       '@inquirer/password': 5.2.3(@types/node@26.6.5)
       '@oclif/core': 5.1.8
       '@oclif/table': 1.0.5
-      '@salesforce/core': 9.3.6
+      '@salesforce/core': 9.4.0
       '@salesforce/kit': 4.0.1
       '@salesforce/ts-types': 3.2.2
       ansis: 3.17.0
@@ -7028,7 +7049,7 @@ snapshots:
 
   binary-extensions@2.3.0: {}
 
-  body-parser@2.3.0:
+  body-parser@2.3.0(supports-color@8.1.1):
     dependencies:
       bytes: 3.1.2
       content-type: 2.1.0
@@ -10189,6 +10210,8 @@ snapshots:
 
   undici@8.12.1: {}
 
+  undici@8.12.2: {}
+
   unicorn-magic@0.3.0: {}
 
   universalify@0.1.2: {}
@@ -10491,4 +10514,4 @@ snapshots:
 
   yoga-layout@3.2.1: {}
 
-  zod@4.6.6: {}
+  zod@4.6.7: {}
