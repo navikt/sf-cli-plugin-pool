@@ -243,6 +243,7 @@ describe('poolFetch', () => {
     let activeOwnerStub: ReturnType<typeof $$.SANDBOX.stub>;
     let userIdStub: ReturnType<typeof $$.SANDBOX.stub>;
     let authStub: ReturnType<typeof $$.SANDBOX.stub>;
+    let saveStub: ReturnType<typeof $$.SANDBOX.stub>;
     let setupStub: ReturnType<typeof $$.SANDBOX.stub>;
     let sleepStub: ReturnType<typeof $$.SANDBOX.stub>;
     let deps: FetchPoolDeps;
@@ -266,6 +267,7 @@ describe('poolFetch', () => {
       activeOwnerStub = $$.SANDBOX.stub().resolves();
       userIdStub = $$.SANDBOX.stub().resolves('user-1');
       authStub = $$.SANDBOX.stub();
+      saveStub = $$.SANDBOX.stub().resolves();
       setupStub = $$.SANDBOX.stub().resolves();
       sleepStub = $$.SANDBOX.stub().resolves();
 
@@ -282,8 +284,11 @@ describe('poolFetch', () => {
     });
 
     function stubAuthSuccess(username = 'user@scratch.org'): void {
-      const fakeAuthInfo = { getUsername: () => username };
-      authStub.resolves({ authInfo: fakeAuthInfo, instanceUrl: 'https://test.salesforce.com' } as AuthenticateResult);
+      const fakeAuthInfo = { getUsername: () => username, save: saveStub };
+      authStub.resolves({
+        authInfo: fakeAuthInfo,
+        instanceUrl: 'https://test.salesforce.com',
+      } as unknown as AuthenticateResult);
     }
 
     it('claims an available org and authenticates', async () => {
@@ -311,6 +316,19 @@ describe('poolFetch', () => {
 
       expect(activeOwnerStub.calledOnceWith(connection, 'a01', 'user-1')).to.be.true;
       expect(claimStub.calledBefore(activeOwnerStub)).to.be.true;
+    });
+
+    it('saves the resolved Dev Hub username on the fetched org auth info', async () => {
+      queryStub.resolves([org()]);
+      stubAuthSuccess();
+
+      const connection = await devHub.getConnection();
+      $$.SANDBOX.stub(connection, 'getUsername').returns('devhub@example.com');
+
+      await fetchPoolOrg(connection, 'devPool', undefined, false, deps);
+
+      expect(saveStub.calledOnceWithExactly({ devHubUsername: 'devhub@example.com' })).to.be.true;
+      expect(authStub.calledBefore(saveStub)).to.be.true;
     });
 
     it('propagates a fatal ActiveScratchOrg ownership failure', async () => {

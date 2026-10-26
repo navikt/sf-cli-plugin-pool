@@ -364,6 +364,7 @@ export async function fetchPoolOrg(
 
   onProgress?.('Authenticating to scratch org...');
   const { authInfo, instanceUrl } = await deps.authenticateToOrg(sfdxAuthUrl);
+  await authInfo.save({ devHubUsername: connection.getUsername() });
 
   if (alias ?? setDefault) {
     await deps.handlePostFetchSetup(authInfo, alias, setDefault);
