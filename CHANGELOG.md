@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/navikt/sf-cli-plugin-pool/compare/sf-cli-plugin-pool-v1.0.2...sf-cli-plugin-pool-v1.0.3) (2026-10-28)
+
+
+### Bug Fixes
+
+* **poolFetch:** persist fetched org Dev Hub association ([22d38a5](https://github.com/navikt/sf-cli-plugin-pool/commit/22d38a5f6e69aeb1c01349a00c21eaf1b1f9f2a7))
+
 ## [1.0.2](https://github.com/navikt/sf-cli-plugin-pool/compare/sf-cli-plugin-pool-v1.0.1...sf-cli-plugin-pool-v1.0.2) (2026-09-03)
 
 
