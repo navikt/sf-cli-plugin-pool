@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.4](https://github.com/navikt/sf-cli-plugin-pool/compare/sf-cli-plugin-pool-v1.0.3...sf-cli-plugin-pool-v1.0.4) (2026-10-29)
+
+
+### Bug Fixes
+
+* **deps:** update node engine and patch dependencies for security vulnerabilities ([#235](https://github.com/navikt/sf-cli-plugin-pool/issues/235)) ([207b75c](https://github.com/navikt/sf-cli-plugin-pool/commit/207b75cf05e7e9d9a1b181378ff0a62f87cd13e4))
+* **deps:** update Node.js version to 24.22.1 and corresponding checksums ([449b31a](https://github.com/navikt/sf-cli-plugin-pool/commit/449b31a30bd502f7795244fbc7ab335e375e14da))
+
 ## [1.0.3](https://github.com/navikt/sf-cli-plugin-pool/compare/sf-cli-plugin-pool-v1.0.2...sf-cli-plugin-pool-v1.0.3) (2026-10-28)
 
 
