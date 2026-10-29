@@ -23,8 +23,8 @@ overrides:
   uuid: '>=11.1.1'
 
   # Override transitive markdown-it to a patched release.
-  # Mitigates GHSA-6v5v-wf23-fmfq (Inefficient Algorithmic Complexity); fixed in markdown-it 14.2.0.
-  markdown-it: '>=14.2.0'
+  # Mitigates GHSA-gfr2-rv44-r23c
+  markdown-it: '>=15.0.3'
 
   # Override transitive undici to a patched release.
   # Mitigates GHSA-jr45-8vmc-qm54; fixed in undici 7.29.0.
@@ -42,5 +42,13 @@ overrides:
   '@babel/core': '>=7.29.6'
 
   # Override transitive serialize-javascript to a patched release.
-  # Mitigates GHSA-qj8w-gfj5-8c6v (CPU exhaustion DoS); fixed in serialize-javascript 7.0.5.
-  serialize-javascript: '>=7.0.5'
+  # Mitigates GHSA-m5mm-p8h7-m29v ( Cross-site scripting ); fixed in serialize-javascript 7.1.3.
+  serialize-javascript: '>=7.1.3'
+
+  # Override transitive brace-expansion to a patched release.
+  # Mitigates GHSA-q2hr-2g5m-vwhr; fixed in brace-expansion 5.0.12.
+  brace-expansion: '>=5.0.12'
+
+  # Override transitive source-map-js to a patched release.
+  # Mitigates CVE-2026-93749; fixed in source-map-js 1.2.3.
+  source-map-js: '>=1.2.2'
