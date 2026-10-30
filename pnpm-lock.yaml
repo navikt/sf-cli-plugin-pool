@@ -39,8 +39,8 @@ importers:
         specifier: ^21.2.2
         version: 21.2.4
       '@cyclonedx/cdxgen':
-        specifier: 12.8.9
-        version: 12.8.9(supports-color@8.1.1)
+        specifier: 12.9.0
+        version: 12.9.0(supports-color@8.1.1)
       '@oclif/plugin-command-snapshot':
         specifier: ^6.0.0
         version: 6.0.6
@@ -55,7 +55,7 @@ importers:
         version: 15.0.0(@typescript-eslint/utils@8.72.0(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)
       '@salesforce/plugin-info':
         specifier: ^4.0.8
-        version: 4.0.18(@types/node@26.6.5)(supports-color@8.1.1)
+        version: 4.0.19(@types/node@26.6.5)(supports-color@8.1.1)
       '@salesforce/prettier-config':
         specifier: ^0.0.5
         version: 0.0.5
@@ -85,7 +85,7 @@ importers:
         version: 6.0.2(@typescript-eslint/utils@8.72.0(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
       eslint-plugin-sf-plugin:
         specifier: ^3.0.0
-        version: 3.0.2(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(typescript@5.9.3)
+        version: 3.0.3(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(typescript@5.9.3)
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -568,8 +568,8 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@cyclonedx/cdxgen@12.8.9':
-    resolution: {integrity: sha512-2BHJ0T2JTv5y0ZbiS0tuW9U39eGFOFauAgVjjPb22bBAOiXlNhhbuCMOEoB3H77xQqvsdo+asFqFpCM9uye9gQ==}
+  '@cyclonedx/cdxgen@12.9.0':
+    resolution: {integrity: sha512-+LWBiyTgdSWdprdsA7xpNEhD9NV/Wo3TvqaVYQHjP3kEeNEZTV+08U8CYh+P2+2CHycwKFWHhtSREN+p/r6Sgw==}
     engines: {node: ^20 || ^22 || ^24 || ^25 || ^26, pnpm: '>=10'}
     hasBin: true
 
@@ -1068,8 +1068,8 @@ packages:
     resolution: {integrity: sha512-gEqWxNsouii5bFRpmLGOO93ndiL0Ds3UOuu2JLTfyZGgezQxg8wEUnnYzV2trZsrlptvarj94AfiQvWI5WkjAw==}
     engines: {node: '>=22.0.0'}
 
-  '@salesforce/plugin-info@4.0.18':
-    resolution: {integrity: sha512-4ykrOYvjyKzxpYc+il8C1v8yKYvLwR4PSKr5nmDS9IA6sdx3f9V7+UWgJa/n5ZGx8VGLa9y7eYGDMQANIamcQA==}
+  '@salesforce/plugin-info@4.0.19':
+    resolution: {integrity: sha512-cB/U2X+wZF9XzshnYHsXXAKpdLk57LAsa49QA5N49h9P8b1NKtGEUEjIQytAXlmpxNlCGm+iuYxjez99g+Sl7g==}
     engines: {node: '>=22.0.0'}
 
   '@salesforce/prettier-config@0.0.4':
@@ -2381,8 +2381,8 @@ packages:
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
 
-  eslint-plugin-sf-plugin@3.0.2:
-    resolution: {integrity: sha512-Gh7gADjmEJ+waNSNoMoTlDFN7AWckppRD4/trR5LmPaWMSgOqJVzFdvFM8SNLCbbTZhKJTyYMcUcxncY7tuWPw==}
+  eslint-plugin-sf-plugin@3.0.3:
+    resolution: {integrity: sha512-8kLONUqKxWNuH05RCV7fBF81ZSkFR7wZb3DDRFUof8F1j4Sb+a4LV0zHKHsnOD0oJMedeIHjJ92Bx8ZeJoSaQw==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
       eslint: '>=9'
@@ -5525,7 +5525,7 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@cyclonedx/cdxgen@12.8.9(supports-color@8.1.1)':
+  '@cyclonedx/cdxgen@12.9.0(supports-color@8.1.1)':
     dependencies:
       '@babel/parser': 7.29.9
       '@babel/traverse': 7.29.8(supports-color@8.1.1)
@@ -6241,7 +6241,7 @@ snapshots:
     dependencies:
       '@salesforce/ts-types': 3.2.3
 
-  '@salesforce/plugin-info@4.0.18(@types/node@26.6.5)(supports-color@8.1.1)':
+  '@salesforce/plugin-info@4.0.19(@types/node@26.6.5)(supports-color@8.1.1)':
     dependencies:
       '@inquirer/prompts': 7.10.1(@types/node@26.6.5)
       '@jsforce/jsforce-node': 3.12.0
@@ -7714,7 +7714,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-sf-plugin@3.0.2(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(typescript@5.9.3):
+  eslint-plugin-sf-plugin@3.0.3(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(typescript@5.9.3):
     dependencies:
       '@salesforce/core': 8.32.6
       '@typescript-eslint/utils': 8.72.0(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(typescript@5.9.3)
