@@ -30,7 +30,7 @@ importers:
         version: 9.4.1
       '@salesforce/sf-plugins-core':
         specifier: ^13.0.0
-        version: 13.0.7(@types/node@26.6.5)
+        version: 13.0.8(@types/node@26.6.5)
     devDependencies:
       '@commitlint/cli':
         specifier: ^21.2.2
@@ -693,8 +693,8 @@ packages:
       '@types/node':
         optional: true
 
-  '@inquirer/confirm@6.3.3':
-    resolution: {integrity: sha512-ImOBgpl/sJTFp8naeSkNu4S0Sf8F8pxv3/CUx+LoBAdQvCVqFz6rSB2A/oZYsJge3+yphbEDxEkfaRNYq1OU0A==}
+  '@inquirer/confirm@6.3.4':
+    resolution: {integrity: sha512-ZwnaZZDa1zxsyVrN32s447ydMnKcw7e8WWNT+R+Qsu0zAn8Rs6yi9d1B80Kob1Ul2cfUi7t8JD2t4/K7uEZpqA==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^20.17.0'}
     peerDependencies:
       '@types/node': '>=18'
@@ -711,8 +711,8 @@ packages:
       '@types/node':
         optional: true
 
-  '@inquirer/core@12.0.4':
-    resolution: {integrity: sha512-M5fB67y7jPObI45vhD82RskWwCSm0scOvenV/I6K8tIi2gfr9DXqQqJ+iw+Wi6SgapikdOiJibYzz1gW47fsDg==}
+  '@inquirer/core@12.0.5':
+    resolution: {integrity: sha512-c0ZSnO9oVk/IlEGoZK3u8b3IZQeu9I6jUkXJSQnQEVRXsjKvtAq3AGqFL2LgfJhlzMZne08pZHWRWasIcI3Rew==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^20.17.0'}
     peerDependencies:
       '@types/node': '>=18'
@@ -790,8 +790,8 @@ packages:
       '@types/node':
         optional: true
 
-  '@inquirer/password@5.2.3':
-    resolution: {integrity: sha512-1Uo2qfI2K3wXbfunMpvwAzoZPIUf5iEETwDGqRVbswoorXGqYQJ/bfIJFeLj+pxjq+e2UFPNOmx+fsIl4Urigw==}
+  '@inquirer/password@5.2.4':
+    resolution: {integrity: sha512-T7ir3fflSSVCYEVqNyMBq+pIMsilQRtbZcD5gxn6Ewsin5TJWBxrGBdXveWtmeXVAeoInfhS+BhBUZaL4sFSDg==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^20.17.0'}
     peerDependencies:
       '@types/node': '>=18'
@@ -1019,8 +1019,8 @@ packages:
     resolution: {integrity: sha512-Q/cslxPr4nfnF1r8nTemNV6Ds+yojZE7QL2g/DPRKAKlYWm/7oOejrEvGyCNHoskDLcgwtcRbelfL3xtJ172Qw==}
     engines: {node: '>=22.0.0'}
 
-  '@oclif/table@1.0.5':
-    resolution: {integrity: sha512-6+czHxLf6sEFob8e0h+4bXCpG3LqoMOb7u8rRxc/XM0vGNHnodp/pHPOz6kzVvzjebHevX21bnuVB0vr1JeVHQ==}
+  '@oclif/table@1.0.8':
+    resolution: {integrity: sha512-oiH9bmDv5g8plI7cSpyN2c5MSgxbwgy9Wjoml4nRyfCub1rkW/0xDmqx+EqF2JF01yAnNFNWU794xqYepM1sEw==}
     engines: {node: '>=22.0.0'}
 
   '@pinojs/redact@0.4.0':
@@ -1068,6 +1068,10 @@ packages:
     resolution: {integrity: sha512-gEqWxNsouii5bFRpmLGOO93ndiL0Ds3UOuu2JLTfyZGgezQxg8wEUnnYzV2trZsrlptvarj94AfiQvWI5WkjAw==}
     engines: {node: '>=22.0.0'}
 
+  '@salesforce/kit@4.0.8':
+    resolution: {integrity: sha512-buPp7lWQNK6f5S/vCXwcgclUPZlfRw66E1aXAY/Uy/qMPlaajS4xmo58HY7ge2zUfOjfwpH1b0GUV5cQ5D9EAw==}
+    engines: {node: '>=22.0.0'}
+
   '@salesforce/plugin-info@4.0.19':
     resolution: {integrity: sha512-cB/U2X+wZF9XzshnYHsXXAKpdLk57LAsa49QA5N49h9P8b1NKtGEUEjIQytAXlmpxNlCGm+iuYxjez99g+Sl7g==}
     engines: {node: '>=22.0.0'}
@@ -1078,17 +1082,13 @@ packages:
   '@salesforce/prettier-config@0.0.5':
     resolution: {integrity: sha512-inVWAPcL0Ryv8Dfyvm3eYB6lUl8zgEEFHMsTgshcLL+Vx396UAcuU8MsGOSnDD7dQ7pBNjfRVojF+312E9Q7mw==}
 
-  '@salesforce/sf-plugins-core@13.0.7':
-    resolution: {integrity: sha512-nfVYno70TORUITGAMhGo0eD62M7LxTiD5TnpnRLOuG6ygt0TVz60NWX6eJRvmxOkHKqAK5hWjPOZXAYqV8JZUg==}
+  '@salesforce/sf-plugins-core@13.0.8':
+    resolution: {integrity: sha512-Q20dYNsyCLztStPFqWVkLSumIRs1Jttd5/ZkjOkZ3lyyjfuBPFrEubR4aKaXQPWpdx1UvcZ6vHPupoUkuRLFSg==}
     engines: {node: '>=22.0.0'}
 
   '@salesforce/ts-types@2.0.12':
     resolution: {integrity: sha512-BIJyduJC18Kc8z+arUm5AZ9VkPRyw1KKAm+Tk+9LT99eOzhNilyfKzhZ4t+tG2lIGgnJpmytZfVDZ0e2kFul8g==}
     engines: {node: '>=18.0.0'}
-
-  '@salesforce/ts-types@3.2.2':
-    resolution: {integrity: sha512-3t+/+CzdL2RSOPUvakbg7ICKgu+y5r+lBKYjcVa5TzeLkAnWad8TH98qgurndLZLXHVyW3rA4AM0oTpH+TZZVA==}
-    engines: {node: '>=22.0.0'}
 
   '@salesforce/ts-types@3.2.3':
     resolution: {integrity: sha512-re+ceqPAgBXdgml1bTPoetNb6UfDwh54Gi6USRvPLK6/iV5P9rrLp4d7Ee2UDs/rw80V3nCjfASacpARRDaLRw==}
@@ -1160,6 +1160,7 @@ packages:
   '@smithy/core@3.36.0':
     resolution: {integrity: sha512-3hJiwG1F5t1SoXqp/yOCmYXziyx7ZVqF63S5W6YU201e/qwVaHPex+E/3vvyY9a3ORq/b+BydeNZpP2saQ9X2g==}
     engines: {node: '>=18.0.0'}
+    deprecated: Deprecated due to a bug in custom logger data redaction. See https://github.com/aws/aws-sdk-js-v3/issues/8393.
 
   '@smithy/credential-provider-imds@4.5.2':
     resolution: {integrity: sha512-A9uSdn72ozbRUSit0eib0TW7nXuNPlaeM0zcGkJ+nE6tFcSDbnmtwoxbTCFBukVQcszDAyvsd7+rTduPTXpygg==}
@@ -2315,6 +2316,9 @@ packages:
   es-toolkit@1.52.0:
     resolution: {integrity: sha512-XTNEJQh1tY1ZJVcf6ayP/2n4ZPyaHlW2FWs7xvw5ddPuhUVjLD3olQVQS7kf58JbAB48iL0uL/jerTrjtV3lDA==}
 
+  es-toolkit@1.53.0:
+    resolution: {integrity: sha512-3+AYXp9fmJ/UhHBMYj2/U+RaUouMD90SzoItyDOB2Za7W6dB7fQApFGnZPl2MF6K8/Tv1koh1JyirSx/kju6Pw==}
+
   es6-error@4.1.1:
     resolution: {integrity: sha512-Um/+FxMr9CISWh0bi5Zv0iOD+4cFh5qLeks1qhAopKVAJw3drgKbKySikp7wGhDL0HPeaja0P5ULZrxLkniUVg==}
 
@@ -2807,6 +2811,7 @@ packages:
   http-call@5.3.0:
     resolution: {integrity: sha512-ahwimsC23ICE4kPl9xTBjKB4inbRaeLyZeRunC/1Jy/Z6X8tv22MEAjK+KBOMSVLaqXPTTmd8638waVIKLGx2w==}
     engines: {node: '>=8.0.0'}
+    deprecated: Renamed to @heroku/http-call — please install @heroku/http-call instead.
 
   http-errors@2.0.1:
     resolution: {integrity: sha512-4FbRdAX+bSdmo4AUFuS0WNiPz8NgFt+r8ThgNWmlrjQjt1Q7ZR9+zTlce2859x4KSXrwIsaeTqDoKQmtP8pLmQ==}
@@ -3953,8 +3958,8 @@ packages:
     peerDependencies:
       react: ^19.2.0
 
-  react@19.3.0:
-    resolution: {integrity: sha512-E8LUcbtBWt20bbl2YoHfx4ZDBdxVTfOKtCZn9cDSJ4l6/nuoApcpIBcj47t2wZoVX8g2ZHuMHbiShgCR1T5Sog==}
+  react@19.3.1:
+    resolution: {integrity: sha512-QNhWdt7nrgVWWQG58QuGsAR3jv3Hbe4mb4vz7w2csnHavciZJgda1CPNaldF6eVxv90ud3jUXpKlHL69gO38yw==}
     engines: {node: '>=0.10.0'}
 
   read-package-json-fast@5.0.0:
@@ -5700,9 +5705,9 @@ snapshots:
     optionalDependencies:
       '@types/node': 26.6.5
 
-  '@inquirer/confirm@6.3.3(@types/node@26.6.5)':
+  '@inquirer/confirm@6.3.4(@types/node@26.6.5)':
     dependencies:
-      '@inquirer/core': 12.0.4(@types/node@26.6.5)
+      '@inquirer/core': 12.0.5(@types/node@26.6.5)
       '@inquirer/type': 4.2.0(@types/node@26.6.5)
     optionalDependencies:
       '@types/node': 26.6.5
@@ -5720,7 +5725,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 26.6.5
 
-  '@inquirer/core@12.0.4(@types/node@26.6.5)':
+  '@inquirer/core@12.0.5(@types/node@26.6.5)':
     dependencies:
       '@inquirer/ansi': 2.0.9
       '@inquirer/figures': 2.0.9
@@ -5801,10 +5806,10 @@ snapshots:
     optionalDependencies:
       '@types/node': 26.6.5
 
-  '@inquirer/password@5.2.3(@types/node@26.6.5)':
+  '@inquirer/password@5.2.4(@types/node@26.6.5)':
     dependencies:
       '@inquirer/ansi': 2.0.9
-      '@inquirer/core': 12.0.4(@types/node@26.6.5)
+      '@inquirer/core': 12.0.5(@types/node@26.6.5)
       '@inquirer/type': 4.2.0(@types/node@26.6.5)
     optionalDependencies:
       '@types/node': 26.6.5
@@ -6097,15 +6102,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@oclif/table@1.0.5':
+  '@oclif/table@1.0.8':
     dependencies:
       '@types/react': 19.3.0
       change-case: 5.4.4
       cli-truncate: 4.0.0
-      ink: 7.1.1(@types/react@19.3.0)(react@19.3.0)
+      ink: 7.1.1(@types/react@19.3.0)(react@19.3.1)
       natural-orderby: 3.0.2
       object-hash: 3.0.0
-      react: 19.3.0
+      react: 19.3.1
       string-width: 8.3.0
       strip-ansi: 7.2.0
       wrap-ansi: 9.0.2
@@ -6241,6 +6246,10 @@ snapshots:
     dependencies:
       '@salesforce/ts-types': 3.2.3
 
+  '@salesforce/kit@4.0.8':
+    dependencies:
+      '@salesforce/ts-types': 3.2.3
+
   '@salesforce/plugin-info@4.0.19(@types/node@26.6.5)(supports-color@8.1.1)':
     dependencies:
       '@inquirer/prompts': 7.10.1(@types/node@26.6.5)
@@ -6248,7 +6257,7 @@ snapshots:
       '@oclif/core': 5.1.9
       '@salesforce/core': 9.4.1
       '@salesforce/kit': 4.0.1
-      '@salesforce/sf-plugins-core': 13.0.7(@types/node@26.6.5)
+      '@salesforce/sf-plugins-core': 13.0.8(@types/node@26.6.5)
       got: 13.0.0
       marked: 4.3.0
       marked-terminal: 4.2.0(marked@4.3.0)
@@ -6267,15 +6276,15 @@ snapshots:
 
   '@salesforce/prettier-config@0.0.5': {}
 
-  '@salesforce/sf-plugins-core@13.0.7(@types/node@26.6.5)':
+  '@salesforce/sf-plugins-core@13.0.8(@types/node@26.6.5)':
     dependencies:
-      '@inquirer/confirm': 6.3.3(@types/node@26.6.5)
-      '@inquirer/password': 5.2.3(@types/node@26.6.5)
+      '@inquirer/confirm': 6.3.4(@types/node@26.6.5)
+      '@inquirer/password': 5.2.4(@types/node@26.6.5)
       '@oclif/core': 5.1.9
-      '@oclif/table': 1.0.5
+      '@oclif/table': 1.0.8
       '@salesforce/core': 9.4.1
-      '@salesforce/kit': 4.0.1
-      '@salesforce/ts-types': 3.2.2
+      '@salesforce/kit': 4.0.8
+      '@salesforce/ts-types': 3.2.3
       ansis: 3.17.0
       cli-progress: 3.12.0
       terminal-link: 3.0.0
@@ -6286,8 +6295,6 @@ snapshots:
       - utf-8-validate
 
   '@salesforce/ts-types@2.0.12': {}
-
-  '@salesforce/ts-types@3.2.2': {}
 
   '@salesforce/ts-types@3.2.3': {}
 
@@ -7604,6 +7611,8 @@ snapshots:
 
   es-toolkit@1.52.0: {}
 
+  es-toolkit@1.53.0: {}
+
   es6-error@4.1.1: {}
 
   escalade@3.2.0: {}
@@ -8322,7 +8331,7 @@ snapshots:
 
   ini@6.0.0: {}
 
-  ink@7.1.1(@types/react@19.3.0)(react@19.3.0):
+  ink@7.1.1(@types/react@19.3.0)(react@19.3.1):
     dependencies:
       '@alcalzone/ansi-tokenize': 0.3.1
       ansi-escapes: 7.3.0
@@ -8333,12 +8342,12 @@ snapshots:
       cli-cursor: 4.0.0
       cli-truncate: 6.1.1
       code-excerpt: 4.0.0
-      es-toolkit: 1.52.0
+      es-toolkit: 1.53.0
       indent-string: 5.0.0
       is-in-ci: 2.0.0
       patch-console: 2.0.0
-      react: 19.3.0
-      react-reconciler: 0.33.0(react@19.3.0)
+      react: 19.3.1
+      react-reconciler: 0.33.0(react@19.3.1)
       scheduler: 0.27.0
       signal-exit: 3.0.7
       slice-ansi: 9.0.1
@@ -9426,12 +9435,12 @@ snapshots:
       unpipe: 1.0.0
     optional: true
 
-  react-reconciler@0.33.0(react@19.3.0):
+  react-reconciler@0.33.0(react@19.3.1):
     dependencies:
-      react: 19.3.0
+      react: 19.3.1
       scheduler: 0.27.0
 
-  react@19.3.0: {}
+  react@19.3.1: {}
 
   read-package-json-fast@5.0.0:
     dependencies:
