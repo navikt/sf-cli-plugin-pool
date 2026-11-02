@@ -37,7 +37,7 @@
     "prettier": "3.9.10",
     "ts-node": "^10.9.2",
     "typescript": "5.9.3",
-    "wireit": "^0.14.13"
+    "wireit": "^0.15.0"
   },
   "engines": {
     "node": ">=24.0.0"
