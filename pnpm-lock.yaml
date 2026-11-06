@@ -24,10 +24,10 @@ importers:
     dependencies:
       '@oclif/core':
         specifier: ^5.0.0
-        version: 5.1.9
+        version: 5.1.10
       '@salesforce/core':
         specifier: ^9.1.7
-        version: 9.4.1
+        version: 9.4.4
       '@salesforce/sf-plugins-core':
         specifier: ^13.0.0
         version: 13.0.8(@types/node@26.6.5)
@@ -67,10 +67,10 @@ importers:
         version: 10.0.10
       '@typescript-eslint/eslint-plugin':
         specifier: 8.72.1
-        version: 8.72.1(@typescript-eslint/parser@8.72.1(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(typescript@5.9.3))(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
+        version: 8.72.1(@typescript-eslint/parser@8.72.1(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3))(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
       '@typescript-eslint/parser':
         specifier: 8.72.1
-        version: 8.72.1(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(typescript@5.9.3)
+        version: 8.72.1(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
       c8:
         specifier: ^12.0.0
         version: 12.0.0
@@ -873,8 +873,8 @@ packages:
     resolution: {integrity: sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==}
     engines: {node: '>=18.0.0'}
 
-  '@isaacs/nonrecursive-glob-match@1.0.2':
-    resolution: {integrity: sha512-GJPHIgPPtFl+nLhFHyF0zZoFcOFLsZWbHFFzo+Zr+PWDXJbl9hHxb2w+9SiF2fHmLgKaXIpUzQo3SbBBZ9WObw==}
+  '@isaacs/nonrecursive-glob-match@1.0.3':
+    resolution: {integrity: sha512-SI7kyKHq4XXDRozw+r9GlRZkia1ZkFrpLW98r2IC2Bpr8YkFGE3fvjzmxCG0x78A++69HmDNrDvSMYBZmHGpKA==}
 
   '@isaacs/string-locale-compare@1.1.0':
     resolution: {integrity: sha512-SQ7Kzhh9+D+ZW9MA0zkYv3VXhIDNx+LzM6EJ+/65I3QY+enU6Itte7E5XX7EWrqLW2FN4n06GWzBnPoC3th2aQ==}
@@ -908,10 +908,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
-
-  '@jsforce/jsforce-node@3.12.0':
-    resolution: {integrity: sha512-c13YUjHhXg7+oTK4g1loStb/psJ0Xy5TP6mQbtRgr4R5mOe9AmPcmHBSbxsn90Enep3J4/omt20AvMkhhtDFSw==}
-    engines: {node: '>=22'}
 
   '@jsforce/jsforce-node@3.13.1':
     resolution: {integrity: sha512-vpHhwc+Wcufk9vARzL4oxYSzg8ndNButSn88D6pMImjns7/NTkwPZ9qQwD2F/P4c+A0lwTyDl4Alry0BMgFsTg==}
@@ -1005,8 +1001,8 @@ packages:
     resolution: {integrity: sha512-OLUaoqBuyxeTqUvjA3FZFiXUfYC1alp3Sa99gW3EUDz3tZ3CbXDdcZ7qWKBzicrJleIgucoWamWH1saAmH/l2Q==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  '@oclif/core@5.1.9':
-    resolution: {integrity: sha512-jZfN6pxHkgDpHD0dk4nhtaUtYdK39oZoWJCfmkpp7CUE+6mUZSb3WDrdBHnxI5n6CJIiWBrLchM7rBvuV0lRSA==}
+  '@oclif/core@5.1.10':
+    resolution: {integrity: sha512-iO+Ga2ve3x0QDeqKVvVEYbb+YPVV7A0rbliCO+ZcUdZ/5Sfv+kHz2G247ExAw5aSAEXn9gX6H4jjON2mcJivqw==}
     engines: {node: '>=22.0.0'}
 
   '@oclif/plugin-command-snapshot@6.0.7':
@@ -1057,8 +1053,8 @@ packages:
     resolution: {integrity: sha512-ZR973WoqCgi6cR58WhgokbHVZOaADNKHiuM1FAwS5pTLQnC91xYi04i2e/gpAX2AUf7Ya6zjbusYtZNpSyKKAQ==}
     engines: {node: '>=18.0.0'}
 
-  '@salesforce/core@9.4.1':
-    resolution: {integrity: sha512-aE8llAP+uMyWGNB8+FCpkSOql4D9BA9RtrbdG/ha9luqHpWZugiUwNYx50R/GawJW5UGTsHUKHYrCF75muRodg==}
+  '@salesforce/core@9.4.4':
+    resolution: {integrity: sha512-o7J/121I756oVf9+ZHLvZ06x8d3keK+Ix3Dln3k/UQzmhkp3gk1zp7PdDBq1CR87DFbQMYtftvIccYZHbO7jmg==}
     engines: {node: '>=22.0.0'}
 
   '@salesforce/dev-config@4.3.3':
@@ -1070,10 +1066,6 @@ packages:
 
   '@salesforce/kit@3.2.6':
     resolution: {integrity: sha512-O8S4LWerHa9Zosqh+IoQjgLtpxMOfObRxaRnUdRV4MLtFUi+bQxQiyFvve6eEaBaMP1b1xVDQpvSvQ+PXEDGFQ==}
-
-  '@salesforce/kit@4.0.1':
-    resolution: {integrity: sha512-gEqWxNsouii5bFRpmLGOO93ndiL0Ds3UOuu2JLTfyZGgezQxg8wEUnnYzV2trZsrlptvarj94AfiQvWI5WkjAw==}
-    engines: {node: '>=22.0.0'}
 
   '@salesforce/kit@4.0.8':
     resolution: {integrity: sha512-buPp7lWQNK6f5S/vCXwcgclUPZlfRw66E1aXAY/Uy/qMPlaajS4xmo58HY7ge2zUfOjfwpH1b0GUV5cQ5D9EAw==}
@@ -3493,8 +3485,8 @@ packages:
     resolution: {integrity: sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==}
     engines: {node: 18 || 20 || >=22}
 
-  minimatch@11.0.2:
-    resolution: {integrity: sha512-pWTgz5CN3tjqyZNSK2tePlSmu9IwM41q8yn8Usdqqwe9TIHh+9dEpLLjF4uApsfPEAZY71qtSiA2B2APEr+1Yw==}
+  minimatch@11.0.3:
+    resolution: {integrity: sha512-iny/40PEGkNJQ5/Pv6z3nm6FbRAby32GeZRjCUJk2WnNDbgPSTcdI+DDvLqsgBdD4cD5sMtMheqPPnehCCa8Nw==}
     engines: {node: 18 || 20 || >=22}
 
   minimist-options@4.1.0:
@@ -4463,8 +4455,8 @@ packages:
     resolution: {integrity: sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==}
     engines: {node: '>=12.0.0'}
 
-  tldts-core@7.4.19:
-    resolution: {integrity: sha512-goNXV6Ho9TIOfpJZanTd6CKG5DyYgYAL+k+22T0SLh8l6+KHIfBUPFuePuSZv05UttIaaLmI9tb7TmGIdK5AkQ==}
+  tldts-core@7.4.20:
+    resolution: {integrity: sha512-C630TWXZCZmLq0F2bW4QqwnaaxCQ/svpAqvJwnC4JvgEM5ohhBnGsEzTLSOXcN+xjz+kEaHS5uoWIw2klnqd0A==}
 
   tldts@7.4.19:
     resolution: {integrity: sha512-48dH6aSpQnpbzDUc4vIQZ1VjB8tkK+e8c1yx05/SZK+rkssgjEOlxDd/yU8/a4vGYQ9vRgJr9dwMq9TJ0b3X2Q==}
@@ -5930,7 +5922,7 @@ snapshots:
     dependencies:
       minipass: 7.1.3
 
-  '@isaacs/nonrecursive-glob-match@1.0.2': {}
+  '@isaacs/nonrecursive-glob-match@1.0.3': {}
 
   '@isaacs/string-locale-compare@1.1.0': {}
 
@@ -5969,19 +5961,6 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
-
-  '@jsforce/jsforce-node@3.12.0':
-    dependencies:
-      '@sindresorhus/is': 4.6.0
-      base64url: 3.0.1
-      cross-spawn: 7.0.6
-      csv-parse: 7.0.3
-      csv-stringify: 6.9.0
-      faye: 1.4.3
-      form-data: 4.0.6
-      multistream: 3.1.0
-      undici: 8.12.3
-      xml2js: 0.6.2
 
   '@jsforce/jsforce-node@3.13.1':
     dependencies:
@@ -6079,7 +6058,7 @@ snapshots:
       '@npmcli/name-from-folder': 4.0.0
       '@npmcli/package-json': 7.0.5
       glob: 13.0.6
-      minimatch: 10.2.6
+      minimatch: 11.0.3
 
   '@npmcli/name-from-folder@4.0.0': {}
 
@@ -6097,7 +6076,7 @@ snapshots:
     dependencies:
       which: 6.0.1
 
-  '@oclif/core@5.1.9':
+  '@oclif/core@5.1.10':
     dependencies:
       ansi-escapes: 4.3.2
       ansis: 3.17.0
@@ -6108,7 +6087,7 @@ snapshots:
       get-package-type: 0.1.0
       indent-string: 4.0.0
       lilconfig: 3.1.4
-      minimatch: 10.2.6
+      minimatch: 11.0.3
       semver: 7.8.5
       string-width: 4.2.3
       supports-color: 8.1.1
@@ -6120,7 +6099,7 @@ snapshots:
 
   '@oclif/plugin-command-snapshot@6.0.7':
     dependencies:
-      '@oclif/core': 5.1.9
+      '@oclif/core': 5.1.10
       ansis: 3.17.0
       globby: 14.1.0
       just-diff: 5.2.0
@@ -6132,12 +6111,12 @@ snapshots:
 
   '@oclif/plugin-help@7.0.6':
     dependencies:
-      '@oclif/core': 5.1.9
+      '@oclif/core': 5.1.10
 
   '@oclif/plugin-not-found@4.0.7(@types/node@26.6.5)':
     dependencies:
       '@inquirer/prompts': 7.10.1(@types/node@26.6.5)
-      '@oclif/core': 5.1.9
+      '@oclif/core': 5.1.10
       ansis: 3.17.0
       fast-levenshtein: 3.0.0
     transitivePeerDependencies:
@@ -6145,7 +6124,7 @@ snapshots:
 
   '@oclif/plugin-warn-if-update-available@4.0.5(supports-color@8.1.1)':
     dependencies:
-      '@oclif/core': 5.1.9
+      '@oclif/core': 5.1.10
       ansis: 3.17.0
       debug: 4.4.3(supports-color@8.1.1)
       lodash: 4.18.1
@@ -6190,7 +6169,7 @@ snapshots:
 
   '@salesforce/cli-plugins-testkit@5.3.81(supports-color@8.1.1)':
     dependencies:
-      '@salesforce/core': 9.4.1
+      '@salesforce/core': 9.4.4
       '@salesforce/kit': 4.0.8
       '@salesforce/ts-types': 3.2.3
       '@types/shelljs': 0.10.0
@@ -6225,10 +6204,10 @@ snapshots:
       ts-retry-promise: 0.8.1
       zod: 4.6.7
 
-  '@salesforce/core@9.4.1':
+  '@salesforce/core@9.4.4':
     dependencies:
-      '@jsforce/jsforce-node': 3.12.0
-      '@salesforce/kit': 4.0.1
+      '@jsforce/jsforce-node': 3.13.1
+      '@salesforce/kit': 4.0.8
       '@salesforce/ts-types': 3.2.3
       ajv: 8.20.0
       change-case: 4.1.2
@@ -6294,10 +6273,6 @@ snapshots:
     dependencies:
       '@salesforce/ts-types': 2.0.12
 
-  '@salesforce/kit@4.0.1':
-    dependencies:
-      '@salesforce/ts-types': 3.2.3
-
   '@salesforce/kit@4.0.8':
     dependencies:
       '@salesforce/ts-types': 3.2.3
@@ -6306,8 +6281,8 @@ snapshots:
     dependencies:
       '@inquirer/prompts': 7.10.1(@types/node@26.6.5)
       '@jsforce/jsforce-node': 3.13.1
-      '@oclif/core': 5.1.9
-      '@salesforce/core': 9.4.1
+      '@oclif/core': 5.1.10
+      '@salesforce/core': 9.4.4
       '@salesforce/kit': 4.0.8
       '@salesforce/sf-plugins-core': 13.0.8(@types/node@26.6.5)
       got: 13.0.0
@@ -6332,9 +6307,9 @@ snapshots:
     dependencies:
       '@inquirer/confirm': 6.3.4(@types/node@26.6.5)
       '@inquirer/password': 5.2.4(@types/node@26.6.5)
-      '@oclif/core': 5.1.9
+      '@oclif/core': 5.1.10
       '@oclif/table': 1.0.8
-      '@salesforce/core': 9.4.1
+      '@salesforce/core': 9.4.4
       '@salesforce/kit': 4.0.8
       '@salesforce/ts-types': 3.2.3
       ansis: 3.17.0
@@ -6571,10 +6546,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/eslint-plugin@8.72.1(@typescript-eslint/parser@8.72.1(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(typescript@5.9.3))(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)':
+  '@typescript-eslint/eslint-plugin@8.72.1(@typescript-eslint/parser@8.72.1(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3))(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
-      '@typescript-eslint/parser': 8.72.1(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(typescript@5.9.3)
+      '@typescript-eslint/parser': 8.72.1(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
       '@typescript-eslint/scope-manager': 8.72.1
       '@typescript-eslint/type-utils': 8.72.1(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
       '@typescript-eslint/utils': 8.72.1(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(typescript@5.9.3)
@@ -6611,11 +6586,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@8.72.1(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(typescript@5.9.3)':
+  '@typescript-eslint/parser@8.72.1(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.72.1
       '@typescript-eslint/types': 8.72.1
-      '@typescript-eslint/typescript-estree': 8.72.1(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 8.72.1(supports-color@8.1.1)(typescript@5.9.3)
       '@typescript-eslint/visitor-keys': 8.72.1
       debug: 4.4.3(supports-color@8.1.1)
       eslint: 10.13.0(jiti@2.7.0)(supports-color@8.1.1)
@@ -6650,7 +6625,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/project-service@8.72.1(typescript@5.9.3)':
+  '@typescript-eslint/project-service@8.72.1(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.72.1(typescript@5.9.3)
       '@typescript-eslint/types': 8.72.1
@@ -6721,7 +6696,7 @@ snapshots:
   '@typescript-eslint/type-utils@8.72.1(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/types': 8.72.1
-      '@typescript-eslint/typescript-estree': 8.72.1(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 8.72.1(supports-color@8.1.1)(typescript@5.9.3)
       '@typescript-eslint/utils': 8.72.1(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))(typescript@5.9.3)
       debug: 4.4.3(supports-color@8.1.1)
       eslint: 10.13.0(jiti@2.7.0)(supports-color@8.1.1)
@@ -6743,7 +6718,7 @@ snapshots:
       '@typescript-eslint/types': 8.68.0
       '@typescript-eslint/visitor-keys': 8.68.0
       debug: 4.4.3(supports-color@8.1.1)
-      minimatch: 11.0.2
+      minimatch: 11.0.3
       semver: 7.8.5
       tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript@5.9.3)
@@ -6758,7 +6733,7 @@ snapshots:
       '@typescript-eslint/types': 8.68.0
       '@typescript-eslint/visitor-keys': 8.68.0
       debug: 4.4.3(supports-color@8.1.1)
-      minimatch: 11.0.2
+      minimatch: 11.0.3
       semver: 7.8.5
       tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript@6.0.3)
@@ -6773,7 +6748,7 @@ snapshots:
       '@typescript-eslint/types': 8.72.0
       '@typescript-eslint/visitor-keys': 8.72.0
       debug: 4.4.3(supports-color@8.1.1)
-      minimatch: 11.0.2
+      minimatch: 11.0.3
       semver: 7.8.5
       tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript@5.9.3)
@@ -6781,14 +6756,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/typescript-estree@8.72.1(typescript@5.9.3)':
+  '@typescript-eslint/typescript-estree@8.72.1(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/project-service': 8.72.1(typescript@5.9.3)
+      '@typescript-eslint/project-service': 8.72.1(supports-color@8.1.1)(typescript@5.9.3)
       '@typescript-eslint/tsconfig-utils': 8.72.1(typescript@5.9.3)
       '@typescript-eslint/types': 8.72.1
       '@typescript-eslint/visitor-keys': 8.72.1
       debug: 4.4.3(supports-color@8.1.1)
-      minimatch: 11.0.2
+      minimatch: 11.0.3
       semver: 7.8.5
       tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript@5.9.3)
@@ -6834,7 +6809,7 @@ snapshots:
       '@eslint-community/eslint-utils': 4.10.1(eslint@10.13.0(jiti@2.7.0)(supports-color@8.1.1))
       '@typescript-eslint/scope-manager': 8.72.1
       '@typescript-eslint/types': 8.72.1
-      '@typescript-eslint/typescript-estree': 8.72.1(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 8.72.1(supports-color@8.1.1)(typescript@5.9.3)
       eslint: 10.13.0(jiti@2.7.0)(supports-color@8.1.1)
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -7798,7 +7773,7 @@ snapshots:
       eslint: 10.13.0(jiti@2.7.0)(supports-color@8.1.1)
       eslint-import-context: 0.1.9(unrs-resolver@1.12.2)
       is-glob: 4.0.3
-      minimatch: 10.2.6
+      minimatch: 11.0.3
       semver: 7.8.5
       stable-hash-x: 0.2.0
       unrs-resolver: 1.12.2
@@ -8020,7 +7995,7 @@ snapshots:
 
   filelist@1.0.6:
     dependencies:
-      minimatch: 11.0.2
+      minimatch: 11.0.3
 
   fill-range@7.1.1:
     dependencies:
@@ -8199,14 +8174,14 @@ snapshots:
     dependencies:
       foreground-child: 3.3.1
       jackspeak: 3.4.3
-      minimatch: 10.2.6
+      minimatch: 11.0.3
       minipass: 7.1.3
       package-json-from-dist: 1.0.1
       path-scurry: 1.11.1
 
   glob@13.0.6:
     dependencies:
-      minimatch: 10.2.6
+      minimatch: 11.0.3
       minipass: 7.1.3
       path-scurry: 2.0.2
 
@@ -8215,7 +8190,7 @@ snapshots:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 10.2.6
+      minimatch: 11.0.3
       once: 1.4.0
       path-is-absolute: 1.0.1
 
@@ -8224,7 +8199,7 @@ snapshots:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 10.2.6
+      minimatch: 11.0.3
       once: 1.4.0
 
   global-directory@5.0.0:
@@ -8939,9 +8914,9 @@ snapshots:
     dependencies:
       brace-expansion: 5.0.12
 
-  minimatch@11.0.2:
+  minimatch@11.0.3:
     dependencies:
-      '@isaacs/nonrecursive-glob-match': 1.0.2
+      '@isaacs/nonrecursive-glob-match': 1.0.3
       brace-expansion: 5.0.12
 
   minimist-options@4.1.0:
@@ -8971,7 +8946,7 @@ snapshots:
       he: 1.2.0
       js-yaml: 5.4.2
       log-symbols: 4.1.0
-      minimatch: 10.2.6
+      minimatch: 11.0.3
       ms: 2.1.3
       serialize-javascript: 7.1.4
       strip-json-comments: 3.1.1
@@ -9168,7 +9143,7 @@ snapshots:
       '@inquirer/confirm': 3.2.0
       '@inquirer/input': 2.3.0
       '@inquirer/select': 2.5.0
-      '@oclif/core': 5.1.9
+      '@oclif/core': 5.1.10
       '@oclif/plugin-help': 7.0.6
       '@oclif/plugin-not-found': 4.0.7(@types/node@26.6.5)
       '@oclif/plugin-warn-if-update-available': 4.0.5(supports-color@8.1.1)
@@ -9972,13 +9947,13 @@ snapshots:
     dependencies:
       '@istanbuljs/schema': 0.1.6
       glob: 7.2.3
-      minimatch: 10.2.6
+      minimatch: 11.0.3
 
   test-exclude@8.0.0:
     dependencies:
       '@istanbuljs/schema': 0.1.6
       glob: 13.0.6
-      minimatch: 10.2.6
+      minimatch: 11.0.3
 
   text-extensions@1.9.0: {}
 
@@ -10009,11 +9984,11 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.7)
       picomatch: 4.0.7
 
-  tldts-core@7.4.19: {}
+  tldts-core@7.4.20: {}
 
   tldts@7.4.19:
     dependencies:
-      tldts-core: 7.4.19
+      tldts-core: 7.4.20
 
   to-regex-range@5.0.1:
     dependencies:
@@ -10166,7 +10141,7 @@ snapshots:
       '@gerrit0/mini-shiki': 3.23.0
       lunr: 2.3.9
       markdown-it: 15.0.3
-      minimatch: 10.2.6
+      minimatch: 11.0.3
       typescript: 6.0.3
       yaml: 2.9.1
 
