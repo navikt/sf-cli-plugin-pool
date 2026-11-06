@@ -29,3 +29,25 @@ export type AvailableOrgRow = {
     Sfdx_Auth_Url__c?: string | null;
   };
 };
+
+/**
+ * A fetched org queried by `pool return` from `ActiveScratchOrg`, traversing up to its parent
+ * `ScratchOrgInfo`. Carries ownership on both records and the parent's last-modified timestamp,
+ * used to reject stale returns. `ScratchOrgInfo` is `null` if the parent can't be traversed.
+ */
+export type ReturnOrgRow = {
+  Id: string;
+  ScratchOrg: string;
+  OwnerId: string;
+  CreatedById: string | null;
+  ScratchOrgInfo: {
+    Id: string;
+    SignupUsername: string | null;
+    Status: string | null;
+    Pool_tag__c: string | null;
+    Pool_allocation_status__c: string | null;
+    OwnerId: string;
+    CreatedById: string | null;
+    LastModifiedDate: string;
+  } | null;
+};
