@@ -1,6 +1,9 @@
 ---
-mode: 'agent'
+name: add-flag
 description: 'Add a new flag to an existing pool command'
+argument-hint: 'command flag-name'
+user-invocable: true
+disable-model-invocation: true
 ---
 
 Add a new flag called `--{{flag-name}}` to the `pool:{{command}}` command.
@@ -15,4 +18,4 @@ Add a new flag called `--{{flag-name}}` to the `pool:{{command}}` command.
 
 ## Context
 
-Follow the patterns in `.github/instructions/commands.instructions.md` and `.github/skills/pool-flag.md`.
+Follow the patterns in `.github/instructions/commands.instructions.md` and `.github/skills/pool-flag/SKILL.md`.

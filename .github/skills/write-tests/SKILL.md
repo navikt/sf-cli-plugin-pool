@@ -1,6 +1,9 @@
 ---
-agent: 'agent'
+name: write-tests
 description: 'Write unit tests for a pool command'
+argument-hint: 'command'
+user-invocable: true
+disable-model-invocation: true
 ---
 
 Write unit tests for the `pool:{{command}}` command.
@@ -17,5 +20,5 @@ Write unit tests for the `pool:{{command}}` command.
 
 ## Context
 
-Follow the patterns in `.github/instructions/tests.instructions.md` and `.github/skills/pool-test.md`.
+Follow the patterns in `.github/instructions/tests.instructions.md` and `.github/skills/pool-test/SKILL.md`.
 Use `test/commands/pool/list.test.ts` as a reference implementation.

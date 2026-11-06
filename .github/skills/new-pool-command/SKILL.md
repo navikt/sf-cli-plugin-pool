@@ -1,6 +1,9 @@
 ---
-agent: 'agent'
+name: new-pool-command
 description: 'Scaffold a new pool subcommand with command, messages, and tests'
+argument-hint: 'name'
+user-invocable: true
+disable-model-invocation: true
 ---
 
 Create a new `sf pool` subcommand called `pool:{{name}}`.
@@ -16,5 +19,5 @@ Create a new `sf pool` subcommand called `pool:{{name}}`.
 
 ## Context
 
-Follow the patterns in `.github/instructions/commands.instructions.md` and `.github/skills/pool-command.md`.
+Follow the patterns in `.github/instructions/commands.instructions.md` and `.github/skills/pool-command/SKILL.md`.
 Use `src/commands/pool/list.ts` as a reference implementation.
