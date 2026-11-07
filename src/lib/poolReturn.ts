@@ -11,17 +11,18 @@ const ACTIVE = 'Active';
 const ASSIGNED = 'assigned';
 const AVAILABLE = 'available';
 const SALESFORCE_ID_15 = /^[a-zA-Z0-9]{15}$/;
+const CLAIM_CHECK_REF = 'claimCheck';
 const SCRATCH_ORG_INFO_REF = 'scratchOrgInfo';
 const ACTIVE_SCRATCH_ORG_REF = 'activeScratchOrg';
-const PRECONDITION_FAILED_STATUS = 412;
-const PRECONDITION_FAILED = 'PRECONDITION_FAILED';
+// Error code Salesforce reports when the claim-token validation rule rejects an update.
+const VALIDATION_EXCEPTION = 'FIELD_CUSTOM_VALIDATION_EXCEPTION';
 // Error code Salesforce reports on subrequests skipped after an earlier subrequest failed.
 const PROCESSING_HALTED = 'PROCESSING_HALTED';
 const REDACTED = '[REDACTED]';
 
 /**
- * The Dev Hub changes that return an org to its pool. `ifUnmodifiedSince` is the HTTP-date of the
- * observed `ScratchOrgInfo.LastModifiedDate`; the transaction is rejected if the record changed since.
+ * The Dev Hub changes that return an org to its pool. `claimToken` is the `Pool_claim_token__c`
+ * observed during validation; the transaction is rejected if the org was claimed again since.
  */
 export type ReturnUpdate = {
   username: string;
@@ -30,7 +31,7 @@ export type ReturnUpdate = {
   activeScratchOrgId: string;
   activeScratchOrgOwnerId: string;
   sfdxAuthUrl: string;
-  ifUnmodifiedSince: string;
+  claimToken: string;
 };
 
 type CompositeSubresponse = { body?: unknown; httpStatusCode?: number; referenceId?: string };
@@ -46,20 +47,12 @@ function sameId(left: string | null | undefined, right: string | null | undefine
   return trimmedLeft !== undefined && trimmedLeft === trimTo15(right ?? undefined);
 }
 
-function redact(text: string, secret: string): string {
-  const withoutSecret = secret ? text.split(secret).join(REDACTED) : text;
-  return withoutSecret.replace(/force:\/\/\S+/g, REDACTED);
-}
-
-/**
- * Converts a Salesforce datetime (e.g. `2025-01-01T12:00:00.000+0000`) to an HTTP-date.
- *
- * @returns the HTTP-date, or `undefined` if the value can't be parsed.
- */
-export function toHttpDate(salesforceDateTime: string | null | undefined): string | undefined {
-  if (!salesforceDateTime) return undefined;
-  const date = new Date(salesforceDateTime.replace(/([+-]\d{2})(\d{2})$/, '$1:$2'));
-  return Number.isNaN(date.getTime()) ? undefined : date.toUTCString();
+function redact(text: string, ...secrets: string[]): string {
+  const withoutSecrets = secrets.reduce(
+    (result, secret) => (secret ? result.split(secret).join(REDACTED) : result),
+    text,
+  );
+  return withoutSecrets.replace(/force:\/\/\S+/g, REDACTED);
 }
 
 /**
@@ -74,7 +67,7 @@ export async function queryReturnOrg(connection: Connection, scratchOrgId: strin
     throw new SfError(messages.getMessage('error.invalid-org-id', [scratchOrgId]), 'PoolReturnQueryError');
   }
 
-  const query = `SELECT Id, ScratchOrg, OwnerId, CreatedById, ScratchOrgInfo.Id, ScratchOrgInfo.SignupUsername, ScratchOrgInfo.Status, ScratchOrgInfo.Pool_tag__c, ScratchOrgInfo.Pool_allocation_status__c, ScratchOrgInfo.OwnerId, ScratchOrgInfo.CreatedById, ScratchOrgInfo.LastModifiedDate FROM ActiveScratchOrg WHERE ScratchOrg = '${trimmedId}'`;
+  const query = `SELECT Id, ScratchOrg, OwnerId, CreatedById, ScratchOrgInfo.Id, ScratchOrgInfo.SignupUsername, ScratchOrgInfo.Status, ScratchOrgInfo.Pool_tag__c, ScratchOrgInfo.Pool_allocation_status__c, ScratchOrgInfo.OwnerId, ScratchOrgInfo.CreatedById, ScratchOrgInfo.Pool_claim_token__c FROM ActiveScratchOrg WHERE ScratchOrg = '${trimmedId}'`;
   logger.debug('Querying org to return', { scratchOrgId: trimmedId });
 
   let records: ReturnOrgRow[];
@@ -98,11 +91,8 @@ function toApiErrors(subresponse: CompositeSubresponse): ApiError[] {
 }
 
 function isStale(subresponse: CompositeSubresponse | undefined): boolean {
-  if (!subresponse) return false;
-  return (
-    subresponse.httpStatusCode === PRECONDITION_FAILED_STATUS ||
-    toApiErrors(subresponse).some((entry) => entry.errorCode === PRECONDITION_FAILED)
-  );
+  if (!subresponse || isSuccessStatus(subresponse.httpStatusCode)) return false;
+  return toApiErrors(subresponse).some((entry) => entry.errorCode === VALIDATION_EXCEPTION);
 }
 
 function describeFailures(failures: CompositeSubresponse[]): string {
@@ -139,26 +129,34 @@ function isDefiniteRejection(error: unknown): boolean {
 
 function uncertainError(update: ReturnUpdate, detail: string): SfError {
   return new SfError(
-    messages.getMessage('error.uncertain', [update.username, update.username, redact(detail, update.sfdxAuthUrl)]),
+    messages.getMessage('error.uncertain', [
+      update.username,
+      update.username,
+      redact(detail, update.sfdxAuthUrl, update.claimToken),
+    ]),
     'PoolReturnUncertainError',
   );
 }
 
 function assertTransactionSucceeded(response: CompositeResponse | undefined, update: ReturnUpdate): void {
   const subresponses = Array.isArray(response?.compositeResponse) ? response.compositeResponse : [];
+  const claimCheck = subresponses.find((entry) => entry.referenceId === CLAIM_CHECK_REF);
   const scratchOrgInfo = subresponses.find((entry) => entry.referenceId === SCRATCH_ORG_INFO_REF);
   const activeScratchOrg = subresponses.find((entry) => entry.referenceId === ACTIVE_SCRATCH_ORG_REF);
-  if (isSuccessStatus(scratchOrgInfo?.httpStatusCode) && isSuccessStatus(activeScratchOrg?.httpStatusCode)) return;
+  if ([claimCheck, scratchOrgInfo, activeScratchOrg].every((entry) => isSuccessStatus(entry?.httpStatusCode))) return;
 
   const failures = subresponses.filter((entry) => !isSuccessStatus(entry.httpStatusCode));
   if (failures.length === 0) {
     throw uncertainError(update, messages.getMessage('error.unexpected-response'));
   }
-  if (isStale(scratchOrgInfo)) {
+  if (isStale(claimCheck)) {
     throw new SfError(messages.getMessage('error.stale', [update.username]), 'PoolReturnStaleError');
   }
   throw new SfError(
-    messages.getMessage('error.update', [update.username, redact(describeFailures(failures), update.sfdxAuthUrl)]),
+    messages.getMessage('error.update', [
+      update.username,
+      redact(describeFailures(failures), update.sfdxAuthUrl, update.claimToken),
+    ]),
     'PoolReturnUpdateError',
   );
 }
@@ -166,23 +164,31 @@ function assertTransactionSucceeded(response: CompositeResponse | undefined, upd
 /**
  * Returns an org to its pool in a single all-or-none Composite request: restores both records' owners,
  * restores the auth URL, clears the claim token, and marks the `ScratchOrgInfo` as available. The
- * `ScratchOrgInfo` update is conditional on `ifUnmodifiedSince`, so a concurrent fetch or return
- * rejects the whole transaction. Never retried, since a replay could overwrite a newer assignment.
+ * first step re-writes the claim token observed during validation. That is a no-op unless the org was
+ * claimed again since, in which case the claim-token validation rule rejects it and the whole request
+ * is rolled back, so a delayed return can't take over a newer fetch. Never retried, since a replay
+ * could overwrite a newer assignment.
  *
- * @throws SfError `PoolReturnStaleError` if the org changed, `PoolReturnUpdateError` if the Dev Hub
- * rejected the transaction, or `PoolReturnUncertainError` if the outcome is unknown.
+ * @throws SfError `PoolReturnStaleError` if the org was claimed again, `PoolReturnUpdateError` if the
+ * Dev Hub rejected the transaction, or `PoolReturnUncertainError` if the outcome is unknown.
  */
 export async function submitReturnTransaction(connection: Connection, update: ReturnUpdate): Promise<void> {
   const apiPath = `/services/data/v${connection.getApiVersion()}`;
+  const scratchOrgInfoUrl = `${apiPath}/sobjects/ScratchOrgInfo/${update.scratchOrgInfoId}`;
   /* eslint-disable camelcase */
   const body = {
     allOrNone: true,
     compositeRequest: [
       {
         method: 'PATCH',
-        url: `${apiPath}/sobjects/ScratchOrgInfo/${update.scratchOrgInfoId}`,
+        url: scratchOrgInfoUrl,
+        referenceId: CLAIM_CHECK_REF,
+        body: { Pool_claim_token__c: update.claimToken },
+      },
+      {
+        method: 'PATCH',
+        url: scratchOrgInfoUrl,
         referenceId: SCRATCH_ORG_INFO_REF,
-        httpHeaders: { 'If-Unmodified-Since': update.ifUnmodifiedSince },
         body: {
           OwnerId: update.scratchOrgInfoOwnerId,
           Sfdx_Auth_Url__c: update.sfdxAuthUrl,
@@ -216,7 +222,10 @@ export async function submitReturnTransaction(connection: Connection, update: Re
   } catch (error) {
     if (!isDefiniteRejection(error)) throw uncertainError(update, errorMessage(error));
     throw new SfError(
-      messages.getMessage('error.update', [update.username, redact(errorMessage(error), update.sfdxAuthUrl)]),
+      messages.getMessage('error.update', [
+        update.username,
+        redact(errorMessage(error), update.sfdxAuthUrl, update.claimToken),
+      ]),
       'PoolReturnUpdateError',
     );
   }
@@ -301,9 +310,9 @@ function validateCandidate(row: ReturnOrgRow, username: string, runningUserId: s
       'PoolReturnUsernameMismatchError',
     );
   }
-  const ifUnmodifiedSince = toHttpDate(info.LastModifiedDate);
-  if (!ifUnmodifiedSince) {
-    throw new SfError(messages.getMessage('error.invalid-timestamp', [username]), 'PoolReturnQueryError');
+  // Without a claim token the org wasn't claimed by `pool fetch`, and a stale return couldn't be detected.
+  if (!info.Pool_claim_token__c) {
+    throw new SfError(messages.getMessage('error.missing-claim-token', [username]), 'PoolReturnMissingClaimTokenError');
   }
 
   return {
@@ -312,7 +321,7 @@ function validateCandidate(row: ReturnOrgRow, username: string, runningUserId: s
     activeScratchOrgId: row.Id,
     activeScratchOrgOwnerId: row.CreatedById,
     poolTag: info.Pool_tag__c,
-    ifUnmodifiedSince,
+    claimToken: info.Pool_claim_token__c,
   };
 }
 
@@ -381,7 +390,7 @@ export async function returnPoolOrg(
     activeScratchOrgId: candidate.activeScratchOrgId,
     activeScratchOrgOwnerId: candidate.activeScratchOrgOwnerId,
     sfdxAuthUrl,
-    ifUnmodifiedSince: candidate.ifUnmodifiedSince,
+    claimToken: candidate.claimToken,
   });
 
   onProgress?.(messages.getMessage('info.progress-cleanup', [username]));

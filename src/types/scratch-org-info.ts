@@ -48,6 +48,6 @@ export type ReturnOrgRow = {
     Pool_allocation_status__c: string | null;
     OwnerId: string;
     CreatedById: string | null;
-    LastModifiedDate: string;
+    Pool_claim_token__c: string | null;
   } | null;
 };

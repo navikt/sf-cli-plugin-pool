@@ -60,7 +60,7 @@ describe('pool return', () => {
                 Pool_allocation_status__c: allocationStatus,
                 OwnerId: devHub.userId,
                 CreatedById: '005000000000002AAA',
-                LastModifiedDate: '2025-01-01T12:34:56.000+0000',
+                Pool_claim_token__c: 'claim-token-1',
               },
             },
           ],
@@ -70,6 +70,7 @@ describe('pool return', () => {
         compositeBodies.push(JSON.parse(req.body ?? '{}'));
         return Promise.resolve({
           compositeResponse: [
+            { referenceId: 'claimCheck', httpStatusCode: 204, body: null },
             { referenceId: 'scratchOrgInfo', httpStatusCode: 204, body: null },
             { referenceId: 'activeScratchOrg', httpStatusCode: 204, body: null },
           ],
@@ -99,7 +100,8 @@ describe('pool return', () => {
       localAuthRemoved: true,
     });
     expect(compositeBodies).to.have.lengthOf(1);
-    expect(compositeBodies[0].compositeRequest[0].body.Sfdx_Auth_Url__c).to.equal(
+    expect(compositeBodies[0].compositeRequest[0].body).to.deep.equal({ Pool_claim_token__c: 'claim-token-1' });
+    expect(compositeBodies[0].compositeRequest[1].body.Sfdx_Auth_Url__c).to.equal(
       `force://PlatformCLI::5Aep861refresh.token@${new URL(scratch.instanceUrl).host}`,
     );
     expect((await loadAliases()).aliases.get(scratch.username)).not.to.exist;

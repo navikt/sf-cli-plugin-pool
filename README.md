@@ -148,9 +148,14 @@ admin override.
 In a single all-or-none REST Composite request, the command sets each record's `OwnerId` back to
 that record's `CreatedById`, restores `Sfdx_Auth_Url__c` from your local authentication, clears
 `Pool_claim_token__c`, and sets `Pool_allocation_status__c` to `available`. The DevHub user therefore
-needs read access to `CreatedById` and permission to transfer both records to their creators. The
-`ScratchOrgInfo` update is conditional on the `LastModifiedDate` observed during validation, so a
-concurrent fetch or return rejects the whole request. The check has one-second precision.
+needs read access to `CreatedById` and `Pool_claim_token__c`, and permission to transfer both records
+to their creators.
+
+A delayed return must not take over an org that was fetched again in the meantime. The first step of
+the request therefore re-writes the claim token observed during validation. That is a no-op unless the
+org was claimed again since, in which case the [claim-token validation rule](#concurrency-claim-token-validation-rule-required)
+rejects it and the whole request is rolled back. Orgs without a claim token can't be returned, and
+this check does not hold without the validation rule.
 
 After the DevHub update succeeds, the org's local authentication, aliases, and matching
 `target-org`/`target-dev-hub` config values are removed. If that cleanup fails, the return still

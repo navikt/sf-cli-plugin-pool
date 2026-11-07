@@ -1,12 +1,12 @@
 import { execCmd, ExecCmdResult } from '@salesforce/cli-plugins-testkit';
-import { Org, StateAggregator } from '@salesforce/core';
+import { Connection, Org, StateAggregator, trimTo15 } from '@salesforce/core';
 import { expect } from 'chai';
+// Import only types from src/: running any of its modules here would make c8 enforce the coverage thresholds on them.
 import { PoolPrepareCommandResult } from '../../../src/commands/pool/prepare.js';
 import { PoolListResult } from '../../../src/commands/pool/list.js';
 import { PoolFetchResult } from '../../../src/types/pool-fetch.js';
 import { PoolCleanResult } from '../../../src/types/pool-clean.js';
 import { PoolReturnResult } from '../../../src/types/pool-return.js';
-import { queryReturnOrg, submitReturnTransaction, toHttpDate } from '../../../src/lib/poolReturn.js';
 
 describe('pool lifecycle NUTs', () => {
   const targetDevHubFlag = '--target-dev-hub testdevhub';
@@ -32,16 +32,68 @@ describe('pool lifecycle NUTs', () => {
     return output.jsonOutput.result;
   };
 
+  // Best effort: orgs left behind by a failed or cancelled run would break the next run's prepare step.
+  const cleanTestPool = (): void => {
+    const command = `pool clean ${targetDevHubFlag} --pool-tag nut-test-pool --all --no-prompt --json`;
+    try {
+      logCommandOutput(command, execCmd(command));
+    } catch (error) {
+      process.stderr.write(`[NUT DEBUG] Couldn't clean nut-test-pool: ${(error as Error).message}\n`);
+    }
+  };
+
+  before(cleanTestPool);
+  after(cleanTestPool);
+
   const getDevHubConnection = async () => (await Org.create({ aliasOrUsername: 'testdevhub' })).getConnection();
 
-  const expectErrorName = async (promise: Promise<unknown>, name: string): Promise<void> => {
-    try {
-      await promise;
-    } catch (error) {
-      expect((error as Error).name).to.equal(name);
-      return;
-    }
-    expect.fail(`Expected ${name}`);
+  type AssignedOrg = {
+    infoId: string;
+    activeId: string;
+    allocationStatus: string;
+    claimToken: string | null;
+  };
+
+  const getAssignedOrg = async (connection: Connection): Promise<AssignedOrg> => {
+    const scratchOrg = await Org.create({ aliasOrUsername: 'nutAlias' });
+    const row = await connection.singleRecordQuery<{
+      Id: string;
+      ScratchOrgInfo: { Id: string; Pool_allocation_status__c: string; Pool_claim_token__c: string | null };
+    }>(
+      `SELECT Id, ScratchOrgInfo.Id, ScratchOrgInfo.Pool_allocation_status__c, ScratchOrgInfo.Pool_claim_token__c FROM ActiveScratchOrg WHERE ScratchOrg = '${trimTo15(scratchOrg.getOrgId())}'`,
+    );
+    return {
+      infoId: row.ScratchOrgInfo.Id,
+      activeId: row.Id,
+      allocationStatus: row.ScratchOrgInfo.Pool_allocation_status__c,
+      claimToken: row.ScratchOrgInfo.Pool_claim_token__c,
+    };
+  };
+
+  type Subresponse = { httpStatusCode: number; body: Array<{ errorCode?: string }> | null };
+
+  // Sends the updates as one all-or-none Composite request, like `pool return`. The Dev Hub reports
+  // failed subrequests in the response body of an HTTP 200, so callers inspect the subresponses.
+  const patchInOneTransaction = async (
+    connection: Connection,
+    updates: Array<{ sobject: string; id: string; body: Record<string, unknown> }>,
+  ): Promise<Subresponse[]> => {
+    const apiPath = `/services/data/v${connection.getApiVersion()}`;
+    const response = await connection.request<{ compositeResponse: Subresponse[] }>({
+      method: 'POST',
+      url: `${apiPath}/composite`,
+      body: JSON.stringify({
+        allOrNone: true,
+        compositeRequest: updates.map(({ sobject, id, body }, index) => ({
+          method: 'PATCH',
+          url: `${apiPath}/sobjects/${sobject}/${id}`,
+          referenceId: `update${index}`,
+          body,
+        })),
+      }),
+      headers: { 'content-type': 'application/json' },
+    });
+    return response.compositeResponse;
   };
 
   it('should prepare the pool and return valid JSON', () => {
@@ -121,46 +173,44 @@ describe('pool lifecycle NUTs', () => {
     expect(pool?.status).to.have.property('assigned').that.is.greaterThan(0);
   });
 
-  // Verifies the Dev Hub guarantees `pool return` relies on: a stale If-Unmodified-Since precondition
-  // rejects the transaction, and a failed subrequest rolls back the whole all-or-none request.
-  it('should reject a stale return and roll back a failed return', async () => {
+  // `pool return` re-writes the claim token it observed as the first step of its all-or-none Composite
+  // request. These two tests verify, against a real Dev Hub, that this rejects a stale return and that
+  // a failure rolls back the other updates.
+  it('should accept the current claim token and reject a changed one', async () => {
     const connection = await getDevHubConnection();
-    const scratchOrg = await Org.create({ aliasOrUsername: 'nutAlias' });
-    const [row] = await queryReturnOrg(connection, scratchOrg.getOrgId());
-    const info = row?.ScratchOrgInfo;
-    const ifUnmodifiedSince = toHttpDate(info?.LastModifiedDate);
-    if (!row?.CreatedById || !info?.CreatedById || !ifUnmodifiedSince) {
-      expect.fail('Expected the fetched org with creators and a last-modified date in the DevHub');
+    const { infoId, claimToken } = await getAssignedOrg(connection);
+    if (!claimToken) {
+      expect.fail('Expected the fetched org to have a claim token');
     }
 
-    const update = {
-      username: scratchOrg.getUsername() ?? '',
-      scratchOrgInfoId: info.Id,
-      scratchOrgInfoOwnerId: info.CreatedById,
-      activeScratchOrgId: row.Id,
-      activeScratchOrgOwnerId: row.CreatedById,
-      sfdxAuthUrl: scratchOrg.getConnection().getAuthInfo().getSfdxAuthUrl(),
-      ifUnmodifiedSince,
-    };
-    const stale = new Date(Date.parse(ifUnmodifiedSince) - 60_000).toUTCString();
+    const [current] = await patchInOneTransaction(connection, [
+      { sobject: 'ScratchOrgInfo', id: infoId, body: { Pool_claim_token__c: claimToken } },
+    ]);
+    expect(current.httpStatusCode).to.be.within(200, 299);
 
-    await expectErrorName(
-      submitReturnTransaction(connection, { ...update, ifUnmodifiedSince: stale }),
-      'PoolReturnStaleError',
-    );
-    await expectErrorName(
-      submitReturnTransaction(connection, { ...update, activeScratchOrgOwnerId: '005000000000000AAA' }),
-      'PoolReturnUpdateError',
-    );
+    const [changed] = await patchInOneTransaction(connection, [
+      { sobject: 'ScratchOrgInfo', id: infoId, body: { Pool_claim_token__c: 'nut-stale-token' } },
+    ]);
+    expect(
+      changed.body?.[0]?.errorCode,
+      'Is the claim-token validation rule from the README deployed to the Dev Hub?',
+    ).to.equal('FIELD_CUSTOM_VALIDATION_EXCEPTION');
+    expect((await getAssignedOrg(connection)).claimToken).to.equal(claimToken);
+  });
 
-    const unchanged = await connection.singleRecordQuery<{
-      OwnerId: string;
-      Pool_allocation_status__c: string;
-      Sfdx_Auth_Url__c: string | null;
-    }>(`SELECT OwnerId, Pool_allocation_status__c, Sfdx_Auth_Url__c FROM ScratchOrgInfo WHERE Id = '${info.Id}'`);
-    expect(unchanged.Pool_allocation_status__c).to.equal('assigned');
-    expect(unchanged.OwnerId).to.equal(info.OwnerId);
-    expect(Boolean(unchanged.Sfdx_Auth_Url__c)).to.be.false;
+  it('should roll back every update when one of them fails', async () => {
+    const connection = await getDevHubConnection();
+    const { infoId, activeId, claimToken } = await getAssignedOrg(connection);
+
+    const responses = await patchInOneTransaction(connection, [
+      { sobject: 'ScratchOrgInfo', id: infoId, body: { Pool_allocation_status__c: 'available' } },
+      { sobject: 'ActiveScratchOrg', id: activeId, body: { OwnerId: '005000000000000AAA' } },
+    ]);
+    expect(responses[1].httpStatusCode).to.be.at.least(400);
+
+    const unchanged = await getAssignedOrg(connection);
+    expect(unchanged.allocationStatus).to.equal('assigned');
+    expect(unchanged.claimToken).to.equal(claimToken);
   });
 
   it('should return the fetched org and remove its local auth', async () => {

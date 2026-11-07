@@ -108,13 +108,13 @@ The local authentication for %s doesn't match the scratch org's signup username 
 
 Couldn't get a reusable auth URL for %s. The org must be authenticated with a refresh token, for example by "pool fetch".
 
-# error.invalid-timestamp
+# error.missing-claim-token
 
-Couldn't read the last-modified date of scratch org %s from the Dev Hub.
+Scratch org %s has no claim token in the Dev Hub, so it can't be verified as fetched with "sf pool fetch" and wasn't returned.
 
 # error.stale
 
-Scratch org %s changed in the Dev Hub after it was verified, so it wasn't returned. Run the command again.
+The claim on scratch org %s changed in the Dev Hub after it was verified, so it wasn't returned and no changes were saved. Run "sf pool list" to check the org's status.
 
 # error.update
 

@@ -1,7 +1,7 @@
 import { TestContext, MockTestOrgData } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
 import { Connection, Org, SfError } from '@salesforce/core';
-import { queryReturnOrg, returnPoolOrg, submitReturnTransaction, toHttpDate } from '../../src/lib/poolReturn.js';
+import { queryReturnOrg, returnPoolOrg, submitReturnTransaction } from '../../src/lib/poolReturn.js';
 import type { ReturnPoolDeps, ReturnUpdate } from '../../src/lib/poolReturn.js';
 import type { ReturnOrgRow } from '../../src/types/scratch-org-info.js';
 
@@ -16,8 +16,7 @@ describe('poolReturn', () => {
   const INFO_CREATOR_ID = '005000000000002AAA';
   const ACTIVE_CREATOR_ID = '005000000000003AAA';
   const AUTH_URL = 'force://PlatformCLI::5Aep861refresh.token@scratch.my.salesforce.com';
-  const LAST_MODIFIED = '2025-01-01T12:34:56.000+0000';
-  const LAST_MODIFIED_HTTP = 'Wed, 01 Jan 2025 12:34:56 GMT';
+  const CLAIM_TOKEN = 'claim-token-1';
 
   before(() => {
     process.setMaxListeners(20);
@@ -55,7 +54,7 @@ describe('poolReturn', () => {
       Pool_allocation_status__c: 'assigned',
       OwnerId: RUNNING_USER_ID,
       CreatedById: INFO_CREATOR_ID,
-      LastModifiedDate: LAST_MODIFIED,
+      Pool_claim_token__c: CLAIM_TOKEN,
       ...infoOverrides,
     },
     ...overrides,
@@ -68,7 +67,7 @@ describe('poolReturn', () => {
     activeScratchOrgId: '0Xs000000000001AAA',
     activeScratchOrgOwnerId: ACTIVE_CREATOR_ID,
     sfdxAuthUrl: AUTH_URL,
-    ifUnmodifiedSince: LAST_MODIFIED_HTTP,
+    claimToken: CLAIM_TOKEN,
   };
 
   async function expectRejection(promise: Promise<unknown>, name: string): Promise<SfError> {
@@ -81,13 +80,6 @@ describe('poolReturn', () => {
     }
     return expect.fail(`Expected ${name}`);
   }
-
-  describe('toHttpDate', () => {
-    it('converts Salesforce datetimes to HTTP-dates', () => {
-      expect(toHttpDate(LAST_MODIFIED)).to.equal(LAST_MODIFIED_HTTP);
-      expect(toHttpDate('not a date')).to.be.undefined;
-    });
-  });
 
   describe('queryReturnOrg', () => {
     it('queries by the 15-character org Id and keeps only exact-case matches', async () => {
@@ -136,15 +128,23 @@ describe('poolReturn', () => {
       return requests;
     }
 
-    const subresponses = (scratchOrgInfo: JsonMap, activeScratchOrg: JsonMap): AnyJson => ({
+    const subresponses = (claimCheck: JsonMap, scratchOrgInfo: JsonMap, activeScratchOrg: JsonMap): AnyJson => ({
       compositeResponse: [
+        { referenceId: 'claimCheck', ...claimCheck },
         { referenceId: 'scratchOrgInfo', ...scratchOrgInfo },
         { referenceId: 'activeScratchOrg', ...activeScratchOrg },
       ],
     });
 
-    it('sends one all-or-none Composite request with a guarded ScratchOrgInfo update', async () => {
-      const requests = respondWith(subresponses({ httpStatusCode: 204 }, { httpStatusCode: 204 }));
+    const halted: JsonMap = {
+      httpStatusCode: 400,
+      body: [{ errorCode: 'PROCESSING_HALTED', message: 'rolled back' }],
+    };
+
+    it('sends one all-or-none Composite request that re-checks the claim token before updating', async () => {
+      const requests = respondWith(
+        subresponses({ httpStatusCode: 204 }, { httpStatusCode: 204 }, { httpStatusCode: 204 }),
+      );
 
       await submitReturnTransaction(connection, update);
 
@@ -153,10 +153,13 @@ describe('poolReturn', () => {
       expect(requests[0].url).to.match(/\/services\/data\/v[\d.]+\/composite$/);
       const body = JSON.parse(requests[0].body ?? '{}');
       expect(body.allOrNone).to.be.true;
-      const [scratchOrgInfo, activeScratchOrg] = body.compositeRequest;
+      expect(body.compositeRequest).to.have.lengthOf(3);
+      const [claimCheck, scratchOrgInfo, activeScratchOrg] = body.compositeRequest;
+      expect(claimCheck.method).to.equal('PATCH');
+      expect(claimCheck.url).to.match(/\/sobjects\/ScratchOrgInfo\/2SR000000000001AAA$/);
+      expect(claimCheck.body).to.deep.equal({ Pool_claim_token__c: CLAIM_TOKEN });
       expect(scratchOrgInfo.method).to.equal('PATCH');
-      expect(scratchOrgInfo.url).to.match(/\/sobjects\/ScratchOrgInfo\/2SR000000000001AAA$/);
-      expect(scratchOrgInfo.httpHeaders).to.deep.equal({ 'If-Unmodified-Since': LAST_MODIFIED_HTTP });
+      expect(scratchOrgInfo.url).to.equal(claimCheck.url);
       expect(scratchOrgInfo.body).to.deep.equal({
         OwnerId: INFO_CREATOR_ID,
         Sfdx_Auth_Url__c: AUTH_URL,
@@ -168,11 +171,12 @@ describe('poolReturn', () => {
       expect(activeScratchOrg.body).to.deep.equal({ OwnerId: ACTIVE_CREATOR_ID });
     });
 
-    it('throws PoolReturnStaleError when the ScratchOrgInfo precondition fails', async () => {
+    it('throws PoolReturnStaleError when the claim-token check is rejected', async () => {
       respondWith(
         subresponses(
-          { httpStatusCode: 412, body: [{ errorCode: 'PRECONDITION_FAILED', message: 'modified' }] },
-          { httpStatusCode: 400, body: [{ errorCode: 'PROCESSING_HALTED', message: 'halted' }] },
+          { httpStatusCode: 400, body: [{ errorCode: 'FIELD_CUSTOM_VALIDATION_EXCEPTION', message: 'claimed' }] },
+          halted,
+          halted,
         ),
       );
 
@@ -181,16 +185,32 @@ describe('poolReturn', () => {
 
     it('throws a redacted PoolReturnUpdateError when a subrequest fails', async () => {
       respondWith(
-        subresponses(
-          { httpStatusCode: 400, body: [{ errorCode: 'PROCESSING_HALTED', message: 'rolled back' }] },
-          { httpStatusCode: 400, body: [{ errorCode: 'FIELD_INTEGRITY_EXCEPTION', message: `bad ${AUTH_URL}` }] },
-        ),
+        subresponses(halted, halted, {
+          httpStatusCode: 400,
+          body: [{ errorCode: 'FIELD_INTEGRITY_EXCEPTION', message: `bad ${AUTH_URL} ${CLAIM_TOKEN}` }],
+        }),
       );
 
       const err = await expectRejection(submitReturnTransaction(connection, update), 'PoolReturnUpdateError');
       expect(err.message).to.include('FIELD_INTEGRITY_EXCEPTION');
       expect(err.message).not.to.include('PROCESSING_HALTED');
       expect(err.message).not.to.include('5Aep861refresh.token');
+      expect(err.message).not.to.include(CLAIM_TOKEN);
+    });
+
+    it('does not treat a validation failure outside the claim-token check as a stale return', async () => {
+      respondWith(
+        subresponses(
+          halted,
+          {
+            httpStatusCode: 400,
+            body: [{ errorCode: 'FIELD_CUSTOM_VALIDATION_EXCEPTION', message: 'another rule' }],
+          },
+          halted,
+        ),
+      );
+
+      await expectRejection(submitReturnTransaction(connection, update), 'PoolReturnUpdateError');
     });
 
     it('throws PoolReturnUpdateError when the Dev Hub rejects the request', async () => {
@@ -315,9 +335,9 @@ describe('poolReturn', () => {
         name: 'PoolReturnUsernameMismatchError',
       },
       {
-        title: 'the last-modified date is invalid',
-        rows: [row({}, { LastModifiedDate: 'invalid' })],
-        name: 'PoolReturnQueryError',
+        title: 'the org has no claim token',
+        rows: [row({}, { Pool_claim_token__c: null })],
+        name: 'PoolReturnMissingClaimTokenError',
       },
     ];
 
