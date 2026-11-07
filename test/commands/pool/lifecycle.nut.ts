@@ -228,7 +228,7 @@ describe('pool lifecycle NUTs', () => {
       { sobject: 'ScratchOrgInfo', id: infoId, body: { Pool_allocation_status__c: 'available' } },
       { sobject: 'ActiveScratchOrg', id: activeId, body: { OwnerId: '005000000000000AAA' } },
     ]);
-    expect(responses[0].httpStatusCode).to.be.within(200, 299);
+    expect(responses[0].httpStatusCode).to.equal(400);
     expect(responses[1].httpStatusCode).to.be.at.least(400);
     expect(responses[1].body?.[0]?.errorCode).to.equal('INVALID_CROSS_REFERENCE_KEY');
 

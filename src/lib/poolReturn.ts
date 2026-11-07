@@ -256,7 +256,7 @@ export async function removeLocalAuth(username: string, claimToken: string): Pro
   return withPoolAuthLock(username, async () => {
     const stateAggregator = await StateAggregator.getInstance();
     const authFields = await stateAggregator.orgs.peek(username, true);
-    if (!authFields) return true;
+    if (!authFields) return !(await stateAggregator.orgs.hasFile(username));
     if ((authFields as Readonly<PoolAuthFields>).poolClaimToken !== claimToken) return false;
 
     const remover = await AuthRemover.create({ skipCache: true });

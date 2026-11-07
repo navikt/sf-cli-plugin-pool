@@ -456,6 +456,18 @@ describe('poolReturn', () => {
       expect(await removeLocalAuth(USERNAME, CLAIM_TOKEN)).to.be.false;
       expect(createRemover.notCalled).to.be.true;
     });
+
+    it('does not report local auth removed when its file is unreadable', async () => {
+      const peek = $$.SANDBOX.stub().resolves(null);
+      const hasFile = $$.SANDBOX.stub().resolves(true);
+      $$.SANDBOX.stub(StateAggregator, 'getInstance').resolves({ orgs: { peek, hasFile } } as never);
+      const createRemover = $$.SANDBOX.stub(AuthRemover, 'create');
+
+      expect(await removeLocalAuth(USERNAME, CLAIM_TOKEN)).to.be.false;
+      expect(peek.calledOnceWithExactly(USERNAME, true)).to.be.true;
+      expect(hasFile.calledOnceWithExactly(USERNAME)).to.be.true;
+      expect(createRemover.notCalled).to.be.true;
+    });
   });
 
   describe('withPoolAuthLock', () => {

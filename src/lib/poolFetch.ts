@@ -368,12 +368,15 @@ export async function fetchPoolOrg(
   );
 
   onProgress?.('Authenticating to scratch org...');
-  const { authInfo, instanceUrl } = await deps.authenticateToOrg(sfdxAuthUrl);
   const authFields: PoolAuthFields = {
     devHubUsername: connection.getUsername(),
     poolClaimToken: claimToken,
   };
-  await withPoolAuthLock(authInfo.getUsername(), () => authInfo.save(authFields));
+  const { authInfo, instanceUrl } = await withPoolAuthLock(username, async () => {
+    const authenticated = await deps.authenticateToOrg(sfdxAuthUrl);
+    await authenticated.authInfo.save(authFields);
+    return authenticated;
+  });
 
   if (alias ?? setDefault) {
     await deps.handlePostFetchSetup(authInfo, alias, setDefault);
