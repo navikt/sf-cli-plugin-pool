@@ -327,7 +327,8 @@ describe('poolFetch', () => {
 
       await fetchPoolOrg(connection, 'devPool', undefined, false, deps);
 
-      expect(saveStub.calledOnceWithExactly({ devHubUsername: 'devhub@example.com' })).to.be.true;
+      expect(saveStub.calledOnceWithExactly({ devHubUsername: 'devhub@example.com', poolClaimToken: 'fixed-token' })).to
+        .be.true;
       expect(authStub.calledBefore(saveStub)).to.be.true;
     });
 

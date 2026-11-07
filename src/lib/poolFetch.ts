@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { AuthInfo, Connection, Logger, SfError } from '@salesforce/core';
 import { AvailableOrgRow } from '../types/scratch-org-info.js';
 import { PoolFetchResult } from '../types/pool-fetch.js';
+import { PoolAuthFields } from '../types/pool-auth-fields.js';
 
 const logger = Logger.childFromRoot('poolFetch');
 
@@ -246,9 +247,12 @@ type ClaimedOrg = {
   poolTag: string | null;
   username: string;
   sfdxAuthUrl: string;
+  claimToken: string;
 };
 
-function validateCandidate(candidate: AvailableOrgRow): ClaimedOrg {
+type ClaimableOrg = Omit<ClaimedOrg, 'claimToken'>;
+
+function validateCandidate(candidate: AvailableOrgRow): ClaimableOrg {
   const info = candidate.ScratchOrgInfo;
   const username = info.SignupUsername?.trim();
   if (!username) {
@@ -296,7 +300,7 @@ async function claimAvailableOrg(
     }
 
     for (const candidate of shuffle(candidates)) {
-      let claimable: ClaimedOrg;
+      let claimable: ClaimableOrg;
       try {
         claimable = validateCandidate(candidate);
       } catch (err) {
@@ -321,7 +325,7 @@ async function claimAvailableOrg(
         // lost candidate's ownership is never touched.
         onProgress?.('Transferring ownership...');
         await deps.updateActiveScratchOrgOwner(connection, claimable.activeScratchOrgId, ownerId);
-        return claimable;
+        return { ...claimable, claimToken: token };
       }
     }
 
@@ -354,7 +358,7 @@ export async function fetchPoolOrg(
   onProgress?: (message: string) => void,
 ): Promise<PoolFetchResult> {
   const ownerId = await deps.getRunningUserId(connection);
-  const { scratchOrgInfoId, poolTag, username, sfdxAuthUrl } = await claimAvailableOrg(
+  const { scratchOrgInfoId, poolTag, username, sfdxAuthUrl, claimToken } = await claimAvailableOrg(
     connection,
     tag,
     ownerId,
@@ -364,7 +368,11 @@ export async function fetchPoolOrg(
 
   onProgress?.('Authenticating to scratch org...');
   const { authInfo, instanceUrl } = await deps.authenticateToOrg(sfdxAuthUrl);
-  await authInfo.save({ devHubUsername: connection.getUsername() });
+  const authFields: PoolAuthFields = {
+    devHubUsername: connection.getUsername(),
+    poolClaimToken: claimToken,
+  };
+  await authInfo.save(authFields);
 
   if (alias ?? setDefault) {
     await deps.handlePostFetchSetup(authInfo, alias, setDefault);

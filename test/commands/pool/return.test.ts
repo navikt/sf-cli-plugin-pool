@@ -2,6 +2,7 @@ import { TestContext, MockTestOrgData } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
 import { stubSfCommandUx, stubSpinner } from '@salesforce/sf-plugins-core';
 import { AuthRemover, ConfigAggregator, SfError, StateAggregator } from '@salesforce/core';
+import type { AuthFields } from '@salesforce/core';
 import PoolReturn from '../../../src/commands/pool/return.js';
 
 describe('pool return', () => {
@@ -30,6 +31,11 @@ describe('pool return', () => {
     scratch.clientId = 'PlatformCLI';
     scratch.refreshToken = '5Aep861refresh.token';
     scratch.createDevHubUsername(devHub.username);
+    const scratchAuthFields = await scratch.getConfig();
+    $$.SANDBOX.stub(scratch, 'getConfig').resolves({
+      ...scratchAuthFields,
+      poolClaimToken: 'claim-token-1',
+    } as AuthFields);
     await $$.stubAuths(devHub, scratch);
     stubDevHub();
   });

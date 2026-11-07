@@ -153,6 +153,7 @@ describe('poolReturn', () => {
       expect(requests[0].url).to.match(/\/services\/data\/v[\d.]+\/composite$/);
       const body = JSON.parse(requests[0].body ?? '{}');
       expect(body.allOrNone).to.be.true;
+      expect(body.collateSubrequests).to.be.false;
       expect(body.compositeRequest).to.have.lengthOf(3);
       const [claimCheck, scratchOrgInfo, activeScratchOrg] = body.compositeRequest;
       expect(claimCheck.method).to.equal('PATCH');
@@ -245,9 +246,15 @@ describe('poolReturn', () => {
     let removeStub: ReturnType<typeof $$.SANDBOX.stub>;
     let deps: ReturnPoolDeps;
 
-    const scratchOrg = { getOrgId: () => SCRATCH_ORG_ID, getUsername: () => USERNAME } as unknown as Org;
+    let localClaimToken: string | undefined;
+    const scratchOrg = {
+      getOrgId: () => SCRATCH_ORG_ID,
+      getUsername: () => USERNAME,
+      getConnection: () => ({ getAuthInfo: () => ({ getFields: () => ({ poolClaimToken: localClaimToken }) }) }),
+    } as unknown as Org;
 
     beforeEach(() => {
+      localClaimToken = CLAIM_TOKEN;
       userIdStub = $$.SANDBOX.stub().resolves(RUNNING_USER_ID);
       queryStub = $$.SANDBOX.stub().resolves([row()]);
       authUrlStub = $$.SANDBOX.stub().returns(AUTH_URL);
@@ -296,6 +303,21 @@ describe('poolReturn', () => {
       await returnPoolOrg(connection, scratchOrg, deps);
 
       expect(submitStub.calledOnce).to.be.true;
+    });
+
+    it('rejects when the local authentication has no original claim token', async () => {
+      localClaimToken = undefined;
+
+      await expectRejection(returnPoolOrg(connection, scratchOrg, deps), 'PoolReturnMissingLocalClaimTokenError');
+      expect(queryStub.notCalled).to.be.true;
+      expectNoChanges();
+    });
+
+    it('rejects when the Dev Hub claim token differs from the original fetch claim', async () => {
+      queryStub.resolves([row({}, { Pool_claim_token__c: 'new-claim-token' })]);
+
+      await expectRejection(returnPoolOrg(connection, scratchOrg, deps), 'PoolReturnStaleError');
+      expectNoChanges();
     });
 
     const rejections: Array<{ title: string; rows: ReturnOrgRow[]; name: string }> = [

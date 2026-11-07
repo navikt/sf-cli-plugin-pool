@@ -6,7 +6,7 @@ Return a fetched scratch org to its pool.
 
 Returns a scratch org that you fetched with "pool fetch" to its pool so that it can be fetched again. The org must be active, belong to a pool, have the allocation status "assigned", and its ScratchOrgInfo and ActiveScratchOrg records in the Dev Hub must be owned by you.
 
-The command restores ownership of both records to the users who created them, restores the stored auth URL, clears the claim token, and marks the org as available in a single Dev Hub transaction. After the transaction succeeds, the org's local authentication, aliases, and default-org settings are removed.
+The command restores ownership of both records to the users who created them, restores the stored auth URL, clears the claim token, and marks the org as available in a single Dev Hub transaction. The original fetch claim saved in local authentication must still match the Dev Hub claim. After the transaction succeeds, the org's local authentication, aliases, and default-org settings are removed.
 
 The org is reused as-is: its data and metadata aren't reset, and copies of its credentials stored elsewhere aren't revoked.
 
@@ -112,9 +112,13 @@ Couldn't get a reusable auth URL for %s. The org must be authenticated with a re
 
 Scratch org %s has no claim token in the Dev Hub, so it can't be verified as fetched with "sf pool fetch" and wasn't returned.
 
+# error.missing-local-claim-token
+
+Local authentication for scratch org %s doesn't contain its original pool claim, so it can't be safely returned.
+
 # error.stale
 
-The claim on scratch org %s changed in the Dev Hub after it was verified, so it wasn't returned and no changes were saved. Run "sf pool list" to check the org's status.
+The original fetch claim for scratch org %s no longer matches its claim in the Dev Hub, so it wasn't returned and no changes were saved. Run "sf pool list" to check the org's status.
 
 # error.update
 

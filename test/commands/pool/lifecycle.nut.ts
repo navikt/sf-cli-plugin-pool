@@ -1,3 +1,7 @@
+import { randomUUID } from 'node:crypto';
+import { readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { execCmd, ExecCmdResult } from '@salesforce/cli-plugins-testkit';
 import { Connection, Org, StateAggregator, trimTo15 } from '@salesforce/core';
 import { expect } from 'chai';
@@ -10,6 +14,14 @@ import { PoolReturnResult } from '../../../src/types/pool-return.js';
 
 describe('pool lifecycle NUTs', () => {
   const targetDevHubFlag = '--target-dev-hub testdevhub';
+  const poolTag = `nut-test-pool-${process.env.GITHUB_RUN_ID ?? randomUUID()}-${process.env.GITHUB_RUN_ATTEMPT ?? '1'}`;
+  const poolConfigFile = join(tmpdir(), `${poolTag}.json`);
+  const poolConfig = JSON.parse(readFileSync('config/pool-example.json', 'utf8')) as {
+    pools: Array<{ tag: string }>;
+  };
+  poolConfig.pools.forEach((pool) => {
+    pool.tag = poolTag;
+  });
   let fetched: PoolFetchResult | undefined;
   let returned: PoolReturnResult | undefined;
 
@@ -34,16 +46,20 @@ describe('pool lifecycle NUTs', () => {
 
   // Best effort: orgs left behind by a failed or cancelled run would break the next run's prepare step.
   const cleanTestPool = (): void => {
-    const command = `pool clean ${targetDevHubFlag} --pool-tag nut-test-pool --all --no-prompt --json`;
+    const command = `pool clean ${targetDevHubFlag} --pool-tag ${poolTag} --all --no-prompt --json`;
     try {
       logCommandOutput(command, execCmd(command));
     } catch (error) {
-      process.stderr.write(`[NUT DEBUG] Couldn't clean nut-test-pool: ${(error as Error).message}\n`);
+      process.stderr.write(`[NUT DEBUG] Couldn't clean ${poolTag}: ${(error as Error).message}\n`);
     }
   };
 
+  before(() => {
+    writeFileSync(poolConfigFile, JSON.stringify(poolConfig));
+  });
   before(cleanTestPool);
   after(cleanTestPool);
+  after(() => rmSync(poolConfigFile, { force: true }));
 
   const getDevHubConnection = async () => (await Org.create({ aliasOrUsername: 'testdevhub' })).getConnection();
 
@@ -98,14 +114,14 @@ describe('pool lifecycle NUTs', () => {
 
   it('should prepare the pool and return valid JSON', () => {
     const result = execJsonResult<PoolPrepareCommandResult>(
-      `pool prepare ${targetDevHubFlag} --config-file config/pool-example.json --json`,
+      `pool prepare ${targetDevHubFlag} --config-file "${poolConfigFile}" --json`,
     );
 
     expect(result).to.have.property('pools').that.is.an('array');
     expect(result?.pools).to.have.lengthOf(1);
 
     const pool = result?.pools[0];
-    expect(pool).to.include({ tag: 'nut-test-pool', requested: 1, skipped: false });
+    expect(pool).to.include({ tag: poolTag, requested: 1, skipped: false });
     expect(pool?.created).to.equal(1);
     expect(pool?.failed).to.equal(0);
     expect(pool?.errors).to.be.an('array').that.is.empty;
@@ -122,30 +138,30 @@ describe('pool lifecycle NUTs', () => {
 
   it('should skip prepare when the pool is already at capacity', () => {
     const result = execJsonResult<PoolPrepareCommandResult>(
-      `pool prepare ${targetDevHubFlag} --config-file config/pool-example.json --json`,
+      `pool prepare ${targetDevHubFlag} --config-file "${poolConfigFile}" --json`,
     );
 
     expect(result?.pools).to.have.lengthOf(1);
 
     const pool = result?.pools[0];
-    expect(pool).to.include({ tag: 'nut-test-pool', requested: 1, existing: 1, created: 0, failed: 0, skipped: true });
+    expect(pool).to.include({ tag: poolTag, requested: 1, existing: 1, created: 0, failed: 0, skipped: true });
     expect(pool?.errors).to.be.an('array').that.is.empty;
   });
 
   it('should list the prepared pool with an available org', () => {
-    const result = execJsonResult<PoolListResult>(`pool list ${targetDevHubFlag} --pool-tag nut-test-pool --json`);
+    const result = execJsonResult<PoolListResult>(`pool list ${targetDevHubFlag} --pool-tag ${poolTag} --json`);
 
     expect(result).to.have.property('pools').that.is.an('array');
     expect(result?.totals.totalOrgs).to.equal(1);
 
-    const pool = result?.pools.find((entry) => entry.tag === 'nut-test-pool');
+    const pool = result?.pools.find((entry) => entry.tag === poolTag);
     expect(pool).to.exist;
     expect(pool?.total).to.equal(1);
     expect(pool?.status).to.have.property('available').that.is.greaterThan(0);
   });
 
   it('should produce human-readable list output', () => {
-    const output = execCmd(`pool list ${targetDevHubFlag} --pool-tag nut-test-pool`, {
+    const output = execCmd(`pool list ${targetDevHubFlag} --pool-tag ${poolTag}`, {
       ensureExitCode: 0,
     }).shellOutput.stdout;
 
@@ -155,20 +171,20 @@ describe('pool lifecycle NUTs', () => {
 
   it('should fetch the org with an alias and return valid JSON', () => {
     const result = execJsonResult<PoolFetchResult>(
-      `pool fetch ${targetDevHubFlag} --pool-tag nut-test-pool --alias nutAlias --json`,
+      `pool fetch ${targetDevHubFlag} --pool-tag ${poolTag} --alias nutAlias --json`,
     );
 
     expect(result).to.have.property('username').that.is.a('string');
     expect(result).to.have.property('orgId').that.is.a('string');
-    expect(result).to.include({ poolTag: 'nut-test-pool', alias: 'nutAlias' });
+    expect(result).to.include({ poolTag, alias: 'nutAlias' });
     expect(result?.isDefault).to.be.false;
     fetched = result;
   });
 
   it('should mark the fetched org as assigned', () => {
-    const result = execJsonResult<PoolListResult>(`pool list ${targetDevHubFlag} --pool-tag nut-test-pool --json`);
+    const result = execJsonResult<PoolListResult>(`pool list ${targetDevHubFlag} --pool-tag ${poolTag} --json`);
 
-    const pool = result?.pools.find((entry) => entry.tag === 'nut-test-pool');
+    const pool = result?.pools.find((entry) => entry.tag === poolTag);
     expect(pool).to.exist;
     expect(pool?.status).to.have.property('assigned').that.is.greaterThan(0);
   });
@@ -218,7 +234,7 @@ describe('pool lifecycle NUTs', () => {
 
     expect(result).to.include({
       orgId: fetched?.orgId,
-      poolTag: 'nut-test-pool',
+      poolTag,
       status: 'available',
       localAuthRemoved: true,
     });
@@ -256,15 +272,15 @@ describe('pool lifecycle NUTs', () => {
   });
 
   it('should list the returned org as available', () => {
-    const result = execJsonResult<PoolListResult>(`pool list ${targetDevHubFlag} --pool-tag nut-test-pool --json`);
+    const result = execJsonResult<PoolListResult>(`pool list ${targetDevHubFlag} --pool-tag ${poolTag} --json`);
 
-    const pool = result?.pools.find((entry) => entry.tag === 'nut-test-pool');
+    const pool = result?.pools.find((entry) => entry.tag === poolTag);
     expect(pool?.status).to.have.property('available').that.equals(1);
   });
 
   it('should fetch the returned org again', () => {
     const result = execJsonResult<PoolFetchResult>(
-      `pool fetch ${targetDevHubFlag} --pool-tag nut-test-pool --alias nutAlias --json`,
+      `pool fetch ${targetDevHubFlag} --pool-tag ${poolTag} --alias nutAlias --json`,
     );
 
     expect(result.orgId).to.equal(returned?.orgId);
@@ -285,18 +301,18 @@ describe('pool lifecycle NUTs', () => {
 
   it('should clean the pool and return valid JSON', () => {
     const result = execJsonResult<PoolCleanResult>(
-      `pool clean ${targetDevHubFlag} --pool-tag nut-test-pool --all --json --no-prompt`,
+      `pool clean ${targetDevHubFlag} --pool-tag ${poolTag} --all --json --no-prompt`,
     );
 
     expect(result).to.have.property('orgs').that.is.an('array');
     expect(result).to.have.property('summary');
-    expect(result?.orgs.every((org) => org.poolTag === 'nut-test-pool')).to.be.true;
+    expect(result?.orgs.every((org) => org.poolTag === poolTag)).to.be.true;
     expect(result?.summary.total).to.equal(1);
     expect((result?.summary.deleted ?? 0) + (result?.summary.failed ?? 0)).to.equal(result?.summary.total);
   });
 
   it('should produce human-readable clean output', () => {
-    const output = execCmd(`pool clean ${targetDevHubFlag} --pool-tag nut-test-pool --all --no-prompt`, {
+    const output = execCmd(`pool clean ${targetDevHubFlag} --pool-tag ${poolTag} --all --no-prompt`, {
       ensureExitCode: 0,
     }).shellOutput.stdout;
 

@@ -1,6 +1,7 @@
 import { AuthInfo, AuthRemover, Connection, Logger, Messages, Org, SfError, trimTo15 } from '@salesforce/core';
 import { ReturnOrgRow } from '../types/scratch-org-info.js';
 import { PoolReturnResult } from '../types/pool-return.js';
+import { PoolAuthFields } from '../types/pool-auth-fields.js';
 import { getRunningUserId } from './poolFetch.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
@@ -178,6 +179,7 @@ export async function submitReturnTransaction(connection: Connection, update: Re
   /* eslint-disable camelcase */
   const body = {
     allOrNone: true,
+    collateSubrequests: false,
     compositeRequest: [
       {
         method: 'PATCH',
@@ -262,7 +264,12 @@ const defaultDeps: ReturnPoolDeps = {
 
 type ReturnCandidate = Omit<ReturnUpdate, 'username' | 'sfdxAuthUrl'> & { poolTag: string };
 
-function validateCandidate(row: ReturnOrgRow, username: string, runningUserId: string): ReturnCandidate {
+function validateCandidate(
+  row: ReturnOrgRow,
+  username: string,
+  runningUserId: string,
+  localClaimToken: string,
+): ReturnCandidate {
   const info = row.ScratchOrgInfo;
   if (!info) {
     throw new SfError(messages.getMessage('error.missing-parent', [username]), 'PoolReturnNotFoundError');
@@ -314,6 +321,9 @@ function validateCandidate(row: ReturnOrgRow, username: string, runningUserId: s
   if (!info.Pool_claim_token__c) {
     throw new SfError(messages.getMessage('error.missing-claim-token', [username]), 'PoolReturnMissingClaimTokenError');
   }
+  if (info.Pool_claim_token__c !== localClaimToken) {
+    throw new SfError(messages.getMessage('error.stale', [username]), 'PoolReturnStaleError');
+  }
 
   return {
     scratchOrgInfoId: info.Id,
@@ -362,6 +372,14 @@ export async function returnPoolOrg(
   if (!username) {
     throw new SfError(messages.getMessage('error.auth-url', [scratchOrgId]), 'PoolReturnAuthUrlError');
   }
+  const localClaimToken = (scratchOrg.getConnection().getAuthInfo().getFields(true) as Readonly<PoolAuthFields>)
+    .poolClaimToken;
+  if (!localClaimToken) {
+    throw new SfError(
+      messages.getMessage('error.missing-local-claim-token', [username]),
+      'PoolReturnMissingLocalClaimTokenError',
+    );
+  }
 
   onProgress?.(messages.getMessage('info.progress-verify', [username]));
   const runningUserId = await resolveRunningUserId(connection, deps);
@@ -379,7 +397,7 @@ export async function returnPoolOrg(
     );
   }
 
-  const candidate = validateCandidate(rows[0], username, runningUserId);
+  const candidate = validateCandidate(rows[0], username, runningUserId, localClaimToken);
   const sfdxAuthUrl = resolveSfdxAuthUrl(scratchOrg, username, deps);
 
   onProgress?.(messages.getMessage('info.progress-update', [username, candidate.poolTag]));
