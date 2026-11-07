@@ -3,6 +3,7 @@ import { AuthInfo, Connection, Logger, SfError } from '@salesforce/core';
 import { AvailableOrgRow } from '../types/scratch-org-info.js';
 import { PoolFetchResult } from '../types/pool-fetch.js';
 import { PoolAuthFields } from '../types/pool-auth-fields.js';
+import { withPoolAuthLock } from './poolAuthLock.js';
 
 const logger = Logger.childFromRoot('poolFetch');
 
@@ -372,7 +373,7 @@ export async function fetchPoolOrg(
     devHubUsername: connection.getUsername(),
     poolClaimToken: claimToken,
   };
-  await authInfo.save(authFields);
+  await withPoolAuthLock(authInfo.getUsername(), () => authInfo.save(authFields));
 
   if (alias ?? setDefault) {
     await deps.handlePostFetchSetup(authInfo, alias, setDefault);

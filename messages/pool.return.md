@@ -56,6 +56,10 @@ Removed local authentication, aliases, and default-org settings for %s.
 
 Returned %s to the pool, but couldn't remove its local authentication: %s. Run "sf org logout --target-org %s --no-prompt" to remove it.
 
+# warning.local-auth-preserved
+
+Returned %s to the pool, but its local authentication no longer matches the returned claim and was left untouched. Check the credentials for %s before using or removing them.
+
 # error.user-id
 
 Couldn't determine the authenticated Dev Hub user. %s

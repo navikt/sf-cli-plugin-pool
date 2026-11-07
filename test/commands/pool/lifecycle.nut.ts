@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execCmd, ExecCmdResult } from '@salesforce/cli-plugins-testkit';
@@ -15,7 +15,8 @@ import { PoolReturnResult } from '../../../src/types/pool-return.js';
 describe('pool lifecycle NUTs', () => {
   const targetDevHubFlag = '--target-dev-hub testdevhub';
   const poolTag = `nut-test-pool-${process.env.GITHUB_RUN_ID ?? randomUUID()}-${process.env.GITHUB_RUN_ATTEMPT ?? '1'}`;
-  const poolConfigFile = join(tmpdir(), `${poolTag}.json`);
+  let poolConfigDir: string | undefined;
+  let poolConfigFile: string;
   const poolConfig = JSON.parse(readFileSync('config/pool-example.json', 'utf8')) as {
     pools: Array<{ tag: string }>;
   };
@@ -55,11 +56,15 @@ describe('pool lifecycle NUTs', () => {
   };
 
   before(() => {
-    writeFileSync(poolConfigFile, JSON.stringify(poolConfig));
+    poolConfigDir = mkdtempSync(join(tmpdir(), 'sf-pool-lifecycle-'));
+    poolConfigFile = join(poolConfigDir, 'pool.json');
+    writeFileSync(poolConfigFile, JSON.stringify(poolConfig), { mode: 0o600, flag: 'wx' });
   });
   before(cleanTestPool);
   after(cleanTestPool);
-  after(() => rmSync(poolConfigFile, { force: true }));
+  after(() => {
+    if (poolConfigDir) rmSync(poolConfigDir, { recursive: true, force: true });
+  });
 
   const getDevHubConnection = async () => (await Org.create({ aliasOrUsername: 'testdevhub' })).getConnection();
 
@@ -100,6 +105,7 @@ describe('pool lifecycle NUTs', () => {
       url: `${apiPath}/composite`,
       body: JSON.stringify({
         allOrNone: true,
+        collateSubrequests: false,
         compositeRequest: updates.map(({ sobject, id, body }, index) => ({
           method: 'PATCH',
           url: `${apiPath}/sobjects/${sobject}/${id}`,
@@ -222,7 +228,9 @@ describe('pool lifecycle NUTs', () => {
       { sobject: 'ScratchOrgInfo', id: infoId, body: { Pool_allocation_status__c: 'available' } },
       { sobject: 'ActiveScratchOrg', id: activeId, body: { OwnerId: '005000000000000AAA' } },
     ]);
+    expect(responses[0].httpStatusCode).to.be.within(200, 299);
     expect(responses[1].httpStatusCode).to.be.at.least(400);
+    expect(responses[1].body?.[0]?.errorCode).to.equal('INVALID_CROSS_REFERENCE_KEY');
 
     const unchanged = await getAssignedOrg(connection);
     expect(unchanged.allocationStatus).to.equal('assigned');

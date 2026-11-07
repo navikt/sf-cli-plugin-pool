@@ -1,8 +1,19 @@
-import { AuthInfo, AuthRemover, Connection, Logger, Messages, Org, SfError, trimTo15 } from '@salesforce/core';
+import {
+  AuthInfo,
+  AuthRemover,
+  Connection,
+  Logger,
+  Messages,
+  Org,
+  SfError,
+  StateAggregator,
+  trimTo15,
+} from '@salesforce/core';
 import { ReturnOrgRow } from '../types/scratch-org-info.js';
 import { PoolReturnResult } from '../types/pool-return.js';
 import { PoolAuthFields } from '../types/pool-auth-fields.js';
 import { getRunningUserId } from './poolFetch.js';
+import { withPoolAuthLock } from './poolAuthLock.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@navikt/sf-cli-plugin-pool', 'pool.return');
@@ -240,10 +251,18 @@ export function getSfdxAuthUrl(org: Org): string {
   return org.getConnection().getAuthInfo().getSfdxAuthUrl();
 }
 
-/** Removes the org's local auth file, aliases, and matching global and project default-org settings. */
-export async function removeLocalAuth(username: string): Promise<void> {
-  const remover = await AuthRemover.create();
-  await remover.removeAuth(username);
+/** Removes local auth only if it still belongs to the claim being returned. */
+export async function removeLocalAuth(username: string, claimToken: string): Promise<boolean> {
+  return withPoolAuthLock(username, async () => {
+    const stateAggregator = await StateAggregator.getInstance();
+    const authFields = await stateAggregator.orgs.peek(username, true);
+    if (!authFields) return true;
+    if ((authFields as Readonly<PoolAuthFields>).poolClaimToken !== claimToken) return false;
+
+    const remover = await AuthRemover.create({ skipCache: true });
+    await remover.removeAuth(username);
+    return true;
+  });
 }
 
 export type ReturnPoolDeps = {
@@ -251,7 +270,7 @@ export type ReturnPoolDeps = {
   queryReturnOrg: typeof queryReturnOrg;
   getSfdxAuthUrl: (org: Org) => string;
   submitReturnTransaction: typeof submitReturnTransaction;
-  removeLocalAuth: (username: string) => Promise<void>;
+  removeLocalAuth: (username: string, claimToken: string) => Promise<boolean>;
 };
 
 const defaultDeps: ReturnPoolDeps = {
@@ -415,7 +434,11 @@ export async function returnPoolOrg(
   const warnings: string[] = [];
   let localAuthRemoved = true;
   try {
-    await deps.removeLocalAuth(username);
+    const removed = await deps.removeLocalAuth(username, candidate.claimToken);
+    if (!removed) {
+      localAuthRemoved = false;
+      warnings.push(messages.getMessage('warning.local-auth-preserved', [username, username]));
+    }
   } catch (error) {
     localAuthRemoved = false;
     logger.warn('Returned org but failed to remove local auth', { username, error: errorMessage(error) });

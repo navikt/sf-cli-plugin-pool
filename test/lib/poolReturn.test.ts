@@ -1,7 +1,9 @@
+import { randomUUID } from 'node:crypto';
 import { TestContext, MockTestOrgData } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
-import { Connection, Org, SfError } from '@salesforce/core';
-import { queryReturnOrg, returnPoolOrg, submitReturnTransaction } from '../../src/lib/poolReturn.js';
+import { AuthRemover, Connection, Org, SfError, StateAggregator } from '@salesforce/core';
+import { queryReturnOrg, removeLocalAuth, returnPoolOrg, submitReturnTransaction } from '../../src/lib/poolReturn.js';
+import { withPoolAuthLock } from '../../src/lib/poolAuthLock.js';
 import type { ReturnPoolDeps, ReturnUpdate } from '../../src/lib/poolReturn.js';
 import type { ReturnOrgRow } from '../../src/types/scratch-org-info.js';
 
@@ -259,7 +261,7 @@ describe('poolReturn', () => {
       queryStub = $$.SANDBOX.stub().resolves([row()]);
       authUrlStub = $$.SANDBOX.stub().returns(AUTH_URL);
       submitStub = $$.SANDBOX.stub().resolves();
-      removeStub = $$.SANDBOX.stub().resolves();
+      removeStub = $$.SANDBOX.stub().resolves(true);
 
       deps = {
         getRunningUserId: userIdStub as unknown as ReturnPoolDeps['getRunningUserId'],
@@ -280,7 +282,7 @@ describe('poolReturn', () => {
 
       expect(queryStub.calledOnceWith(connection, SCRATCH_ORG_ID)).to.be.true;
       expect(submitStub.calledOnceWithExactly(connection, update)).to.be.true;
-      expect(removeStub.calledOnceWithExactly(USERNAME)).to.be.true;
+      expect(removeStub.calledOnceWithExactly(USERNAME, CLAIM_TOKEN)).to.be.true;
       expect(submitStub.calledBefore(removeStub)).to.be.true;
       expect(result).to.deep.equal({
         username: USERNAME,
@@ -421,6 +423,70 @@ describe('poolReturn', () => {
       expect(result.localAuthRemoved).to.be.false;
       expect(result.warnings).to.have.lengthOf(1);
       expect(result.warnings[0]).to.include('permission denied');
+    });
+
+    it('preserves local auth when cleanup detects a different claim', async () => {
+      removeStub.resolves(false);
+
+      const result = await returnPoolOrg(connection, scratchOrg, deps);
+
+      expect(result.localAuthRemoved).to.be.false;
+      expect(result.warnings).to.have.lengthOf(1);
+      expect(result.warnings[0]).to.include('no longer matches the returned claim');
+    });
+  });
+
+  describe('removeLocalAuth', () => {
+    it('removes local auth when its persisted claim token matches', async () => {
+      const peek = $$.SANDBOX.stub().resolves({ poolClaimToken: CLAIM_TOKEN });
+      $$.SANDBOX.stub(StateAggregator, 'getInstance').resolves({ orgs: { peek } } as never);
+      const removeAuth = $$.SANDBOX.stub().resolves();
+      $$.SANDBOX.stub(AuthRemover, 'create').resolves({ removeAuth } as never);
+
+      expect(await removeLocalAuth(USERNAME, CLAIM_TOKEN)).to.be.true;
+      expect(peek.calledOnceWithExactly(USERNAME, true)).to.be.true;
+      expect(removeAuth.calledOnceWithExactly(USERNAME)).to.be.true;
+    });
+
+    it('does not remove local auth when its persisted claim token changed', async () => {
+      const peek = $$.SANDBOX.stub().resolves({ poolClaimToken: 'new-claim-token' });
+      $$.SANDBOX.stub(StateAggregator, 'getInstance').resolves({ orgs: { peek } } as never);
+      const createRemover = $$.SANDBOX.stub(AuthRemover, 'create');
+
+      expect(await removeLocalAuth(USERNAME, CLAIM_TOKEN)).to.be.false;
+      expect(createRemover.notCalled).to.be.true;
+    });
+  });
+
+  describe('withPoolAuthLock', () => {
+    it('serializes operations for the same username', async () => {
+      const username = `${USERNAME}-${randomUUID()}`;
+      const order: string[] = [];
+      let releaseFirst!: () => void;
+      let signalFirstStarted!: () => void;
+      const firstGate = new Promise<void>((resolve) => {
+        releaseFirst = resolve;
+      });
+      const firstStarted = new Promise<void>((resolve) => {
+        signalFirstStarted = resolve;
+      });
+
+      const first = withPoolAuthLock(username, async () => {
+        order.push('first-start');
+        signalFirstStarted();
+        await firstGate;
+        order.push('first-end');
+      });
+      await firstStarted;
+      const second = withPoolAuthLock(username, async () => {
+        order.push('second');
+      });
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      expect(order).to.deep.equal(['first-start']);
+
+      releaseFirst();
+      await Promise.all([first, second]);
+      expect(order).to.deep.equal(['first-start', 'first-end', 'second']);
     });
   });
 });
