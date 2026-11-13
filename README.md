@@ -42,6 +42,7 @@ sf plugins
 
 - **`sf pool prepare`** — Create and tag new scratch orgs to replenish pools (used by CI)
 - **`sf pool fetch`** — Allocate an available scratch org from a pool (used by CI validation runs and developers)
+- **`sf pool return`** — Return a fetched scratch org to its pool so it can be fetched again (used by developers and CI)
 - **`sf pool list`** — Display pool status: available/total/in-use counts (used by developers and platform team)
 - **`sf pool clean`** — Remove failed, stale, or expired orgs from pools (used by CI jobs and platform team)
 
@@ -89,12 +90,12 @@ Pool state is tracked via custom fields on the standard **`ScratchOrgInfo`** obj
 These must exist before using the plugin (SOQL against a missing field fails).
 Run `sf doctor` to verify that these fields are present and accessible before running pool commands.
 
-| Field                       | Type                                                                        | Purpose                                                                          |
-| --------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `Pool_tag__c`               | Text                                                                        | Identifies which pool an org belongs to                                          |
-| `Pool_allocation_status__c` | Picklist (`in_progress`, `available`, `under_update`, `failed`, `assigned`) | Tracks org lifecycle status                                                      |
-| `Sfdx_Auth_Url__c`          | Text (Long/255)                                                             | Stores the SFDX auth URL so `pool fetch` can authenticate; cleared on assignment |
-| `Pool_claim_token__c`       | Text (255)                                                                  | Per-fetch claim token used to make `pool fetch` safe under concurrency           |
+| Field                       | Type                                                                        | Purpose                                                                                                        |
+| --------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `Pool_tag__c`               | Text                                                                        | Identifies which pool an org belongs to                                                                        |
+| `Pool_allocation_status__c` | Picklist (`in_progress`, `available`, `under_update`, `failed`, `assigned`) | Tracks org lifecycle status                                                                                    |
+| `Sfdx_Auth_Url__c`          | Text (Long/255)                                                             | Stores the SFDX auth URL so `pool fetch` can authenticate; cleared on assignment and restored by `pool return` |
+| `Pool_claim_token__c`       | Text (255)                                                                  | Per-fetch claim token used to make `pool fetch` safe under concurrency                                         |
 
 ### Concurrency: claim-token validation rule (required)
 
@@ -129,6 +130,45 @@ When `sf pool fetch` claims an org, it transfers ownership to the user running t
 authenticated DevHub user): `OwnerId` is set on the winning `ScratchOrgInfo` record (as part of the
 atomic claim) and on the related `ActiveScratchOrg` record. The running user must therefore have
 permission to update `OwnerId` on both objects; an ownership-transfer failure aborts the fetch.
+
+### Returning a fetched org
+
+`sf pool return` puts a fetched org back in its pool:
+
+```bash
+sf pool return --target-org myScratch --target-dev-hub myDevHub
+```
+
+`--target-org` accepts an alias or username and `--target-dev-hub` must be the DevHub the org was
+fetched from; both fall back to your configured defaults. Only active, pool-tagged orgs with
+allocation status `assigned` can be returned, and only by the authenticated DevHub user who owns both
+the `ScratchOrgInfo` and `ActiveScratchOrg` records (normally the user who fetched it). There is no
+admin override.
+
+In a single all-or-none REST Composite request, the command sets each record's `OwnerId` back to
+that record's `CreatedById`, restores `Sfdx_Auth_Url__c` from your local authentication, clears
+`Pool_claim_token__c`, and sets `Pool_allocation_status__c` to `available`. The DevHub user therefore
+needs read access to `CreatedById` and `Pool_claim_token__c`, and permission to transfer both records
+to their creators.
+
+A delayed return must not take over an org that was fetched again in the meantime. The first step of
+the request therefore re-writes the claim token observed during validation. That is a no-op unless the
+org was claimed again since, in which case the [claim-token validation rule](#concurrency-claim-token-validation-rule-required)
+rejects it and the whole request is rolled back. Orgs without a claim token can't be returned, and
+this check does not hold without the validation rule.
+
+After the DevHub update succeeds, the org's local authentication, aliases, and matching
+`target-org`/`target-dev-hub` config values are removed. If that cleanup fails, the return still
+succeeds and the command reports a warning (`localAuthRemoved: false` in JSON). If the connection is
+lost during the update, the command keeps local authentication and reports that the outcome is
+unknown; check `sf pool list` before retrying.
+
+Limitations:
+
+- The org is reused as-is. Its data and metadata are not reset, so make sure it is suitable for the
+  next consumer.
+- The refresh token is not revoked, because the next fetch needs it. Copies of the org's credentials
+  stored elsewhere stay valid.
 
 ```txt
 src/

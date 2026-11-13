@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { TestContext, MockTestOrgData } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
 import { SfError } from '@salesforce/core';
@@ -9,6 +10,7 @@ import {
   updateActiveScratchOrgOwner,
   getRunningUserId,
 } from '../../src/lib/poolFetch.js';
+import { withPoolAuthLock } from '../../src/lib/poolAuthLock.js';
 import type { FetchPoolDeps, AuthenticateResult } from '../../src/lib/poolFetch.js';
 import type { AvailableOrgRow } from '../../src/types/scratch-org-info.js';
 
@@ -327,8 +329,65 @@ describe('poolFetch', () => {
 
       await fetchPoolOrg(connection, 'devPool', undefined, false, deps);
 
-      expect(saveStub.calledOnceWithExactly({ devHubUsername: 'devhub@example.com' })).to.be.true;
+      expect(saveStub.calledOnceWithExactly({ devHubUsername: 'devhub@example.com', poolClaimToken: 'fixed-token' })).to
+        .be.true;
       expect(authStub.calledBefore(saveStub)).to.be.true;
+    });
+
+    it('holds the per-org auth lock through authentication and claim persistence', async () => {
+      const username = `pool-fetch-${randomUUID()}@scratch.org`;
+      queryStub.resolves([org({ SignupUsername: username })]);
+
+      let startAuthentication!: () => void;
+      const authenticationStarted = new Promise<void>((resolve) => {
+        startAuthentication = resolve;
+      });
+      let finishAuthentication!: () => void;
+      const authenticationGate = new Promise<void>((resolve) => {
+        finishAuthentication = resolve;
+      });
+      let startSave!: () => void;
+      const saveStarted = new Promise<void>((resolve) => {
+        startSave = resolve;
+      });
+      let finishSave!: () => void;
+      const saveGate = new Promise<void>((resolve) => {
+        finishSave = resolve;
+      });
+      authStub.callsFake(async () => {
+        startAuthentication();
+        await authenticationGate;
+        return {
+          authInfo: {
+            getUsername: () => username,
+            save: async () => {
+              startSave();
+              await saveGate;
+            },
+          },
+          instanceUrl: 'https://test.salesforce.com',
+        } as unknown as AuthenticateResult;
+      });
+
+      const connection = await devHub.getConnection();
+      const fetching = fetchPoolOrg(connection, 'devPool', undefined, false, deps);
+      await authenticationStarted;
+
+      let competingOperationRan = false;
+      const competingOperation = withPoolAuthLock(username, async () => {
+        competingOperationRan = true;
+      });
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      expect(competingOperationRan).to.be.false;
+
+      finishAuthentication();
+      await saveStarted;
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      expect(competingOperationRan).to.be.false;
+
+      finishSave();
+      await Promise.all([fetching, competingOperation]);
+      expect(competingOperationRan).to.be.true;
     });
 
     it('propagates a fatal ActiveScratchOrg ownership failure', async () => {
