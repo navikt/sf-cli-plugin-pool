@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/navikt/sf-cli-plugin-pool/compare/sf-cli-plugin-pool-v1.0.4...sf-cli-plugin-pool-v1.1.0) (2026-11-13)
+
+
+### Features
+
+* **pool:** implement return command for scratch orgs ([#248](https://github.com/navikt/sf-cli-plugin-pool/issues/248)) ([7192590](https://github.com/navikt/sf-cli-plugin-pool/commit/719259012278447f2dea1d46396576697474a0bb))
+
 ## [1.0.4](https://github.com/navikt/sf-cli-plugin-pool/compare/sf-cli-plugin-pool-v1.0.3...sf-cli-plugin-pool-v1.0.4) (2026-10-29)
 
 
