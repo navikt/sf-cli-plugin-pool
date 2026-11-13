@@ -27,35 +27,24 @@ updates:
       interval: "daily"
       time: "05:00"
       timezone: "Europe/Oslo"
-    ignore:
-      - dependency-name: "typescript"
-        update-types:
-          - "version-update:semver-major"
-      - dependency-name: "eslint"
-        update-types:
-          - "version-update:semver-major"
-      - dependency-name: "@typescript-eslint/eslint-plugin"
-        update-types:
-          - "version-update:semver-major"
-      - dependency-name: "@typescript-eslint/parser"
-        update-types:
-          - "version-update:semver-major"
-      - dependency-name: "eslint-plugin-sf-plugin"
-        update-types:
-          - "version-update:semver-major"
     cooldown:
       default-days: 7
     groups:
       npm-salesforce:
         patterns:
           - "@salesforce/*"
+          - "@oclif/*"
       npm-production-minor-patch:
         dependency-type: "production"
+        patterns:
+          - "*"
         update-types:
           - "minor"
           - "patch"
       npm-development-minor-patch:
         dependency-type: "development"
+        patterns:
+          - "*"
         update-types:
           - "minor"
           - "patch"
