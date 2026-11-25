@@ -17,7 +17,7 @@ importers:
         version: 5.1.12
       '@salesforce/core':
         specifier: ^9.4.6
-        version: 9.4.6
+        version: 9.5.0
       '@salesforce/sf-plugins-core':
         specifier: ^13.0.9
         version: 13.0.9(@types/node@26.6.6)
@@ -1107,8 +1107,8 @@ packages:
     resolution: {integrity: sha512-ZR973WoqCgi6cR58WhgokbHVZOaADNKHiuM1FAwS5pTLQnC91xYi04i2e/gpAX2AUf7Ya6zjbusYtZNpSyKKAQ==}
     engines: {node: '>=18.0.0'}
 
-  '@salesforce/core@9.4.6':
-    resolution: {integrity: sha512-ph6zETeGRegICHLbP5OjHqiry7RdWpCf+NihuIEsKYhqgcxkeOSEiuznlLm2F4lmo4/y61ogF5kOBAKwOK+ynQ==}
+  '@salesforce/core@9.5.0':
+    resolution: {integrity: sha512-18OsyaRZfnXKLNPAc0eVTsqLQh+q+YsjrjUEocWtfjl9wZNn6Owc255IhjBb0LZ+GXPKFNmlh4ufY/r2zAi1VA==}
     engines: {node: '>=22.0.0'}
 
   '@salesforce/dev-config@4.3.3':
@@ -2280,8 +2280,8 @@ packages:
     engines: {node: '>=0.12.18'}
     hasBin: true
 
-  electron-to-chromium@1.5.487:
-    resolution: {integrity: sha512-qWotOhQYeYEj+DK4+Y+cfPj44qiC6ETIiWtJLfmDJydED2BJJ7loPA4SfBbbrMI6X/X3tryJgxnY9nxsO545Zw==}
+  electron-to-chromium@1.5.489:
+    resolution: {integrity: sha512-1cF87WItryk9lj5wg5SLsNegUihdkcHuOfrANPpO02y/d2krm1Oc3GjA9KBwlT5o145FTa1bbjdLc7pZnvtnYQ==}
 
   emoji-regex@10.6.0:
     resolution: {integrity: sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==}
@@ -2532,12 +2532,12 @@ packages:
   fastq@1.20.3:
     resolution: {integrity: sha512-XKv5nnLs6nLF71NgiKJLIZFLkPyIEuOselLG7ujZnGrRfQK8HpvY+WqKhAJUAdLomwVHErVS4LfxFlPq0/FTAw==}
 
-  faye-websocket@0.11.4:
-    resolution: {integrity: sha512-CzbClwlXAuiRQAlUyfqPgvPoNKTckTPGfwZV4ZdAhVcP2lh9KUxJg2b5GkE7XbjKQ3YJnQ9z6D9ntLAlB+tP8g==}
-    engines: {node: '>=0.8.0'}
+  faye-websocket@0.12.0:
+    resolution: {integrity: sha512-k4SrrWTHgtilT0hPMzS/kbYx9OHs+ITVv3VGqEI45SOsveVyFSES4DA4Opi2UMrba2MZhQe9yjsVz7uwVKa1qQ==}
+    engines: {node: '>=0.10.0'}
 
-  faye@1.4.3:
-    resolution: {integrity: sha512-MVbPkUDW31a8tWgdGppHrkuV8+/9eq5u5T5AnrS95HU52YJyy9sx1DYGY7xRL0u/suckuctgxRMunTXIDdxRTg==}
+  faye@1.5.1:
+    resolution: {integrity: sha512-2I62UFeZDfAgwm/GgfPlNmMTc5vG39L7fwe0U2mfRTu4nuLEd7WXtvdyi+N2a6OCu6mpcX9vLIvlu9E8GrZNKA==}
     engines: {node: '>=14'}
 
   fdir@6.5.0:
@@ -3585,8 +3585,8 @@ packages:
     resolution: {integrity: sha512-RM5oyBy45cLEoHqCeh+MNuFAxO0vTFBLskvQbOKnEE7YTTSN4tbN8QWDIPQ6L+WvKsB/qLEGpYe2ZZ9d4W9OIQ==}
     engines: {node: '>=8'}
 
-  node-releases@2.0.64:
-    resolution: {integrity: sha512-zAPCKqMcnqs2nGy6nlkm7JduFseiBJy3EXHGLh+8pFR+TxGCBxxiEN21+UROU5CKwX/f4TlUcYjiM+vs/tsyxw==}
+  node-releases@2.0.65:
+    resolution: {integrity: sha512-PfvofsGQ+MiOQIPkX9fU8ELUWmy5zL74CdQaph/ismKszfFkfwXaw0cGiwbwym2hT9k5+mdyl8O5WQ1MD8EHmA==}
     engines: {node: '>=18'}
 
   node-stream-zip@1.16.0:
@@ -4448,11 +4448,11 @@ packages:
     resolution: {integrity: sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==}
     engines: {node: '>=12.0.0'}
 
-  tldts-core@7.4.26:
-    resolution: {integrity: sha512-fMNX6ToAFZa2pWrKUd95hhwzx4f6tc+TLtjAstkj6L20FCmbsQ7SCciD3tAJQ/er+SmAlanZ8x0qFkNDZaftIg==}
+  tldts-core@7.5.4:
+    resolution: {integrity: sha512-9+4zWtKEDZ3V3FoZ1B97rv+5z5oqp7yeXGVze3CxgQ+CJro9do9DCPD00wxstYZDXDMXsurkBerFfiB6GYtPbA==}
 
-  tldts@7.4.26:
-    resolution: {integrity: sha512-ImrRMX8xrz7KZKdINMHBTsEWNlPxzI/CdDXEXmV3Fp0jAU31x1ZD4YmrAPGCz325aXYSuBPG5k6v2wRmWbm2QQ==}
+  tldts@7.5.4:
+    resolution: {integrity: sha512-Rn2ABgjHZrA+jzqom5zhxA0hLohzYrIgfCPyhpTUxqsUrcsBYuab49LseR9waB9Jr8/MxdodvMHA91oRiGLO3Q==}
     hasBin: true
 
   to-regex-range@5.0.1:
@@ -4704,13 +4704,13 @@ packages:
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
 
-  websocket-driver@0.7.5:
-    resolution: {integrity: sha512-ZL2+3c7kMBdIRCMz6l8jQMHyGVxj+UL+xVk74Ombiciboca8rHa15L86B19E5oh1pL9Ii/uj54gtsIrZGMo6zA==}
-    engines: {node: '>=0.8.0'}
+  websocket-driver@0.8.0:
+    resolution: {integrity: sha512-upjjWCo/1ZysdZ3rMvXXUDk9PmbYne+wSD1t78HAvIvjmR+avda0MsLWhtkn5PW8Ht34EXhhWF6OseWJ8nTGlg==}
+    engines: {node: '>=0.10.0'}
 
-  websocket-extensions@0.1.4:
-    resolution: {integrity: sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==}
-    engines: {node: '>=0.8.0'}
+  websocket-extensions@0.2.0:
+    resolution: {integrity: sha512-vQaTTgDDgwlrreIJAprknlnvEtZMMxfLqoxyQYnWO8dgcz2qIzQNysCpwOekz8kqLvzrZ0dcaL9hejZ+2AszCA==}
+    engines: {node: '>=0.10.0'}
 
   whatwg-encoding@3.1.1:
     resolution: {integrity: sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==}
@@ -5947,7 +5947,7 @@ snapshots:
       cross-spawn: 7.0.6
       csv-parse: 7.0.3
       csv-stringify: 6.9.0
-      faye: 1.4.3
+      faye: 1.5.1
       form-data: 4.0.6
       multistream: 3.1.0
       undici: 8.12.4
@@ -6232,7 +6232,7 @@ snapshots:
 
   '@salesforce/cli-plugins-testkit@5.3.95(supports-color@8.1.1)':
     dependencies:
-      '@salesforce/core': 9.4.6
+      '@salesforce/core': 9.5.0
       '@salesforce/kit': 4.0.10
       '@salesforce/ts-types': 3.2.4
       '@types/shelljs': 0.10.0
@@ -6253,7 +6253,7 @@ snapshots:
       ajv: 8.20.0
       change-case: 4.1.2
       fast-levenshtein: 3.0.0
-      faye: 1.4.3
+      faye: 1.5.1
       form-data: 4.0.6
       js2xmlparser: 4.0.2
       jsonwebtoken: 9.0.3
@@ -6267,7 +6267,7 @@ snapshots:
       ts-retry-promise: 0.8.1
       zod: 4.6.7
 
-  '@salesforce/core@9.4.6':
+  '@salesforce/core@9.5.0':
     dependencies:
       '@jsforce/jsforce-node': 3.13.1
       '@salesforce/kit': 4.0.10
@@ -6275,7 +6275,7 @@ snapshots:
       ajv: 8.20.0
       change-case: 4.1.2
       fast-levenshtein: 3.0.0
-      faye: 1.4.3
+      faye: 1.5.1
       form-data: 4.0.6
       js2xmlparser: 4.0.2
       jsonwebtoken: 9.0.3
@@ -6345,7 +6345,7 @@ snapshots:
       '@inquirer/prompts': 7.10.1(@types/node@26.6.6)
       '@jsforce/jsforce-node': 3.13.1
       '@oclif/core': 5.1.12
-      '@salesforce/core': 9.4.6
+      '@salesforce/core': 9.5.0
       '@salesforce/kit': 4.0.10
       '@salesforce/sf-plugins-core': 13.0.9(@types/node@26.6.6)
       got: 13.0.0
@@ -6370,7 +6370,7 @@ snapshots:
       '@inquirer/password': 5.3.0(@types/node@26.6.6)
       '@oclif/core': 5.1.12
       '@oclif/table': 1.0.8
-      '@salesforce/core': 9.4.6
+      '@salesforce/core': 9.5.0
       '@salesforce/kit': 4.0.10
       '@salesforce/ts-types': 3.2.4
       ansis: 3.17.0
@@ -7073,8 +7073,8 @@ snapshots:
     dependencies:
       baseline-browser-mapping: 2.11.38
       caniuse-lite: 1.0.30001826
-      electron-to-chromium: 1.5.487
-      node-releases: 2.0.64
+      electron-to-chromium: 1.5.489
+      node-releases: 2.0.65
       update-browserslist-db: 1.4.0(browserslist@4.29.5)
 
   buffer-equal-constant-time@1.0.1: {}
@@ -7620,7 +7620,7 @@ snapshots:
 
   ejs@6.0.1: {}
 
-  electron-to-chromium@1.5.487: {}
+  electron-to-chromium@1.5.489: {}
 
   emoji-regex@10.6.0: {}
 
@@ -7956,14 +7956,14 @@ snapshots:
     dependencies:
       reusify: 1.1.0
 
-  faye-websocket@0.11.4:
+  faye-websocket@0.12.0:
     dependencies:
-      websocket-driver: 0.7.5
+      websocket-driver: 0.8.0
 
-  faye@1.4.3:
+  faye@1.5.1:
     dependencies:
       csprng: 0.1.2
-      faye-websocket: 0.11.4
+      faye-websocket: 0.12.0
       tough-cookie: 6.1.0
       tunnel-agent: 0.6.0
 
@@ -9052,7 +9052,7 @@ snapshots:
     dependencies:
       process-on-spawn: 1.1.0
 
-  node-releases@2.0.64: {}
+  node-releases@2.0.65: {}
 
   node-stream-zip@1.16.0: {}
 
@@ -9990,11 +9990,11 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.7)
       picomatch: 4.0.7
 
-  tldts-core@7.4.26: {}
+  tldts-core@7.5.4: {}
 
-  tldts@7.4.26:
+  tldts@7.5.4:
     dependencies:
-      tldts-core: 7.4.26
+      tldts-core: 7.5.4
 
   to-regex-range@5.0.1:
     dependencies:
@@ -10010,7 +10010,7 @@ snapshots:
 
   tough-cookie@6.1.0:
     dependencies:
-      tldts: 7.4.26
+      tldts: 7.5.4
 
   tr46@0.0.3: {}
 
@@ -10279,13 +10279,13 @@ snapshots:
 
   webidl-conversions@3.0.1: {}
 
-  websocket-driver@0.7.5:
+  websocket-driver@0.8.0:
     dependencies:
       http-parser-js: 0.5.10
       safe-buffer: 5.2.1
-      websocket-extensions: 0.1.4
+      websocket-extensions: 0.2.0
 
-  websocket-extensions@0.1.4: {}
+  websocket-extensions@0.2.0: {}
 
   whatwg-encoding@3.1.1:
     dependencies:
