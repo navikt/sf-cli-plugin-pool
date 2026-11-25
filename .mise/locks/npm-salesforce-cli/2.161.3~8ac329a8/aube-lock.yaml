@@ -1,0 +1,59 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@salesforce/cli':
+        specifier: 2.161.3
+        version: 2.161.3
+
+packages:
+
+  '@salesforce/cli@2.161.3':
+    resolution: {integrity: sha512-TdsMnl4jQDFMOy/V4C3mqTeiSlGRTRkK5xfo3DQ7Qgni1qpfUmVuDE67FHwRFWmUE9PRQuDLOAjOBXan2Awptw==}
+    engines: {node: '>=22.0.0'}
+    hasBin: true
+
+snapshots:
+
+  '@salesforce/cli@2.161.3':
+    bundledDependencies:
+      - '@inquirer/select'
+      - '@oclif/core'
+      - '@oclif/plugin-autocomplete'
+      - '@oclif/plugin-commands'
+      - '@oclif/plugin-help'
+      - '@oclif/plugin-not-found'
+      - '@oclif/plugin-plugins'
+      - '@oclif/plugin-search'
+      - '@oclif/plugin-update'
+      - '@oclif/plugin-version'
+      - '@oclif/plugin-warn-if-update-available'
+      - '@oclif/plugin-which'
+      - '@salesforce/core'
+      - '@salesforce/kit'
+      - '@salesforce/plugin-agent'
+      - '@salesforce/plugin-apex'
+      - '@salesforce/plugin-api'
+      - '@salesforce/plugin-auth'
+      - '@salesforce/plugin-data'
+      - '@salesforce/plugin-deploy-retrieve'
+      - '@salesforce/plugin-info'
+      - '@salesforce/plugin-limits'
+      - '@salesforce/plugin-marketplace'
+      - '@salesforce/plugin-org'
+      - '@salesforce/plugin-packaging'
+      - '@salesforce/plugin-schema'
+      - '@salesforce/plugin-settings'
+      - '@salesforce/plugin-sobject'
+      - '@salesforce/plugin-telemetry'
+      - '@salesforce/plugin-templates'
+      - '@salesforce/plugin-trust'
+      - '@salesforce/plugin-user'
+      - '@salesforce/sf-plugins-core'
+      - ansis
