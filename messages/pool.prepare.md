@@ -6,6 +6,8 @@ Prepare scratch orgs in a pool up to the desired count.
 
 Reads a pool configuration file and creates scratch orgs to fill each defined pool to its desired count. If a pool already has enough orgs, it is skipped. Packages listed as dependencies in sfdx-project.json are installed after each org is created.
 
+Prepares up to 3 orgs concurrently by default. Set concurrency per pool in the config or override all pools with --concurrency. Pools are processed in order and packages are installed sequentially within each org.
+
 # examples
 
 - Prepare all pools defined in the default config file.
@@ -23,6 +25,34 @@ Reads a pool configuration file and creates scratch orgs to fill each defined po
 - Pipe package installation keys from a secret store into the command.
 
   vault read -field=pool-keys secret/sf | <%= config.bin %> <%= command.id %> --config-file config/pool.json --package-keys-stdin
+
+- Override configured concurrency and prepare one org at a time.
+
+  <%= config.bin %> <%= command.id %> --config-file config/pool.json --concurrency 1
+
+# flags.concurrency.summary
+
+Maximum concurrent org preparations. Overrides each pool's concurrency setting (default: 3). Use 1 for sequential preparation.
+
+# error.invalid-concurrency
+
+Invalid concurrency for pool '%s': expected a positive safe integer.
+
+# info.org-created
+
+[%s][slot %s] Scratch org created: %s
+
+# info.package-installing
+
+[%s][slot %s] Installing package '%s' (%s)...
+
+# info.package-installed
+
+[%s][slot %s] Package '%s' installed.
+
+# info.attempt-failed
+
+[%s][slot %s] Attempt %s failed: %s
 
 # flags.config-file.summary
 

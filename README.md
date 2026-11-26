@@ -76,6 +76,7 @@ Pools are defined via JSON config files:
     {
       "tag": "pool-name",
       "count": 10,
+      "concurrency": 3,
       "definitionFilePath": "config/project-scratch-def.json",
       "retryCount": 3,
       "expirationDays": 7
@@ -83,6 +84,22 @@ Pools are defined via JSON config files:
   ]
 }
 ```
+
+Org preparation runs in parallel, including creation, package installation, and auth storage.
+The maximum concurrency is resolved as **`--concurrency` override > pool's `concurrency` > 3**.
+Values must be positive safe integers; use `1` for sequential preparation:
+
+```bash
+sf pool prepare --config-file config/pool.json --concurrency 1
+```
+
+Pools are processed sequentially in configuration order, and packages remain sequential within
+each org. Progress messages from different orgs may interleave and identify the pool and slot.
+Retries and failed-org cleanup stay independent for each slot.
+
+The limit applies only to one command invocation, not other prepare processes. Salesforce
+daily creation, active-org, and API limits still apply. Concurrent prepare processes can still
+overfill the same pool because capacity is not reserved across processes.
 
 ## DevHub Requirements
 

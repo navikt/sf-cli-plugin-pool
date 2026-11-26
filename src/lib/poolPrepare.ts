@@ -1,5 +1,5 @@
 import * as fs from 'node:fs';
-import { AuthInfo, Connection, Logger, Org, SfError } from '@salesforce/core';
+import { AuthInfo, Connection, Logger, Messages, Org, SfError } from '@salesforce/core';
 import { PoolConfig, PoolDefinition } from '../types/pool-config.js';
 import { PackageDependency, PackageKeys } from '../types/package.js';
 import { PoolPrepareResult } from '../types/pool-prepare.js';
@@ -9,10 +9,18 @@ import { readSfdxProjectDependencies, installPackage } from './packageInstaller.
 import { deleteOrg } from './orgCleanup.js';
 
 const logger = Logger.childFromRoot('poolPrepare');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@navikt/sf-cli-plugin-pool', 'pool.prepare');
 
 const STATUS_PROVISIONING = 'in_progress';
 const STATUS_AVAILABLE = 'available';
 const STATUS_FAILED = 'failed';
+
+function validateConcurrency(value: unknown, tag: string): asserts value is number {
+  if (!Number.isSafeInteger(value) || (value as number) < 1) {
+    throw new SfError(messages.getMessage('error.invalid-concurrency', [tag]), 'PoolConcurrencyInvalidError');
+  }
+}
 
 export function loadPoolConfig(filePath: string): PoolConfig {
   logger.debug('Loading pool config', { filePath });
@@ -32,13 +40,17 @@ export function loadPoolConfig(filePath: string): PoolConfig {
   if (!raw || typeof raw !== 'object' || !Array.isArray((raw as Record<string, unknown>)['pools'])) {
     throw new SfError(
       `Invalid pool config: expected an object with a "pools" array at ${filePath}`,
-      'PoolConfigInvalidError'
+      'PoolConfigInvalidError',
     );
   }
 
   const config = raw as PoolConfig;
   if (config.pools.length === 0) {
     throw new SfError(`Invalid pool config: "pools" array is empty at ${filePath}`, 'PoolConfigInvalidError');
+  }
+
+  for (const pool of config.pools) {
+    if (pool.concurrency !== undefined) validateConcurrency(pool.concurrency, pool.tag);
   }
 
   return config;
@@ -64,7 +76,7 @@ export function loadPackageKeys(keysFilePath?: string): PackageKeys {
         if (typeof key !== 'string') {
           throw new SfError(
             `Invalid package keys file ${keysFilePath}: value for '${alias}' must be a string`,
-            'PackageKeysInvalidError'
+            'PackageKeysInvalidError',
           );
         }
         keys[alias] = key;
@@ -111,7 +123,7 @@ export type PreparePoolDeps = {
   readSfdxProjectDependencies: (
     sfdxProjectFile: string,
     devHubConnection: Connection,
-    packageKeys?: PackageKeys
+    packageKeys?: PackageKeys,
   ) => Promise<PackageDependency[]>;
   installPackage: typeof installPackage;
   getTargetOrgConnection: (username: string) => Promise<Connection>;
@@ -142,8 +154,11 @@ export async function preparePool(
   keepFailed: boolean,
   apiVersion?: string,
   deps: PreparePoolDeps = defaultDeps,
-  onProgress?: (message: string) => void
+  onProgress?: (message: string) => void,
+  concurrencyOverride?: number,
 ): Promise<PoolPrepareResult> {
+  const concurrency = concurrencyOverride ?? poolDef.concurrency ?? 3;
+  validateConcurrency(concurrency, poolDef.tag);
   const connection = hubOrg.getConnection(apiVersion);
   const existing = await queryPoolOrgs(connection, [poolDef.tag]);
   const gap = Math.max(0, poolDef.count - existing.length);
@@ -166,47 +181,47 @@ export async function preparePool(
   const dependencies = await deps.readSfdxProjectDependencies(sfdxProjectFile, connection, packageKeys);
   const maxRetries = poolDef.retryCount ?? 0;
 
-  /* eslint-disable no-await-in-loop */
-  for (let i = 0; i < gap; i++) {
+  const prepareSlot = async (slot: number): Promise<Error | undefined> => {
     let lastError: Error | undefined;
     let orgId: string | undefined;
     let username: string | undefined;
+    const progress = (key: string, values: string[]): void =>
+      onProgress?.(messages.getMessage(key, [poolDef.tag, String(slot + 1), ...values]));
 
+    /* eslint-disable no-await-in-loop */
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
-        logger.debug('Creating org', { tag: poolDef.tag, slot: i + 1, attempt: attempt + 1 });
+        logger.debug('Creating org', { tag: poolDef.tag, slot: slot + 1, attempt: attempt + 1 });
 
         const created = await deps.createScratchOrg(hubOrg, poolDef.definitionFilePath, poolDef.expirationDays);
         orgId = created.orgId;
         username = created.username;
         logger.info('Scratch org created', { orgId, username: created.username, tag: poolDef.tag });
-        onProgress?.(`[${poolDef.tag}] Scratch org created: ${created.username}`);
+        progress('info.org-created', [created.username]);
 
         await deps.tagScratchOrg(connection, orgId, poolDef.tag, STATUS_PROVISIONING);
 
         const targetConnection = await deps.getTargetOrgConnection(created.username);
         for (const dep of dependencies) {
           logger.info('Installing package on scratch org', { alias: dep.alias, packageId: dep.packageId, orgId });
-          onProgress?.(`[${poolDef.tag}] Installing package '${dep.alias}' (${dep.packageId})...`);
+          progress('info.package-installing', [dep.alias, dep.packageId]);
           await deps.installPackage(targetConnection, dep.packageId, dep.alias, dep.installationKey);
-          onProgress?.(`[${poolDef.tag}] Package '${dep.alias}' installed.`);
+          progress('info.package-installed', [dep.alias]);
         }
 
         const sfdxAuthUrl = await deps.getSfdxAuthUrl(created.username);
         await deps.tagScratchOrg(connection, orgId, poolDef.tag, STATUS_AVAILABLE, sfdxAuthUrl);
 
-        result.created++;
-        lastError = undefined;
-        break;
+        return undefined;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
         logger.warn('Org creation/provisioning attempt failed', {
           tag: poolDef.tag,
-          slot: i + 1,
+          slot: slot + 1,
           attempt: attempt + 1,
           error: lastError.message,
         });
-        onProgress?.(`[${poolDef.tag}] Attempt ${attempt + 1} failed: ${lastError.message}`);
+        progress('info.attempt-failed', [String(attempt + 1), lastError.message]);
 
         if (orgId) {
           if (!keepFailed) {
@@ -240,13 +255,25 @@ export async function preparePool(
         }
       }
     }
+    /* eslint-enable no-await-in-loop */
 
-    if (lastError) {
-      result.failed++;
-      result.errors.push(lastError.message);
+    return lastError;
+  };
+
+  const outcomes: Array<Error | undefined> = new Array<Error | undefined>(gap);
+  let nextSlot = 0;
+  const worker = async (): Promise<void> => {
+    while (nextSlot < gap) {
+      const slot = nextSlot++;
+      // eslint-disable-next-line no-await-in-loop
+      outcomes[slot] = await prepareSlot(slot);
     }
-  }
-  /* eslint-enable no-await-in-loop */
+  };
+
+  await Promise.all(Array.from({ length: Math.min(concurrency, gap) }, worker));
+  result.errors = outcomes.filter((error): error is Error => error !== undefined).map((error) => error.message);
+  result.failed = result.errors.length;
+  result.created = gap - result.failed;
 
   return result;
 }

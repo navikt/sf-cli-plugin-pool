@@ -66,6 +66,13 @@ export default class PoolPrepare extends SfCommand<PoolPrepareCommandResult> {
       summary: messages.getMessage('flags.keep-failed.summary'),
       default: false,
     }),
+    // No flag default: each pool can define its own concurrency.
+    // eslint-disable-next-line sf-plugin/flag-min-max-default
+    concurrency: Flags.integer({
+      summary: messages.getMessage('flags.concurrency.summary'),
+      min: 1,
+      max: Number.MAX_SAFE_INTEGER,
+    }),
   };
 
   public async run(): Promise<PoolPrepareCommandResult> {
@@ -99,6 +106,7 @@ export default class PoolPrepare extends SfCommand<PoolPrepareCommandResult> {
         flags['api-version'],
         undefined,
         logProgress,
+        flags.concurrency,
       );
       results.push(result);
     }

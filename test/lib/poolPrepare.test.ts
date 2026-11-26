@@ -3,6 +3,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import { TestContext, MockTestOrgData } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { Org, SfError } from '@salesforce/core';
 import {
   loadPoolConfig,
@@ -13,6 +14,20 @@ import {
 } from '../../src/lib/poolPrepare.js';
 import type { PreparePoolDeps } from '../../src/lib/poolPrepare.js';
 import { PoolDefinition } from '../../src/types/pool-config.js';
+
+function deferred<T>(): { promise: Promise<T>; resolve: (value: T) => void; reject: (error: Error) => void } {
+  let resolve!: (value: T) => void;
+  let reject!: (error: Error) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve, reject };
+}
+
+async function flushWork(): Promise<void> {
+  await new Promise<void>((resolve) => setImmediate(resolve));
+}
 
 function writeTempFile(content: string): string {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pool-test-'));
@@ -34,6 +49,7 @@ describe('poolPrepare', () => {
   });
 
   beforeEach(async () => {
+    stubSfCommandUx($$.SANDBOX);
     devHub = new MockTestOrgData();
     devHub.makeDevHub();
     await $$.stubAuths(devHub);
@@ -44,6 +60,19 @@ describe('poolPrepare', () => {
   });
 
   describe('loadPoolConfig', () => {
+    for (const concurrency of [0, -1, 1.5, '2', null, Number.MAX_SAFE_INTEGER + 1]) {
+      it(`rejects invalid configured concurrency ${JSON.stringify(concurrency)}`, () => {
+        const filePath = writeTempFile(JSON.stringify({ pools: [{ tag: 'invalid-pool', concurrency }] }));
+        try {
+          expect(() => loadPoolConfig(filePath))
+            .to.throw(SfError, "Invalid concurrency for pool 'invalid-pool'")
+            .with.property('name', 'PoolConcurrencyInvalidError');
+        } finally {
+          fs.rmSync(path.dirname(filePath), { recursive: true, force: true });
+        }
+      });
+    }
+
     it('throws when config file does not exist', () => {
       expect(() => loadPoolConfig('/nonexistent/pool.json'))
         .to.throw(SfError)
@@ -204,6 +233,7 @@ describe('poolPrepare', () => {
     let deps: PreparePoolDeps;
 
     beforeEach(() => {
+      $$.fakeConnectionRequest = () => Promise.resolve({ totalSize: 0, done: true, records: [] });
       createScratchOrgStub = $$.SANDBOX.stub();
       tagScratchOrgStub = $$.SANDBOX.stub().resolves();
       deleteOrgStub = $$.SANDBOX.stub().resolves();
@@ -218,10 +248,233 @@ describe('poolPrepare', () => {
         installPackage: installPackageStub as unknown as PreparePoolDeps['installPackage'],
         getTargetOrgConnection: $$.SANDBOX.stub().resolves({}) as unknown as PreparePoolDeps['getTargetOrgConnection'],
         getSfdxAuthUrl: $$.SANDBOX.stub().resolves(
-          'force://test-auth-url'
+          'force://test-auth-url',
         ) as unknown as PreparePoolDeps['getSfdxAuthUrl'],
       };
     });
+
+    for (const { configured, override, expected } of [
+      { configured: undefined, override: undefined, expected: 3 },
+      { configured: 2, override: undefined, expected: 2 },
+      { configured: 2, override: 1, expected: 1 },
+      { configured: 1, override: 4, expected: 4 },
+    ]) {
+      it(`limits active preparations to ${expected} (config=${configured}, override=${override})`, async () => {
+        const gates = Array.from({ length: 5 }, () => deferred<void>());
+        let nextOrg = 0;
+        createScratchOrgStub.callsFake(async () => {
+          const id = String(nextOrg++);
+          return { orgId: id, username: id };
+        });
+        (deps.getSfdxAuthUrl as ReturnType<typeof $$.SANDBOX.stub>).callsFake(async (username: unknown) => {
+          await gates[Number(username)].promise;
+          return 'force://test-auth-url';
+        });
+
+        const hubOrg = await Org.create({ aliasOrUsername: devHub.username });
+        const preparing = preparePool(
+          hubOrg,
+          { ...poolDef, count: 5, concurrency: configured },
+          {},
+          '.',
+          false,
+          undefined,
+          deps,
+          undefined,
+          override,
+        );
+
+        try {
+          await flushWork();
+          expect(createScratchOrgStub.callCount).to.equal(expected);
+          expect(tagScratchOrgStub.getCalls().filter((call) => call.args[3] === 'available')).to.have.length(0);
+          gates[0].resolve();
+          await flushWork();
+          expect(createScratchOrgStub.callCount).to.equal(expected + 1);
+        } finally {
+          gates.forEach((gate) => gate.resolve());
+          await preparing;
+        }
+        expect(await preparing).to.include({ created: 5, failed: 0 });
+        expect(readDepsStub.calledOnce).to.be.true;
+      });
+    }
+
+    it('caps workers at the missing count and preserves package ordering while reusing free workers', async () => {
+      const gates = Array.from({ length: 3 }, () => deferred<void>());
+      let nextOrg = 0;
+      createScratchOrgStub.callsFake(async () => {
+        const id = String(nextOrg++);
+        return { orgId: id, username: id };
+      });
+      (deps.getTargetOrgConnection as ReturnType<typeof $$.SANDBOX.stub>).callsFake(async (username: unknown) => ({
+        username,
+      }));
+      readDepsStub.resolves([
+        { packageId: '04tA', alias: 'A' },
+        { packageId: '04tB', alias: 'B' },
+      ]);
+      const installations: string[] = [];
+      installPackageStub.callsFake(async (target: unknown, packageId: unknown) => {
+        const connection = target as { username: string };
+        installations.push(`${connection.username}:${String(packageId)}`);
+        if (packageId === '04tA') await gates[Number(connection.username)].promise;
+      });
+      const progress = $$.SANDBOX.spy();
+      const hubOrg = await Org.create({ aliasOrUsername: devHub.username });
+      const preparing = preparePool(
+        hubOrg,
+        { ...poolDef, count: 3, concurrency: 2 },
+        {},
+        '.',
+        false,
+        undefined,
+        deps,
+        progress,
+      );
+      try {
+        await flushWork();
+        expect(createScratchOrgStub.callCount).to.equal(2);
+        expect(installations).to.deep.equal(['0:04tA', '1:04tA']);
+        gates[1].resolve();
+        await flushWork();
+        expect(createScratchOrgStub.callCount).to.equal(3);
+        expect(installations).to.deep.equal(['0:04tA', '1:04tA', '1:04tB', '2:04tA']);
+        gates[2].resolve();
+        await flushWork();
+        expect(createScratchOrgStub.callCount).to.equal(3);
+        expect(progress.getCalls().map((call) => String(call.args[0]))).to.include(
+          "[test-pool][slot 2] Package 'B' installed.",
+        );
+      } finally {
+        gates.forEach((gate) => gate.resolve());
+        await preparing;
+      }
+      expect(await preparing).to.include({ created: 3, failed: 0 });
+      expect(installations.filter((entry) => entry.startsWith('0:'))).to.deep.equal(['0:04tA', '0:04tB']);
+    });
+
+    it('does not start extra work when concurrency exceeds the gap', async () => {
+      createScratchOrgStub.resolves({ orgId: 'only-org', username: 'only-user' });
+      const hubOrg = await Org.create({ aliasOrUsername: devHub.username });
+      const result = await preparePool(
+        hubOrg,
+        { ...poolDef, count: 1, concurrency: 10 },
+        {},
+        '.',
+        false,
+        undefined,
+        deps,
+      );
+      expect(result).to.include({ created: 1, failed: 0 });
+      expect(createScratchOrgStub.calledOnce).to.be.true;
+    });
+
+    it('reports errors in slot order even when slots fail in reverse order', async () => {
+      const gates = [deferred<{ orgId: string; username: string }>(), deferred<{ orgId: string; username: string }>()];
+      createScratchOrgStub.onFirstCall().returns(gates[0].promise);
+      createScratchOrgStub.onSecondCall().returns(gates[1].promise);
+      const hubOrg = await Org.create({ aliasOrUsername: devHub.username });
+      const preparing = preparePool(hubOrg, poolDef, {}, '.', false, undefined, deps);
+      await flushWork();
+      gates[1].reject(new Error('second slot'));
+      await flushWork();
+      gates[0].reject(new Error('first slot'));
+      const result = await preparing;
+      expect(result).to.include({ created: 0, failed: 2 });
+      expect(result.errors).to.deep.equal(['first slot', 'second slot']);
+    });
+
+    for (const keepFailed of [false, true]) {
+      it(`isolates concurrent retries and waits for cleanup (keepFailed=${keepFailed})`, async () => {
+        const cleanup = deferred<void>();
+        let nextOrg = 0;
+        createScratchOrgStub.callsFake(async () => {
+          const id = String(nextOrg++);
+          return { orgId: id, username: id };
+        });
+        (deps.getTargetOrgConnection as ReturnType<typeof $$.SANDBOX.stub>).callsFake(async (username: unknown) => ({
+          username,
+        }));
+        readDepsStub.resolves([{ packageId: '04tA', alias: 'A' }]);
+        installPackageStub.callsFake(async (target: unknown) => {
+          const connection = target as { username: string };
+          if (['0', '3'].includes(connection.username)) throw new Error(`install ${connection.username}`);
+        });
+        if (keepFailed) {
+          tagScratchOrgStub.withArgs($$.SANDBOX.match.any, '0', poolDef.tag, 'failed').returns(cleanup.promise);
+        } else {
+          deleteOrgStub.withArgs($$.SANDBOX.match({ Id: '0' })).returns(cleanup.promise);
+        }
+        let settled = false;
+        const hubOrg = await Org.create({ aliasOrUsername: devHub.username });
+        const preparing = preparePool(
+          hubOrg,
+          { ...poolDef, count: 3, concurrency: 2, retryCount: 1 },
+          {},
+          '.',
+          keepFailed,
+          undefined,
+          deps,
+        ).then((result) => {
+          settled = true;
+          return result;
+        });
+        try {
+          await flushWork();
+          expect(createScratchOrgStub.callCount).to.equal(3);
+          expect(settled).to.be.false;
+          expect(tagScratchOrgStub.calledWith($$.SANDBOX.match.any, '1', poolDef.tag, 'available')).to.be.true;
+          expect(tagScratchOrgStub.calledWith($$.SANDBOX.match.any, '2', poolDef.tag, 'available')).to.be.true;
+        } finally {
+          cleanup.resolve();
+          await preparing;
+        }
+        const result = await preparing;
+        expect(result).to.include({ created: 2, failed: 1 });
+        expect(result.errors).to.deep.equal(['install 3']);
+        expect(createScratchOrgStub.callCount).to.equal(4);
+        if (keepFailed) {
+          expect(deleteOrgStub.notCalled).to.be.true;
+          expect(
+            tagScratchOrgStub
+              .getCalls()
+              .filter((call) => call.args[3] === 'failed')
+              .map((call) => call.args[1]),
+          ).to.deep.equal(['0', '3']);
+        } else {
+          expect(deleteOrgStub.getCalls().map((call) => call.args[0])).to.deep.equal([
+            { Id: '0', Pool_allocation_status__c: 'failed', Pool_tag__c: poolDef.tag, SignupUsername: '0' },
+            { Id: '3', Pool_allocation_status__c: 'failed', Pool_tag__c: poolDef.tag, SignupUsername: '3' },
+          ]);
+        }
+      });
+    }
+
+    it('retries a failed slot successfully while other slots progress', async () => {
+      createScratchOrgStub.onFirstCall().rejects(new Error('transient'));
+      createScratchOrgStub.onSecondCall().resolves({ orgId: 'good', username: 'good' });
+      createScratchOrgStub.onThirdCall().resolves({ orgId: 'retry', username: 'retry' });
+      const hubOrg = await Org.create({ aliasOrUsername: devHub.username });
+      const result = await preparePool(hubOrg, { ...poolDef, retryCount: 1 }, {}, '.', false, undefined, deps);
+      expect(result).to.include({ created: 2, failed: 0 });
+      expect(result.errors).to.be.empty;
+      expect(createScratchOrgStub.callCount).to.equal(3);
+      expect(deleteOrgStub.notCalled).to.be.true;
+    });
+
+    for (const concurrency of [0, -1, 1.5, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1]) {
+      it(`rejects invalid direct-call concurrency ${concurrency} before creating orgs`, async () => {
+        const hubOrg = await Org.create({ aliasOrUsername: devHub.username });
+        try {
+          await preparePool(hubOrg, poolDef, {}, '.', false, undefined, deps, undefined, concurrency);
+          expect.fail('Expected invalid concurrency');
+        } catch (error) {
+          expect(error).to.be.instanceOf(SfError).with.property('name', 'PoolConcurrencyInvalidError');
+        }
+        expect(createScratchOrgStub.notCalled).to.be.true;
+      });
+    }
 
     it('skips when pool is already at capacity', async () => {
       $$.fakeConnectionRequest = () =>
@@ -295,7 +548,7 @@ describe('poolPrepare', () => {
         '.',
         false,
         undefined,
-        deps
+        deps,
       );
 
       expect(result.created).to.equal(1);
@@ -316,7 +569,7 @@ describe('poolPrepare', () => {
         '.',
         false,
         undefined,
-        deps
+        deps,
       );
 
       expect(result.created).to.equal(0);
