@@ -9,19 +9,19 @@ importers:
   .:
     dependencies:
       '@salesforce/cli':
-        specifier: 2.161.3
-        version: 2.161.3
+        specifier: 2.161.4
+        version: 2.161.4
 
 packages:
 
-  '@salesforce/cli@2.161.3':
-    resolution: {integrity: sha512-TdsMnl4jQDFMOy/V4C3mqTeiSlGRTRkK5xfo3DQ7Qgni1qpfUmVuDE67FHwRFWmUE9PRQuDLOAjOBXan2Awptw==}
+  '@salesforce/cli@2.161.4':
+    resolution: {integrity: sha512-5LGkfTayjNNU7G6YFKrtV5Muij/UGfmfqLZYYlS/T2Sl+o9YG/RaIkCvRl0FrcMTEtlvSeqdv9kJ//v7YuJ9Pg==}
     engines: {node: '>=22.0.0'}
     hasBin: true
 
 snapshots:
 
-  '@salesforce/cli@2.161.3':
+  '@salesforce/cli@2.161.4':
     bundledDependencies:
       - '@inquirer/select'
       - '@oclif/core'
