@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/navikt/sf-cli-plugin-pool/compare/sf-cli-plugin-pool-v1.1.0...sf-cli-plugin-pool-v1.2.0) (2026-11-27)
+
+
+### Features
+
+* **pool:** add concurrency support for parallel org preparation PLATFORCE-16 ([70708e5](https://github.com/navikt/sf-cli-plugin-pool/commit/70708e5dd24edefb69b176fff1ddb3a35f08f933))
+
 ## [1.1.0](https://github.com/navikt/sf-cli-plugin-pool/compare/sf-cli-plugin-pool-v1.0.4...sf-cli-plugin-pool-v1.1.0) (2026-11-13)
 
 
