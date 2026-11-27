@@ -395,7 +395,7 @@ describe('parallel pool preparation NUT', () => {
     expect(new Set(orgs.records.map((org) => org.SignupUsername)).size).to.equal(2);
     StateAggregator.clearInstance();
     const state = await StateAggregator.getInstance();
-    const authExists = await Promise.all(orgs.records.map((org) => state.orgs.exists(org.SignupUsername)));
+    const authExists = await Promise.all(orgs.records.map((org) => state.orgs.hasFile(org.SignupUsername)));
     expect(authExists).to.deep.equal([true, true]);
     for (const org of orgs.records) {
       expect(org.Pool_allocation_status__c).to.equal('available');
