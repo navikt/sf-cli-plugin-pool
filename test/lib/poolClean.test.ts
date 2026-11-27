@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { TestContext } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
 import { Connection } from '@salesforce/core';

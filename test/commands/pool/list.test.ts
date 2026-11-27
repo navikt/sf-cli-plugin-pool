@@ -3,7 +3,6 @@ import { expect } from 'chai';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import PoolList from '../../../src/commands/pool/list.js';
 
-/* eslint-disable camelcase */
 describe('pool list', () => {
   const $$ = new TestContext();
   let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
@@ -31,7 +30,7 @@ describe('pool list', () => {
   });
 
   function fakeQueryResponse(
-    records: Array<{ Id: string; Pool_allocation_status__c: string; Pool_tag__c: string | null }>
+    records: Array<{ Id: string; Pool_allocation_status__c: string; Pool_tag__c: string | null }>,
   ) {
     $$.fakeConnectionRequest = () => Promise.resolve({ totalSize: records.length, done: true, records });
   }

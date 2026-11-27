@@ -3,7 +3,6 @@ import { expect } from 'chai';
 import { Org, SfError } from '@salesforce/core';
 import { createScratchOrg, tagScratchOrg } from '../../src/lib/orgCreator.js';
 
-/* eslint-disable camelcase */
 describe('orgCreator', () => {
   const $$ = new TestContext();
   let devHub: MockTestOrgData;

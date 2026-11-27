@@ -5,6 +5,8 @@ export type PoolDefinition = {
   retryCount?: number;
   expirationDays?: number;
   sfdxProjectFile?: string;
+  /** Maximum concurrent org preparations; defaults to 3 when omitted. */
+  concurrency?: number;
 };
 
 export type PoolConfig = {

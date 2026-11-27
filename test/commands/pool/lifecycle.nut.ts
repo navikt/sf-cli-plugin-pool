@@ -23,6 +23,7 @@ describe('pool lifecycle NUTs', () => {
   poolConfig.pools.forEach((pool) => {
     pool.tag = poolTag;
   });
+
   let fetched: PoolFetchResult | undefined;
   let returned: PoolReturnResult | undefined;
 
@@ -325,5 +326,80 @@ describe('pool lifecycle NUTs', () => {
     }).shellOutput.stdout;
 
     expect(output.includes('Pool Clean Results') || output.includes('No scratch orgs')).to.be.true;
+  });
+});
+
+describe('parallel pool preparation NUT', () => {
+  const poolTag = `nut-parallel-${process.env.GITHUB_RUN_ID ?? randomUUID()}-${randomUUID()}`;
+  const targetDevHubFlag = '--target-dev-hub testdevhub';
+  let configDir: string | undefined;
+  let configFile: string;
+
+  const cleanPool = (): void => {
+    const result = execCmd<PoolCleanResult>(
+      `pool clean ${targetDevHubFlag} --pool-tag ${poolTag} --all --no-prompt --json`,
+      { ensureExitCode: 0 },
+    ).jsonOutput?.result;
+    expect(result?.summary.failed).to.equal(0);
+  };
+
+  before(() => {
+    configDir = mkdtempSync(join(tmpdir(), 'sf-pool-parallel-'));
+    configFile = join(configDir, 'pool.json');
+    writeFileSync(
+      configFile,
+      JSON.stringify({
+        pools: [
+          {
+            tag: poolTag,
+            count: 2,
+            concurrency: 1,
+            definitionFilePath: 'config/project-scratch-def.json',
+            expirationDays: 1,
+          },
+        ],
+      }),
+      { mode: 0o600, flag: 'wx' },
+    );
+    cleanPool();
+  });
+
+  after(() => {
+    try {
+      cleanPool();
+    } finally {
+      if (configDir) rmSync(configDir, { recursive: true, force: true });
+    }
+  });
+
+  it('prepares two distinct available orgs with stored authentication using a CLI override', async () => {
+    const result = execCmd<PoolPrepareCommandResult>(
+      `pool prepare ${targetDevHubFlag} --config-file "${configFile}" --concurrency 2 --json`,
+      { ensureExitCode: 0 },
+    ).jsonOutput?.result;
+    expect(result?.pools).to.have.lengthOf(1);
+    expect(result?.pools[0]).to.include({ tag: poolTag, requested: 2, existing: 0, created: 2, failed: 0 });
+    expect(result?.pools[0].errors).to.be.empty;
+
+    const connection = (await Org.create({ aliasOrUsername: 'testdevhub' })).getConnection();
+    const orgs = await connection.query<{
+      Id: string;
+      SignupUsername: string;
+      Pool_allocation_status__c: string;
+      Sfdx_Auth_Url__c: string | null;
+    }>(
+      `SELECT Id, SignupUsername, Pool_allocation_status__c, Sfdx_Auth_Url__c FROM ScratchOrgInfo WHERE Pool_tag__c = '${poolTag}'`,
+    );
+    expect(orgs.records.length).to.equal(2);
+    expect(new Set(orgs.records.map((org) => org.Id)).size).to.equal(2);
+    expect(new Set(orgs.records.map((org) => org.SignupUsername)).size).to.equal(2);
+    StateAggregator.clearInstance();
+    const state = await StateAggregator.getInstance();
+    const authExists = await Promise.all(orgs.records.map((org) => state.orgs.hasFile(org.SignupUsername)));
+    expect(authExists).to.deep.equal([true, true]);
+    for (const org of orgs.records) {
+      expect(org.Pool_allocation_status__c).to.equal('available');
+      expect(org.Sfdx_Auth_Url__c?.startsWith('force://') ?? false).to.be.true;
+    }
   });
 });

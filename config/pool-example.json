@@ -3,6 +3,7 @@
     {
       "tag": "nut-test-pool",
       "count": 1,
+      "concurrency": 3,
       "definitionFilePath": "config/project-scratch-def.json",
       "retryCount": 0,
       "expirationDays": 1

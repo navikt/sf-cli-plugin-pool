@@ -4,7 +4,6 @@ import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { AuthInfo } from '@salesforce/core';
 import PoolFetch from '../../../src/commands/pool/fetch.js';
 
-/* eslint-disable camelcase */
 describe('pool fetch', () => {
   const $$ = new TestContext();
   let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
@@ -331,4 +330,3 @@ describe('pool fetch', () => {
     expect(result).to.have.property('isDefault').that.is.a('boolean');
   });
 });
-/* eslint-enable camelcase */
