@@ -22,6 +22,12 @@ function validateConcurrency(value: unknown, tag: string): asserts value is numb
   }
 }
 
+function validateRetryCount(value: unknown, tag: string): asserts value is number {
+  if (!Number.isSafeInteger(value) || (value as number) < 0) {
+    throw new SfError(messages.getMessage('error.invalid-retry-count', [tag]), 'PoolRetryCountInvalidError');
+  }
+}
+
 export function loadPoolConfig(filePath: string): PoolConfig {
   logger.debug('Loading pool config', { filePath });
 
@@ -51,6 +57,7 @@ export function loadPoolConfig(filePath: string): PoolConfig {
 
   for (const pool of config.pools) {
     if (pool.concurrency !== undefined) validateConcurrency(pool.concurrency, pool.tag);
+    if (pool.retryCount !== undefined) validateRetryCount(pool.retryCount, pool.tag);
   }
 
   return config;
@@ -159,6 +166,8 @@ export async function preparePool(
 ): Promise<PoolPrepareResult> {
   const concurrency = concurrencyOverride ?? poolDef.concurrency ?? 3;
   validateConcurrency(concurrency, poolDef.tag);
+  if (poolDef.retryCount !== undefined) validateRetryCount(poolDef.retryCount, poolDef.tag);
+  const maxRetries = poolDef.retryCount ?? 0;
   const connection = hubOrg.getConnection(apiVersion);
   const existing = await queryPoolOrgs(connection, [poolDef.tag]);
   const gap = Math.max(0, poolDef.count - existing.length);
@@ -179,7 +188,6 @@ export async function preparePool(
   }
 
   const dependencies = await deps.readSfdxProjectDependencies(sfdxProjectFile, connection, packageKeys);
-  const maxRetries = poolDef.retryCount ?? 0;
 
   const prepareSlot = async (slot: number): Promise<Error | undefined> => {
     let lastError: Error | undefined;

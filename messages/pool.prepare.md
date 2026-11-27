@@ -38,6 +38,10 @@ Maximum concurrent org preparations. Overrides each pool's concurrency setting (
 
 Invalid concurrency for pool '%s': expected a positive safe integer.
 
+# error.invalid-retry-count
+
+Invalid retryCount for pool '%s': expected a nonnegative safe integer.
+
 # info.org-created
 
 [%s][slot %s] Scratch org created: %s

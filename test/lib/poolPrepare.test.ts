@@ -60,6 +60,30 @@ describe('poolPrepare', () => {
   });
 
   describe('loadPoolConfig', () => {
+    for (const retryCount of [-1, 1.5, '2', null, Number.MAX_SAFE_INTEGER + 1]) {
+      it(`rejects invalid configured retry count ${JSON.stringify(retryCount)}`, () => {
+        const filePath = writeTempFile(JSON.stringify({ pools: [{ tag: 'invalid-pool', retryCount }] }));
+        try {
+          expect(() => loadPoolConfig(filePath))
+            .to.throw(SfError, "Invalid retryCount for pool 'invalid-pool'")
+            .with.property('name', 'PoolRetryCountInvalidError');
+        } finally {
+          fs.rmSync(path.dirname(filePath), { recursive: true, force: true });
+        }
+      });
+    }
+
+    for (const retryCount of [0, 1, Number.MAX_SAFE_INTEGER]) {
+      it(`accepts configured retry count ${retryCount}`, () => {
+        const filePath = writeTempFile(JSON.stringify({ pools: [{ tag: 'test-pool', retryCount }] }));
+        try {
+          expect(loadPoolConfig(filePath).pools[0].retryCount).to.equal(retryCount);
+        } finally {
+          fs.rmSync(path.dirname(filePath), { recursive: true, force: true });
+        }
+      });
+    }
+
     for (const concurrency of [0, -1, 1.5, '2', null, Number.MAX_SAFE_INTEGER + 1]) {
       it(`rejects invalid configured concurrency ${JSON.stringify(concurrency)}`, () => {
         const filePath = writeTempFile(JSON.stringify({ pools: [{ tag: 'invalid-pool', concurrency }] }));
@@ -461,6 +485,30 @@ describe('poolPrepare', () => {
       expect(result.errors).to.be.empty;
       expect(createScratchOrgStub.callCount).to.equal(3);
       expect(deleteOrgStub.notCalled).to.be.true;
+    });
+
+    for (const retryCount of [-1, 1.5, '2', null, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1]) {
+      it(`rejects invalid direct-call retry count ${retryCount} before provisioning`, async () => {
+        createScratchOrgStub.resolves({ orgId: 'org-1', username: 'user@scratch.org' });
+        const hubOrg = await Org.create({ aliasOrUsername: devHub.username });
+        try {
+          await preparePool(hubOrg, { ...poolDef, retryCount: retryCount as number }, {}, '.', false, undefined, deps);
+          expect.fail('Expected invalid retry count');
+        } catch (error) {
+          expect(error).to.be.instanceOf(SfError).with.property('name', 'PoolRetryCountInvalidError');
+        }
+        expect(readDepsStub.notCalled).to.be.true;
+        expect(createScratchOrgStub.notCalled).to.be.true;
+      });
+    }
+
+    it('attempts each missing org once with zero retries and reports failures', async () => {
+      createScratchOrgStub.rejects(new Error('Creation failed'));
+      const hubOrg = await Org.create({ aliasOrUsername: devHub.username });
+      const result = await preparePool(hubOrg, { ...poolDef, retryCount: 0 }, {}, '.', false, undefined, deps);
+      expect(createScratchOrgStub.callCount).to.equal(2);
+      expect(result).to.include({ created: 0, failed: 2 });
+      expect(result.errors).to.deep.equal(['Creation failed', 'Creation failed']);
     });
 
     for (const concurrency of [0, -1, 1.5, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1]) {
