@@ -14,7 +14,6 @@ import { withPoolAuthLock } from '../../src/lib/poolAuthLock.js';
 import type { FetchPoolDeps, AuthenticateResult } from '../../src/lib/poolFetch.js';
 import type { AvailableOrgRow } from '../../src/types/scratch-org-info.js';
 
-/* eslint-disable camelcase */
 describe('poolFetch', () => {
   const $$ = new TestContext();
   let devHub: MockTestOrgData;
@@ -533,4 +532,3 @@ describe('poolFetch', () => {
     });
   });
 });
-/* eslint-enable camelcase */

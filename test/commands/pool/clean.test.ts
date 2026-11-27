@@ -3,7 +3,6 @@ import { expect } from 'chai';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import PoolClean from '../../../src/commands/pool/clean.js';
 
-/* eslint-disable camelcase */
 describe('pool clean', () => {
   const $$ = new TestContext();
   let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
@@ -371,4 +370,3 @@ describe('pool clean', () => {
     expect(result.orgs.map((o) => o.poolTag)).to.include.members(['poolA', 'poolB']);
   });
 });
-/* eslint-enable camelcase */

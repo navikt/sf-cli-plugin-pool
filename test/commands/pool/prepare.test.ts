@@ -87,13 +87,12 @@ describe('pool prepare', () => {
       Promise.resolve({
         totalSize: 10,
         done: true,
-        /* eslint-disable camelcase */
+
         records: Array.from({ length: 10 }, (_, i) => ({
           Id: `00${i}`,
           Pool_allocation_status__c: 'Available',
           Pool_tag__c: 'nut-test-pool',
         })),
-        /* eslint-enable camelcase */
       });
 
     const result = await PoolPrepare.run(['--target-dev-hub', devHub.username, '--config-file', configFixture]);
@@ -109,13 +108,12 @@ describe('pool prepare', () => {
       Promise.resolve({
         totalSize: 5,
         done: true,
-        /* eslint-disable camelcase */
+
         records: Array.from({ length: 5 }, (_, i) => ({
           Id: `00${i}`,
           Pool_allocation_status__c: 'Available',
           Pool_tag__c: 'nut-test-pool',
         })),
-        /* eslint-enable camelcase */
       });
 
     const result = await PoolPrepare.run(['--target-dev-hub', devHub.username, '--config-file', configFixture]);

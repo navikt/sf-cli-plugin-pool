@@ -155,12 +155,10 @@ export async function updateActiveScratchOrgOwner(
   logger.debug('Transferring ActiveScratchOrg ownership', { activeScratchOrgId });
 
   try {
-    /* eslint-disable camelcase */
     const result = (await connection.sobject('ActiveScratchOrg').update({
       Id: activeScratchOrgId,
       OwnerId: ownerId,
     })) as SaveResultLike | SaveResultLike[];
-    /* eslint-enable camelcase */
 
     const record = Array.isArray(result) ? result[0] : result;
     if (record && record.success === false) {
